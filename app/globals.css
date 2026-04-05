@@ -162,12 +162,13 @@
   }
 }
 
-/* --- Header & bottom nav isolation (backdrop-blur workaround) --- */
+/* --- Persistent element isolation (backdrop-blur workaround) --- */
 
 ::view-transition-group(header),
 ::view-transition-group(bottom-nav),
 ::view-transition-group(theme-toggle) {
   animation: none;
+  z-index: 100;
 }
 ::view-transition-old(header),
 ::view-transition-old(bottom-nav),

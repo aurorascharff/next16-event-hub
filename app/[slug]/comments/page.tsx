@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { ViewTransition } from 'react';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
@@ -40,9 +41,7 @@ async function CommentFeed({ slug }: { slug: string }) {
           );
         })}
         {comments.length === 0 && (
-          <p className="text-muted-foreground py-6 text-center text-xs">
-            No comments yet. Start the conversation!
-          </p>
+          <EmptyState message="No comments yet. Start the conversation!" />
         )}
       </div>
     </div>

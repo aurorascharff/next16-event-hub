@@ -1,10 +1,12 @@
 import { Clock, HelpCircle, MapPin, MessageCircle } from 'lucide-react';
 import { Suspense } from 'react';
 import { ViewTransition } from 'react';
+import { Avatar } from '@/components/common/Avatar';
 import { BackButton } from '@/components/BackButton';
 import { BottomNav } from '@/components/design/BottomNav';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
-import { getAvatarUrl, getDayLabel, parseLabels } from '@/lib/utils';
+import { getDayLabel, parseLabels } from '@/lib/utils';
 import { ActiveUsers } from './_components/ActiveUsers';
 import type { Metadata } from 'next';
 
@@ -41,6 +43,7 @@ export default async function SessionLayout({
       exit={{ default: 'none', 'nav-back': 'slide-to-right' }}
       default="none"
     >
+      <TooltipProvider>
       <div className="min-h-screen pb-16">
         <header
           className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-md"
@@ -96,11 +99,7 @@ export default async function SessionLayout({
 
             {event.speaker && (
               <div className="mt-4 flex items-center gap-3">
-                <img
-                  src={getAvatarUrl(event.speaker, 'speaker')}
-                  alt=""
-                  className="size-8 rounded-full"
-                />
+                <Avatar name={event.speaker} variant="speaker" size="lg" />
                 <span className="text-sm font-medium">{event.speaker}</span>
               </div>
             )}
@@ -113,7 +112,7 @@ export default async function SessionLayout({
           {children}
         </div>
 
-        <Suspense>
+        <Suspense fallback={<BottomNavSkeleton />}>
           <BottomNav
             tabs={[
               { href: `/${slug}/comments`, icon: <MessageCircle className="size-4" />, label: 'Comments' },
@@ -122,6 +121,27 @@ export default async function SessionLayout({
           />
         </Suspense>
       </div>
+      </TooltipProvider>
     </ViewTransition>
+  );
+}
+
+function BottomNavSkeleton() {
+  return (
+    <nav
+      className="bg-background/80 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+      style={{ viewTransitionName: 'bottom-nav' }}
+    >
+      <div className="mx-auto flex max-w-4xl">
+        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
+          <div className="size-4" />
+          <span className="text-xs opacity-0">Tab</span>
+        </div>
+        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
+          <div className="size-4" />
+          <span className="text-xs opacity-0">Tab</span>
+        </div>
+      </div>
+    </nav>
   );
 }

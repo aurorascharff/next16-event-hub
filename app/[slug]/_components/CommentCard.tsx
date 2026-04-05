@@ -2,9 +2,9 @@
 
 import { Trash2 } from 'lucide-react';
 import { useTransition } from 'react';
-import { Avatar } from '@/components/design/Avatar';
+import { Avatar } from '@/components/common/Avatar';
 import { deleteComment } from '@/data/actions/comment';
-import { cn } from '@/lib/utils';
+import { cn, timeAgo } from '@/lib/utils';
 import { LikeButton } from './LikeButton';
 
 type Comment = {
@@ -44,7 +44,7 @@ export function CommentCard({ comment, currentUser }: Props) {
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium">{comment.userName}</span>
           <span className="text-muted-foreground text-xs">
-            {new Date(comment.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+            {timeAgo(comment.createdAt)}
           </span>
         </div>
         <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{comment.content}</p>

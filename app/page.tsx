@@ -1,7 +1,7 @@
 import { Calendar } from 'lucide-react';
 import { Suspense, ViewTransition } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EventGrid } from '@/components/EventGrid';
 import { LabelFilter } from '@/components/LabelFilter';
@@ -52,7 +52,7 @@ export default function HomePage({ searchParams }: Props) {
           </Suspense>
         </div>
 
-        <Suspense>
+        <Suspense fallback={<BottomNavSkeleton />}>
           <BottomNav tabs={dayTabs} />
         </Suspense>
       </div>
@@ -67,6 +67,26 @@ function FiltersSkeleton() {
         return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
       })}
     </div>
+  );
+}
+
+function BottomNavSkeleton() {
+  return (
+    <nav
+      className="bg-background/80 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+      style={{ viewTransitionName: 'bottom-nav' }}
+    >
+      <div className="mx-auto flex max-w-4xl">
+        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
+          <div className="size-4" />
+          <span className="text-xs opacity-0">Day 1</span>
+        </div>
+        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
+          <div className="size-4" />
+          <span className="text-xs opacity-0">Day 2</span>
+        </div>
+      </div>
+    </nav>
   );
 }
 

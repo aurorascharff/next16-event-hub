@@ -2,8 +2,9 @@
 
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import { Avatar } from '@/components/common/Avatar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { recordPresence } from '@/data/actions/presence';
-import { getAvatarUrl } from '@/lib/utils';
 
 type ActiveUser = {
   userName: string;
@@ -43,13 +44,15 @@ export function ActiveUsers({ eventSlug }: Props) {
       <div className="flex -space-x-1.5">
         {(users ?? []).slice(0, 5).map(user => {
           return (
-            <img
-              key={user.userName}
-              src={getAvatarUrl(user.userName)}
-              alt={user.userName}
-              title={user.userName}
-              className="size-5 rounded-full border-2 border-background"
-            />
+            <Tooltip key={user.userName}>
+              <TooltipTrigger render={
+                <Avatar
+                  name={user.userName}
+                  className="border-background border-2"
+                />
+              } />
+              <TooltipContent>{user.userName}</TooltipContent>
+            </Tooltip>
           );
         })}
       </div>

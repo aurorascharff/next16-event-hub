@@ -1,11 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useOptimistic, useState, useTransition, ViewTransition } from 'react';
+import { useMemo, useState, useTransition, ViewTransition } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
+import { ChipGroup } from '@/components/design/ChipGroup';
+import { EmptyState } from '@/components/common/EmptyState';
 import { addQuestion } from '@/data/actions/question';
-import { cn } from '@/lib/utils';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
 
@@ -33,7 +34,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const router = useRouter();
   const searchParams = useSearchParams();
   const sort = (searchParams.get('sort') as SortValue) || 'top';
-  const [optimisticSort, setOptimisticSort] = useOptimistic(sort);
 
   const { data: questions, mutate } = useSWR<Question[]>(
     `/api/events/${eventSlug}/questions`,
@@ -45,17 +45,14 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const [isPending, startTransition] = useTransition();
 
   function handleSortChange(value: SortValue) {
-    startTransition(() => {
-      setOptimisticSort(value);
-      const params = new URLSearchParams(searchParams.toString());
-      if (value === 'top') {
-        params.delete('sort');
-      } else {
-        params.set('sort', value);
-      }
-      const qs = params.toString();
-      router.replace(qs ? `?${qs}` : '?');
-    });
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === 'top') {
+      params.delete('sort');
+    } else {
+      params.set('sort', value);
+    }
+    const qs = params.toString();
+    router.replace(qs ? `?${qs}` : '?');
   }
 
   function handleAddQuestion(content: string) {
@@ -91,7 +88,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
 
   const sortedQuestions = useMemo(() => {
     const sorted = [...allQuestions];
-    if (optimisticSort === 'top') {
+    if (sort === 'top') {
       sorted.sort((a, b) => {
         return b.votes - a.votes;
       });
@@ -101,7 +98,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       });
     }
     return sorted;
-  }, [allQuestions, optimisticSort]);
+  }, [allQuestions, sort]);
 
   const sortOptions: { label: string; value: SortValue }[] = [
     { label: 'Top', value: 'top' },
@@ -116,26 +113,12 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
         <span className="text-muted-foreground text-xs">
           {allQuestions.length} question{allQuestions.length !== 1 ? 's' : ''}
         </span>
-        <div className="bg-muted flex rounded-full p-0.5">
-          {sortOptions.map(option => {
-            return (
-              <button
-                key={option.value}
-                onClick={() => {
-                  handleSortChange(option.value);
-                }}
-                className={cn(
-                  'rounded-full px-2.5 py-0.5 text-xs font-medium transition-all',
-                  optimisticSort === option.value
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
+        <ChipGroup
+          items={sortOptions}
+          value={sort}
+          onChange={handleSortChange}
+          variant="toggle"
+        />
       </div>
 
       <div className="space-y-2">
@@ -147,9 +130,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
           );
         })}
         {sortedQuestions.length === 0 && (
-          <p className="text-muted-foreground py-6 text-center text-xs">
-            No questions yet. Be the first to ask!
-          </p>
+          <EmptyState message="No questions yet. Be the first to ask!" />
         )}
       </div>
     </div>

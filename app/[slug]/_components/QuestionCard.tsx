@@ -1,4 +1,5 @@
-import { getAvatarUrl } from '@/lib/utils';
+import { Avatar } from '@/components/common/Avatar';
+import { timeAgo } from '@/lib/utils';
 import { UpvoteButton } from './UpvoteButton';
 
 type Question = {
@@ -27,12 +28,10 @@ export function QuestionCard({ question }: Props) {
       <div className="min-w-0 flex-1">
         <p className="text-xs leading-relaxed">{question.content}</p>
         <div className="mt-1.5 flex items-center gap-2">
-          <img
-            src={getAvatarUrl(question.userName)}
-            alt=""
-            className="size-4 rounded-full"
-          />
+          <Avatar name={question.userName} size="xs" />
           <span className="text-muted-foreground text-xs">{question.userName}</span>
+          <span className="text-muted-foreground text-xs">·</span>
+          <span className="text-muted-foreground text-xs">{timeAgo(question.createdAt)}</span>
         </div>
       </div>
     </div>

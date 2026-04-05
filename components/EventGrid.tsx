@@ -1,8 +1,10 @@
 import { Clock, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { ViewTransition } from 'react';
+import { Avatar } from '@/components/common/Avatar';
+import { EmptyState } from '@/components/common/EmptyState';
 import { getEvents } from '@/data/queries/event';
-import { cn, getAvatarUrl, getDayLabel, parseLabels } from '@/lib/utils';
+import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
 type Props = {
   searchParams: Promise<{ day?: string; label?: string }>;
@@ -13,12 +15,7 @@ export async function EventGrid({ searchParams }: Props) {
   const events = await getEvents(day, label);
 
   if (events.length === 0) {
-    return (
-      <div className="py-16 text-center">
-        <p className="text-muted-foreground">No sessions match your filters.</p>
-        <p className="text-muted-foreground mt-1 text-xs">Try a different combination.</p>
-      </div>
-    );
+    return <EmptyState message="No sessions match your filters." hint="Try a different combination." />;
   }
 
   return (
@@ -65,11 +62,7 @@ export async function EventGrid({ searchParams }: Props) {
               </h3>
               {event.speaker && (
                 <div className="mt-2 flex items-center gap-2">
-                  <img
-                    src={getAvatarUrl(event.speaker, 'speaker')}
-                    alt=""
-                    className="size-5 rounded-full"
-                  />
+                  <Avatar name={event.speaker} variant="speaker" />
                   <span className="text-muted-foreground text-xs">{event.speaker}</span>
                 </div>
               )}

@@ -32,9 +32,9 @@ app/
   _components/            # Home page components (AuthGate, filters, grid)
   [slug]/                 # Session detail page
     _components/          # Comments, questions, presence, tabs
-  api/events/[slug]/      # SWR polling endpoints (comments, questions, presence)
+  api/events/[slug]/      # SWR polling endpoints (questions, presence)
 components/
-  design/                 # Action prop components (TabList, SubmitButton)
+  design/                 # Design components with async React (BottomNav, ChipGroup, InlineForm, SubmitButton)
   ui/                     # shadcn/ui primitives
 data/
   queries/                # Server-side data fetching with cache()

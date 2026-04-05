@@ -6,8 +6,8 @@ import { cache } from 'react';
 import { prisma } from '@/db';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
-  'use cache';
-  cacheTag('events');
+  // 'use cache';
+  // cacheTag('events');
 
   const where: Record<string, unknown> = {};
   if (day) {
@@ -34,8 +34,8 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  'use cache';
-  cacheTag(`event-${slug}`);
+  // 'use cache';
+  // cacheTag(`event-${slug}`);
 
   const event = await prisma.event.findUnique({
     where: { slug },

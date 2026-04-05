@@ -25,13 +25,13 @@ export function TipForm({ spotSlug }: Props) {
   const [state, action] = useActionState(submitAction, null);
 
   return (
-    <form ref={formRef} action={action} className="flex flex-col gap-3">
-      <div className="flex gap-3">
+    <form ref={formRef} action={action} className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-2.5">
         <Input
           name="author"
           placeholder="Your name"
           required
-          className="w-32 shrink-0"
+          className="sm:w-32 sm:shrink-0"
         />
         <Textarea
           name="content"
@@ -43,7 +43,7 @@ export function TipForm({ spotSlug }: Props) {
       </div>
       <div className="flex items-center justify-between gap-3">
         {state && !state.success && (
-          <p className="text-sm text-red-500">{state.error}</p>
+          <p className="text-destructive text-xs">{state.error}</p>
         )}
         <SubmitButton size="sm" className="ml-auto">
           Add tip

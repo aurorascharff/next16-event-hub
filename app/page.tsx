@@ -12,21 +12,29 @@ type Props = {
 export default function HomePage({ searchParams }: Props) {
   return (
     <div className="min-h-screen">
-      <header className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-sm" style={{ viewTransitionName: 'header' }}>
-        <div className="container mx-auto max-w-5xl px-4 py-4">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-baseline justify-between">
-              <h1 className="text-xl font-bold tracking-tight">Miami Spots</h1>
-              <p className="text-muted-foreground text-sm">A curated guide to the city</p>
-            </div>
-            <Suspense fallback={<FiltersSkeleton />}>
+      <header
+        className="bg-background/90 sticky top-0 z-30 border-b backdrop-blur-md"
+        style={{ viewTransitionName: 'header' }}
+      >
+        <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6">
+          <div className="mb-2 flex items-baseline justify-between">
+            <h1 className="text-primary text-lg font-bold tracking-tight sm:text-xl">
+              Miami Spots
+            </h1>
+            <span className="text-muted-foreground hidden text-xs sm:block">
+              A curated guide
+            </span>
+          </div>
+          <Suspense fallback={<FiltersSkeleton />}>
+            <div className="flex flex-col gap-2">
               <CategoryFilter />
               <NeighborhoodFilter />
-            </Suspense>
-          </div>
+            </div>
+          </Suspense>
         </div>
       </header>
-      <div className="container mx-auto max-w-5xl px-4 py-6">
+
+      <div className="mx-auto max-w-4xl px-4 py-5 sm:px-6">
         <Suspense fallback={<SpotGridSkeleton />}>
           <SpotGridLoader searchParams={searchParams} />
         </Suspense>
@@ -43,7 +51,7 @@ async function SpotGridLoader({ searchParams }: { searchParams: Promise<{ catego
 
 function FiltersSkeleton() {
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap gap-1.5">
         {Array.from({ length: 7 }).map((_, i) => {
           return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
@@ -54,28 +62,23 @@ function FiltersSkeleton() {
           return <Skeleton key={i} className="h-7 w-20 rounded-full" />;
         })}
       </div>
-    </>
+    </div>
   );
 }
 
 function SpotGridSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2">
       {Array.from({ length: 6 }).map((_, i) => {
         return (
-          <div key={i} className="flex flex-col overflow-hidden rounded-xl border">
-            <Skeleton className="h-1.5 w-full rounded-none" />
-            <div className="flex flex-col gap-3 p-4">
-              <div className="flex items-start justify-between">
-                <Skeleton className="h-5 w-16" />
-                <Skeleton className="h-4 w-20" />
-              </div>
-              <div>
-                <Skeleton className="h-5 w-32" />
-                <Skeleton className="mt-2 h-4 w-full" />
-                <Skeleton className="mt-1 h-4 w-3/4" />
-              </div>
+          <div key={i} className="bg-card overflow-hidden rounded-lg border p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-4 w-20" />
             </div>
+            <Skeleton className="mb-2 h-5 w-3/5" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="mt-1 h-4 w-4/5" />
           </div>
         );
       })}

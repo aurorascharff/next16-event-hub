@@ -39,12 +39,12 @@ export function getCategoryLabel(value: string): string {
 
 export function getCategoryColor(category: string): string {
   const colors: Record<string, string> = {
-    art: 'bg-purple-500/15 text-purple-600 border-purple-500/20 dark:bg-purple-500/20 dark:text-purple-400',
-    bar: 'bg-amber-500/15 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-400',
-    beach: 'bg-cyan-500/15 text-cyan-600 border-cyan-500/20 dark:bg-cyan-500/20 dark:text-cyan-400',
-    cafe: 'bg-orange-500/15 text-orange-600 border-orange-500/20 dark:bg-orange-500/20 dark:text-orange-400',
-    nightlife: 'bg-pink-500/15 text-pink-600 border-pink-500/20 dark:bg-pink-500/20 dark:text-pink-400',
-    restaurant: 'bg-emerald-500/15 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400',
+    art: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+    bar: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    beach: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+    cafe: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    nightlife: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+    restaurant: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
   };
   return colors[category] ?? 'bg-muted text-muted-foreground';
 }

@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import { cn, CATEGORIES, getCategoryColor } from '@/lib/utils';
+import { cn, CATEGORIES } from '@/lib/utils';
 
 export function CategoryFilter() {
   const router = useRouter();
@@ -38,12 +38,10 @@ export function CategoryFilter() {
                 handleChange(tab.value);
               }}
               className={cn(
-                'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-all',
+                'rounded-full px-3 py-1 text-xs font-medium transition-all',
                 isActive
-                  ? tab.value === 'all'
-                    ? 'bg-foreground text-background border-foreground'
-                    : getCategoryColor(tab.value)
-                  : 'border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground',
               )}
             >
               {tab.label}

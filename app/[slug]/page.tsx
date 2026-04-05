@@ -36,8 +36,11 @@ export default async function SpotPage({ params }: PageProps<'/[slug]'>) {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-sm" style={{ viewTransitionName: 'header' }}>
-        <div className="container mx-auto max-w-3xl px-4 py-3">
+      <header
+        className="bg-background/90 sticky top-0 z-30 border-b backdrop-blur-md"
+        style={{ viewTransitionName: 'header' }}
+      >
+        <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between">
             <BackButton href="/" size="sm">
               ← All spots
@@ -49,14 +52,14 @@ export default async function SpotPage({ params }: PageProps<'/[slug]'>) {
         </div>
       </header>
 
-      <div className="container mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
         <ViewTransition name={`spot-${slug}`}>
           <article>
             <div className="mb-6 space-y-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
-                    'inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium',
+                    'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium',
                     getCategoryColor(spot.category),
                   )}
                 >
@@ -67,16 +70,16 @@ export default async function SpotPage({ params }: PageProps<'/[slug]'>) {
                   {spot.neighborhood}
                 </span>
               </div>
-              <h1 className="text-3xl font-bold tracking-tight">{spot.name}</h1>
-              <p className="text-muted-foreground text-lg leading-relaxed">{spot.description}</p>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{spot.name}</h1>
+              <p className="text-muted-foreground leading-relaxed">{spot.description}</p>
             </div>
-            <div className="prose-sm text-foreground leading-relaxed whitespace-pre-line">
+            <div className="text-foreground/90 text-sm leading-relaxed whitespace-pre-line sm:text-base">
               {spot.content}
             </div>
           </article>
         </ViewTransition>
 
-        <div className="mt-12 border-t pt-8">
+        <div className="mt-10 border-t pt-6">
           <ViewTransition enter="slide-up" exit="slide-down">
             <Suspense fallback={<TipsSkeleton />}>
               <TipsSection slug={slug} />
@@ -101,14 +104,14 @@ async function TipsSection({ slug }: { slug: string }) {
   const tips = await getTipsBySpot(slug);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center gap-2">
-        <MessageCircle className="text-muted-foreground size-5" />
-        <h2 className="text-lg font-semibold">Tips from visitors</h2>
-        <span className="text-muted-foreground text-sm">({tips.length})</span>
+        <MessageCircle className="text-primary size-4" />
+        <h2 className="text-sm font-semibold">Tips from visitors</h2>
+        <span className="text-muted-foreground text-xs">({tips.length})</span>
       </div>
       <TipList tips={tips} spotSlug={slug} />
-      <div className="border-t pt-6">
+      <div className="border-t pt-5">
         <TipForm spotSlug={slug} />
       </div>
     </div>
@@ -117,19 +120,19 @@ async function TipsSection({ slug }: { slug: string }) {
 
 function TipsSkeleton() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center gap-2">
-        <Skeleton className="size-5 rounded-full" />
-        <Skeleton className="h-6 w-40" />
+        <Skeleton className="size-4 rounded-full" />
+        <Skeleton className="h-4 w-32" />
       </div>
       <div className="space-y-3">
         {Array.from({ length: 3 }).map((_, i) => {
           return (
             <div key={i} className="flex items-start gap-3">
-              <Skeleton className="size-8 rounded-full" />
+              <Skeleton className="size-7 rounded-full" />
               <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-3.5 w-20" />
+                <Skeleton className="h-3.5 w-full" />
               </div>
             </div>
           );

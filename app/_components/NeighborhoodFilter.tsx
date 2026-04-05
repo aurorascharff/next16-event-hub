@@ -13,7 +13,7 @@ export function NeighborhoodFilter() {
   const [optimisticNeighborhood, setOptimisticNeighborhood] = useOptimistic(activeNeighborhood);
   const [isPending, startTransition] = useTransition();
 
-  const allTabs = [{ label: 'All', value: 'all' }, ...NEIGHBORHOODS.map(n => {return { label: n, value: n }})];
+  const allTabs = [{ label: 'All areas', value: 'all' }, ...NEIGHBORHOODS.map(n => {return { label: n, value: n }})];
 
   function handleChange(value: string) {
     startTransition(async () => {
@@ -38,10 +38,10 @@ export function NeighborhoodFilter() {
                 handleChange(tab.value);
               }}
               className={cn(
-                'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-all',
+                'rounded-full border px-3 py-1 text-xs font-medium transition-all',
                 isActive
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+                  ? 'border-primary/50 bg-primary/15 text-primary'
+                  : 'border-border text-muted-foreground hover:border-primary/30 hover:text-foreground',
               )}
             >
               {tab.label}

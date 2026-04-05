@@ -14,10 +14,12 @@ type Props = {
 export function FavoriteButton({ spotSlug, isFavorited, favoriteCount }: Props) {
   const [optimistic, setOptimistic] = useOptimistic(
     { count: favoriteCount, favorited: isFavorited },
-    (_state, newFavorited: boolean) => {return {
-      count: _state.count + (newFavorited ? 1 : -1),
-      favorited: newFavorited,
-    }},
+    (_state, newFavorited: boolean) => {
+      return {
+        count: _state.count + (newFavorited ? 1 : -1),
+        favorited: newFavorited,
+      };
+    },
   );
   const [isPending, startTransition] = useTransition();
 
@@ -33,16 +35,16 @@ export function FavoriteButton({ spotSlug, isFavorited, favoriteCount }: Props) 
       onClick={handleToggle}
       data-pending={isPending || undefined}
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all',
+        'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all',
         'data-[pending]:animate-pulse',
         optimistic.favorited
-          ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400'
-          : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground',
+          ? 'bg-primary/15 text-primary border-primary/30 border'
+          : 'bg-muted text-muted-foreground hover:text-foreground',
       )}
     >
       <Heart
         className={cn(
-          'size-4 transition-all',
+          'size-3.5 transition-all',
           optimistic.favorited && 'fill-current',
         )}
       />

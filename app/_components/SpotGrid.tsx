@@ -19,58 +19,57 @@ type Props = {
 export function SpotGrid({ spots }: Props) {
   if (spots.length === 0) {
     return (
-      <div className="py-20 text-center">
-        <p className="text-muted-foreground text-lg">No spots match your filters.</p>
+      <div className="py-16 text-center">
+        <p className="text-muted-foreground">No spots match your filters.</p>
         <p className="text-muted-foreground mt-1 text-sm">Try a different combination.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2">
       {spots.map(spot => {
         return (
           <ViewTransition key={spot.slug} name={`spot-${spot.slug}`}>
             <Link
               href={`/${spot.slug}`}
               className={cn(
-                'group relative flex flex-col overflow-hidden rounded-xl border transition-all hover:shadow-lg',
-                'bg-card hover:border-foreground/20',
-                spot.featured && 'sm:col-span-2 sm:flex-row',
+                'group relative flex overflow-hidden rounded-lg border transition-all',
+                'bg-card hover:border-primary/40 hover:shadow-[0_0_20px_-4px] hover:shadow-primary/20',
+                spot.featured && 'sm:col-span-2',
               )}
             >
               <div
                 className={cn(
-                  'h-1.5 w-full shrink-0',
+                  'w-1 shrink-0',
                   getCategoryStripeColor(spot.category),
-                  spot.featured && 'sm:h-auto sm:w-1.5',
                 )}
               />
-              <div className="flex flex-1 flex-col gap-3 p-4">
-                <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-1 flex-col gap-2 p-3 sm:p-4">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={cn(
-                        'inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium',
+                        'inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium',
                         getCategoryColor(spot.category),
                       )}
                     >
                       {getCategoryLabel(spot.category)}
                     </span>
                     {spot.featured && (
-                      <Star className="size-3.5 fill-amber-500 text-amber-500" />
+                      <Star className="size-3 fill-amber-400 text-amber-400" />
                     )}
                   </div>
-                  <span className="text-muted-foreground flex items-center gap-1 text-[11px]">
-                    <MapPin className="size-3" />
+                  <span className="text-muted-foreground flex items-center gap-1 text-[10px]">
+                    <MapPin className="size-2.5" />
                     {spot.neighborhood}
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-semibold leading-tight group-hover:underline">
+                  <h3 className="text-sm font-semibold leading-tight group-hover:text-primary transition-colors">
                     {spot.name}
                   </h3>
-                  <p className="text-muted-foreground mt-1.5 line-clamp-2 text-sm leading-relaxed">
+                  <p className="text-muted-foreground mt-1 line-clamp-2 text-xs leading-relaxed">
                     {spot.description}
                   </p>
                 </div>

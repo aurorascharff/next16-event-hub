@@ -3,24 +3,24 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import { cn, NEIGHBORHOODS } from '@/lib/utils';
+import { cn, TRACKS } from '@/lib/utils';
 
-export function NeighborhoodFilter() {
+export function TrackFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeNeighborhood = searchParams.get('neighborhood') || 'all';
-  const activeCategory = searchParams.get('category') || '';
-  const [optimisticNeighborhood, setOptimisticNeighborhood] = useOptimistic(activeNeighborhood);
+  const activeTrack = searchParams.get('track') || 'all';
+  const activeDay = searchParams.get('day') || '';
+  const [optimisticTrack, setOptimisticTrack] = useOptimistic(activeTrack);
   const [isPending, startTransition] = useTransition();
 
-  const allTabs = [{ label: 'All areas', value: 'all' }, ...NEIGHBORHOODS.map(n => {return { label: n, value: n }})];
+  const allTabs = [{ label: 'All tracks', value: 'all' }, ...TRACKS];
 
   function handleChange(value: string) {
     startTransition(async () => {
-      setOptimisticNeighborhood(value);
+      setOptimisticTrack(value);
       const params = new URLSearchParams();
-      if (activeCategory) params.set('category', activeCategory);
-      if (value !== 'all') params.set('neighborhood', value);
+      if (activeDay) params.set('day', activeDay);
+      if (value !== 'all') params.set('track', value);
       const qs = params.toString();
       router.push(qs ? `/?${qs}` : '/');
     });
@@ -30,7 +30,7 @@ export function NeighborhoodFilter() {
     <div className="flex items-center gap-2">
       <div className="flex flex-wrap gap-1.5">
         {allTabs.map(tab => {
-          const isActive = tab.value === optimisticNeighborhood;
+          const isActive = tab.value === optimisticTrack;
           return (
             <button
               key={tab.value}
@@ -38,10 +38,10 @@ export function NeighborhoodFilter() {
                 handleChange(tab.value);
               }}
               className={cn(
-                'rounded-full border px-3 py-1 text-xs font-medium transition-all',
+                'rounded-full px-2.5 py-1 text-xs transition-colors',
                 isActive
-                  ? 'border-primary/50 bg-primary/15 text-primary'
-                  : 'border-border text-muted-foreground hover:border-primary/30 hover:text-foreground',
+                  ? 'bg-foreground text-background font-medium'
+                  : 'text-muted-foreground hover:text-foreground',
               )}
             >
               {tab.label}

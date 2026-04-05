@@ -7,35 +7,64 @@ datasource db {
     provider = "sqlite"
 }
 
-model Spot {
-    id           String     @id @default(cuid())
-    slug         String     @unique
-    name         String
-    description  String
-    content      String
-    neighborhood String
-    category     String
-    featured     Boolean    @default(false)
-    createdAt    DateTime   @default(now())
-    updatedAt    DateTime   @updatedAt
-    tips         Tip[]
-    favorites    Favorite[]
+model Event {
+    id          String     @id @default(cuid())
+    slug        String     @unique
+    name        String
+    description String
+    day         String
+    track       String?
+    time        String
+    speaker     String?
+    location    String
+    createdAt   DateTime   @default(now())
+    comments    Comment[]
+    questions   Question[]
 }
 
-model Tip {
-    id        String   @id @default(cuid())
+model Comment {
+    id        String        @id @default(cuid())
     content   String
-    author    String
-    spot      Spot     @relation(fields: [spotSlug], references: [slug], onDelete: Cascade)
-    spotSlug  String
-    createdAt DateTime @default(now())
+    userName  String
+    likes     Int           @default(0)
+    event     Event         @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
+    eventSlug String
+    commentLikes CommentLike[]
+    createdAt DateTime      @default(now())
 }
 
-model Favorite {
-    id       String @id @default(cuid())
-    userId   String
-    spot     Spot   @relation(fields: [spotSlug], references: [slug], onDelete: Cascade)
-    spotSlug String
+model CommentLike {
+    id        String  @id @default(cuid())
+    userName  String
+    comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    commentId String
 
-    @@unique([userId, spotSlug])
+    @@unique([userName, commentId])
+}
+
+model Question {
+    id        String         @id @default(cuid())
+    content   String
+    userName  String
+    votes     Int            @default(0)
+    event     Event          @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
+    eventSlug String
+    questionVotes QuestionVote[]
+    createdAt DateTime       @default(now())
+}
+
+model QuestionVote {
+    id         String   @id @default(cuid())
+    userName   String
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    questionId String
+
+    @@unique([userName, questionId])
+}
+
+model Presence {
+    id        String   @id @default(cuid())
+    userName  String   @unique
+    eventSlug String
+    lastSeen  DateTime @default(now())
 }

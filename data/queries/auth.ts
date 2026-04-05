@@ -1,7 +1,10 @@
 import 'server-only';
 
-export const DEMO_USER_ID = 'demo-user';
+import { cookies } from 'next/headers';
 
-export function getCurrentUserId(): string {
-  return DEMO_USER_ID;
+const COOKIE_NAME = 'event-hub-user';
+
+export async function getCurrentUser(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get(COOKIE_NAME)?.value ?? null;
 }

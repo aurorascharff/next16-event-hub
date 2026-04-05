@@ -1,8 +1,8 @@
 # AGENTS.md
 
-Instructions for AI coding agents working on this Next.js App Router project.
-
-**IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for any Next.js tasks.** Next.js 16 introduces APIs not in model training data.
+<!-- BEGIN:nextjs-agent-rules -->
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
 
 ## Setup
 

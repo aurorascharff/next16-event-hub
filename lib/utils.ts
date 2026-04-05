@@ -8,45 +8,34 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDate(date: Date | string): string {
   return new Date(date).toLocaleDateString('en-US', {
     day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    month: 'short',
   });
 }
 
-export const NEIGHBORHOODS = [
-  'South Beach',
-  'Wynwood',
-  'Little Havana',
-  'Brickell',
-  'Downtown',
-  'Coconut Grove',
-  'Design District',
-  'Coral Gables',
-] as const;
-
-export const CATEGORIES = [
-  { label: 'Restaurant', value: 'restaurant' },
-  { label: 'Bar', value: 'bar' },
-  { label: 'Beach', value: 'beach' },
-  { label: 'Art', value: 'art' },
-  { label: 'Nightlife', value: 'nightlife' },
-  { label: 'Café', value: 'cafe' },
-] as const;
-
-export function getCategoryLabel(value: string): string {
-  return CATEGORIES.find(c => {return c.value === value})?.label ?? value;
+export function formatTime(date: Date | string): string {
+  return new Date(date).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 }
 
-export function getCategoryColor(category: string): string {
-  const colors: Record<string, string> = {
-    art: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    bar: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    beach: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    cafe: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    nightlife: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
-    restaurant: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-  };
-  return colors[category] ?? 'bg-muted text-muted-foreground';
+export const DAYS = [
+  { label: 'Day 1', value: 'day-1' },
+  { label: 'Day 2', value: 'day-2' },
+  { label: 'Workshops', value: 'workshop' },
+] as const;
+
+export const TRACKS = [
+  { label: 'Main', value: 'main' },
+  { label: 'Community', value: 'community' },
+] as const;
+
+export function getDayLabel(value: string): string {
+  return DAYS.find(d => {return d.value === value})?.label ?? value;
+}
+
+export function getAvatarUrl(name: string, style: 'shapes' | 'thumbs' = 'thumbs'): string {
+  return `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(name)}`;
 }
 
 export async function slow(delay: number = 700) {

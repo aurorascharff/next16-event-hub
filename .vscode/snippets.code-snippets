@@ -1,0 +1,50 @@
+{
+  "errorUI": {
+    "prefix": "errorUI",
+    "body": [
+      "'use client';",
+      "",
+      "import { ErrorCard } from '@/components/errors/ErrorCard';",
+      "import { useTrackError } from '@/hooks/useTrackError';",
+      "",
+      "type Props = {",
+      "  error: Error & { digest?: string };",
+      "  reset: () => void;",
+      "};",
+      "",
+      "export default function ErrorBoundary({ error, reset }: Props) {",
+      "  useTrackError(error);",
+      "  return <ErrorCard description=\"Failed to load post\" error={error} reset={reset} />;",
+      "}"
+    ]
+  },
+  "suspensePostListWithAnimation": {
+    "prefix": "suspensePostListWithAnimation",
+    "body": [
+      "<Suspense",
+      "  fallback={",
+      "    <ViewTransition exit=\"slide-down\">",
+      "      <PostListSkeleton />",
+      "    </ViewTransition>",
+      "  }",
+      ">",
+      "  <ViewTransition enter=\"slide-up\" exit=\"slide-down\">",
+      "    <PostList searchParams={searchParams} />",
+      "  </ViewTransition>",
+      "</Suspense>"
+    ]
+  }, "customAsyncReact": {
+      "prefix": "customAsyncReact",
+      "body": [
+        "const [optimisticSort, setOptimisticSort] = useOptimistic(${1:currentSort});",
+        "const [isPending, startTransition] = useTransition();"
+      ]
+    },
+      "optimisticArchiveState": {
+        "prefix": "optimisticArchiveState",
+        "body": [
+        "const [optimisticArchived, setOptimisticArchived] = useOptimistic(${1:archived} ?? false);",
+        "const isPending = optimisticArchived !== (${1:archived} ?? false);"
+        ]
+      }
+}

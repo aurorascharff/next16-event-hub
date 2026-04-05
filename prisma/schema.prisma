@@ -1,0 +1,24 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "sqlite"
+}
+
+model Spot {
+    id           String   @id @default(cuid())
+    slug         String   @unique
+    name         String
+    description  String   @default("")
+    content      String
+    neighborhood String
+    category     String
+    published    Boolean  @default(false)
+    featured     Boolean  @default(false)
+    archived     Boolean  @default(false)
+    seed         Boolean  @default(false)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+}

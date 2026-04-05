@@ -1,13 +1,7 @@
 import 'server-only';
 
-export function isAuthenticated(): boolean {
-  return true;
-}
+export const DEMO_USER_ID = 'demo-user';
 
-export function isAuthorized(): boolean {
-  return true;
-}
-
-export function canManageSpots(): boolean {
-  return isAuthenticated() && isAuthorized();
+export function getCurrentUserId(): string {
+  return DEMO_USER_ID;
 }

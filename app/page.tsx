@@ -1,92 +1,82 @@
-import { MapPin, Star } from 'lucide-react';
-import Link from 'next/link';
-import { SlideLeftTransition } from '@/components/ui/animations';
-import { buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { canManageSpots } from '@/data/queries/auth';
-import { getPublishedSpots } from '@/data/queries/spot';
-import { cn, formatDate, getCategoryColor, getCategoryLabel } from '@/lib/utils';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getSpots } from '@/data/queries/spot';
+import { CategoryFilter } from './_components/CategoryFilter';
+import { NeighborhoodFilter } from './_components/NeighborhoodFilter';
+import { SpotGrid } from './_components/SpotGrid';
 
-export default function HomePage() {
-  const showDashboard = canManageSpots();
+type Props = {
+  searchParams: Promise<{ category?: string; neighborhood?: string }>;
+};
 
+export default function HomePage({ searchParams }: Props) {
   return (
-    <SlideLeftTransition>
-      <div className="min-h-screen">
-        <div className="container mx-auto max-w-4xl px-4 py-16">
-          <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Miami Spots</h1>
-              <p className="text-muted-foreground mt-2 text-lg">
-                Your curated guide to the best of Miami
-              </p>
+    <div className="min-h-screen">
+      <header className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-sm" style={{ viewTransitionName: 'header' }}>
+        <div className="container mx-auto max-w-5xl px-4 py-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-baseline justify-between">
+              <h1 className="text-xl font-bold tracking-tight">Miami Spots</h1>
+              <p className="text-muted-foreground text-sm">A curated guide to the city</p>
             </div>
-            <div className="flex items-center gap-2">
-              {showDashboard && (
-                <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>
-                  Dashboard
-                </Link>
-              )}
-            </div>
+            <Suspense fallback={<FiltersSkeleton />}>
+              <CategoryFilter />
+              <NeighborhoodFilter />
+            </Suspense>
           </div>
-          <SpotList />
         </div>
+      </header>
+      <div className="container mx-auto max-w-5xl px-4 py-6">
+        <Suspense fallback={<SpotGridSkeleton />}>
+          <SpotGridLoader searchParams={searchParams} />
+        </Suspense>
       </div>
-    </SlideLeftTransition>
+    </div>
   );
 }
 
-async function SpotList() {
-  const spots = await getPublishedSpots();
+async function SpotGridLoader({ searchParams }: { searchParams: Promise<{ category?: string; neighborhood?: string }> }) {
+  const { category, neighborhood } = await searchParams;
+  const spots = await getSpots(category, neighborhood);
+  return <SpotGrid spots={spots} />;
+}
 
-  if (spots.length === 0) {
-    return (
-      <Card className="py-16 text-center">
-        <CardContent>
-          <p className="text-muted-foreground text-lg">No spots yet. Check back soon!</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
+function FiltersSkeleton() {
   return (
-    <div className="space-y-4">
-      {spots.map(spot => {
+    <>
+      <div className="flex flex-wrap gap-1.5">
+        {Array.from({ length: 7 }).map((_, i) => {
+          return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
+        })}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {Array.from({ length: 5 }).map((_, i) => {
+          return <Skeleton key={i} className="h-7 w-20 rounded-full" />;
+        })}
+      </div>
+    </>
+  );
+}
+
+function SpotGridSkeleton() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, i) => {
         return (
-          <Link key={spot.slug} href={`/${spot.slug}`} className="block">
-            <Card className="hover:bg-muted/50 transition-all duration-200 hover:shadow-md">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-xl">{spot.name}</CardTitle>
-                      {spot.featured && <Star className="text-amber-500 size-4 fill-current" />}
-                    </div>
-                    <CardDescription className="flex items-center gap-3 text-sm">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="size-3" />
-                        {spot.neighborhood}
-                      </span>
-                      <span>{formatDate(spot.createdAt)}</span>
-                    </CardDescription>
-                  </div>
-                  <span
-                    className={cn(
-                      'inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 text-xs font-medium',
-                      getCategoryColor(spot.category),
-                    )}
-                  >
-                    {getCategoryLabel(spot.category)}
-                  </span>
-                </div>
-              </CardHeader>
-              {spot.description && (
-                <CardContent className="pt-0">
-                  <p className="text-muted-foreground line-clamp-2 leading-relaxed">{spot.description}</p>
-                </CardContent>
-              )}
-            </Card>
-          </Link>
+          <div key={i} className="flex flex-col overflow-hidden rounded-xl border">
+            <Skeleton className="h-1.5 w-full rounded-none" />
+            <div className="flex flex-col gap-3 p-4">
+              <div className="flex items-start justify-between">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div>
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="mt-2 h-4 w-full" />
+                <Skeleton className="mt-1 h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
         );
       })}
     </div>

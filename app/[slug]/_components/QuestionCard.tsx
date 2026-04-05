@@ -6,6 +6,7 @@ type Question = {
   content: string;
   userName: string;
   votes: number;
+  hasVoted: boolean;
   eventSlug: string;
   createdAt: Date | string;
 };
@@ -21,6 +22,7 @@ export function QuestionCard({ question }: Props) {
         questionId={question.id}
         eventSlug={question.eventSlug}
         votes={question.votes}
+        hasVoted={question.hasVoted}
       />
       <div className="min-w-0 flex-1">
         <p className="text-xs leading-relaxed">{question.content}</p>
@@ -30,7 +32,7 @@ export function QuestionCard({ question }: Props) {
             alt=""
             className="size-4 rounded-full"
           />
-          <span className="text-muted-foreground text-[10px]">{question.userName}</span>
+          <span className="text-muted-foreground text-xs">{question.userName}</span>
         </div>
       </div>
     </div>

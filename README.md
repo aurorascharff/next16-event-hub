@@ -1,67 +1,76 @@
-# Miami Spots
+# Event Hub
 
-A curated Miami city guide exploring Async React patterns with Next.js 16. Features a public cached guide and a dynamic dashboard for managing spots, with streaming, Suspense boundaries, optimistic updates, and view transitions.
+A live session companion app for React Miami 2026 — browse conference sessions, post comments, ask questions with upvotes, and see who's actively watching. Built to demonstrate Async React patterns for the talk "Designing the In-Between States with Async React."
 
-Built with Next.js 16, React 19, Tailwind CSS v4, and shadcn/ui (Base UI).
+Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), Prisma (SQLite), and SWR.
 
 ## Getting Started
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run prisma.push
+pnpm run prisma.seed
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Setup
 
-This project uses Prisma with PostgreSQL. Set up your `DATABASE_URL` in a `.env` file, then:
+Uses Prisma with SQLite (local `dev.db` file). No external database needed.
 
 ```bash
-npm run prisma.push     # Push schema to DB
-npm run prisma.seed     # Seed with Miami spots
-npm run prisma.studio   # Open Prisma Studio
+pnpm run prisma.push     # Push schema to DB
+pnpm run prisma.seed     # Seed with React Miami sessions
+pnpm run prisma.studio   # Open Prisma Studio
 ```
 
 ## Project Structure
 
 ```
-app/                      # Pages and layouts
-  [slug]/                 # Public spot detail page
-  dashboard/              # Dashboard for managing spots
-    _components/          # Dashboard components
-    [slug]/               # Spot detail in dashboard
-    new/                  # Add new spot
+app/
+  _components/            # Home page components (AuthGate, filters, grid)
+  [slug]/                 # Session detail page
+    _components/          # Comments, questions, presence, tabs
+  api/events/[slug]/      # SWR polling endpoints (comments, questions, presence)
 components/
   design/                 # Action prop components (TabList, SubmitButton)
-  errors/                 # Error and status components
   ui/                     # shadcn/ui primitives
 data/
-  queries/                # Data fetching with cache()
-  actions/                # Server Actions
+  queries/                # Server-side data fetching with cache()
+  actions/                # Server Actions (mutations)
 lib/
-  utils.ts                # Utilities, categories, neighborhoods
+  utils.ts                # Utilities, labels, avatar URLs
+prisma/
+  schema.prisma           # Database schema
+  seed.ts                 # React Miami session seed data
 ```
 
 ## Key Patterns
 
-**Cache Components:** Uses `cacheComponents: true` to statically render server components that don't access dynamic data. Keep pages non-async and push dynamic data access into `<Suspense>` boundaries to maximize the static shell.
+**Cache Components (PPR):** Uses `cacheComponents: true` to statically prerender server components that don't access dynamic data. The session detail page shell renders instantly while comments and presence stream in via Suspense.
 
-**Async React:** Replace manual `isLoading`/`isError` state with React 19 primitives — `useTransition`, `useOptimistic`, `Suspense`, and `use()`.
+**Async React Primitives:** Replaces manual `isLoading`/`isError` state with `useTransition`, `useOptimistic`, `Suspense`, `use()`, `useActionState`, and `useFormStatus`.
 
-**Action Props:** Design components like `TabList` expose an `action` prop and handle transitions + optimistic updates internally, so consumers only pass `value` and `changeAction`.
+**Action Props:** Design components like `TabList` expose a `changeAction` prop and handle transitions + optimistic updates internally.
+
+**SWR Polling:** Live comments, questions, and active user presence poll via SWR with server-rendered initial data passed through `use()` as `fallbackData`.
+
+**View Transitions:** Suspense reveals animate with slide-up/down. Individual comments and questions enter with `ViewTransition`. Session cards use shared element transitions.
 
 ## The App
 
-- **Public guide** (`/`) — Browse published Miami spots, cached with `'use cache'`
-- **Spot detail** (`/[slug]`) — Full write-up with category, neighborhood, and markdown content
-- **Dashboard** (`/dashboard`) — Manage spots with filter tabs, sort, archive, and feature toggles
-- **CRUD** — Add, edit, delete spots with form validation and feedback
+- **Session list** (`/`) — Browse React Miami 2026 sessions, filter by day and labels
+- **Session detail** (`/[slug]`) — Cached session info + live comments, Q&A with upvotes, and active user presence
+- **Auth** — Cookie-based demo identity (enter a display name to participate)
 
-### Categories
+### Async React Patterns Demonstrated
 
-Restaurants, Bars, Beaches, Art, Nightlife, Cafés
-
-### Neighborhoods
-
-South Beach, Wynwood, Little Havana, Brickell, Downtown, Coconut Grove, Design District, Coral Gables
+| Pattern | Where | React APIs |
+|---------|-------|------------|
+| Page load streaming | Session detail page | `Suspense`, `use()`, Cache Components |
+| Navigation transitions | List → detail | `startTransition`, `ViewTransition` |
+| Optimistic filters | Day tabs, label pills | `useOptimistic`, `useTransition`, action props |
+| Mutations | Comments, likes, upvotes | `useActionState`, `useOptimistic`, `useTransition` |
+| Live data | Comment feed, presence | `use()` → SWR handoff, `useSWRConfig().mutate` |
+| Animations | Suspense reveals, list enter | `ViewTransition`, CSS view-transition API |

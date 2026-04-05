@@ -1,66 +1,71 @@
-import { Suspense } from 'react';
+import { Calendar } from 'lucide-react';
+import { Suspense, ViewTransition } from 'react';
+import { BottomNav } from '@/components/design/BottomNav';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getEvents } from '@/data/queries/event';
-import { DayFilter } from './_components/DayFilter';
-import { EventGrid } from './_components/EventGrid';
-import { TrackFilter } from './_components/TrackFilter';
+import { EventGrid } from '@/components/EventGrid';
+import { LabelFilter } from '@/components/LabelFilter';
 
 type Props = {
-  searchParams: Promise<{ day?: string; track?: string }>;
+  searchParams: Promise<{ day?: string; label?: string }>;
 };
+
+const dayTabs = [
+  { href: '/?day=day-1' as '/', icon: <Calendar className="size-4" />, label: 'Day 1' },
+  { href: '/?day=day-2' as '/', icon: <Calendar className="size-4" />, label: 'Day 2' },
+];
 
 export default function HomePage({ searchParams }: Props) {
   return (
-    <div className="min-h-screen">
-      <header
-        className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-md"
-        style={{ viewTransitionName: 'header' }}
-      >
-        <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
-          <div className="mb-3 flex items-baseline justify-between">
-            <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">
-              Event Hub
-            </h1>
-            <span className="text-primary text-xs font-medium">
-              React Miami 2026
-            </span>
-          </div>
-          <Suspense fallback={<FiltersSkeleton />}>
-            <div className="flex flex-col gap-2">
-              <DayFilter />
-              <TrackFilter />
+    <ViewTransition
+      enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
+      exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
+      default="none"
+    >
+      <div className="min-h-screen pb-16">
+        <header
+          className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-md"
+          style={{ viewTransitionName: 'header' }}
+        >
+          <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">
+                Event Hub
+              </h1>
+              <ThemeToggle />
             </div>
+            <Suspense fallback={<FiltersSkeleton />}>
+              <LabelFilter />
+            </Suspense>
+          </div>
+        </header>
+
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+          <Suspense fallback={
+            <ViewTransition exit="slide-down">
+              <EventGridSkeleton />
+            </ViewTransition>
+          }>
+            <ViewTransition enter="slide-up" default="none">
+              <EventGrid searchParams={searchParams} />
+            </ViewTransition>
           </Suspense>
         </div>
-      </header>
 
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-        <Suspense fallback={<EventGridSkeleton />}>
-          <EventGridLoader searchParams={searchParams} />
+        <Suspense>
+          <BottomNav tabs={dayTabs} />
         </Suspense>
       </div>
-    </div>
+    </ViewTransition>
   );
-}
-
-async function EventGridLoader({ searchParams }: { searchParams: Promise<{ day?: string; track?: string }> }) {
-  const { day, track } = await searchParams;
-  return <EventGrid eventsPromise={getEvents(day, track)} />;
 }
 
 function FiltersSkeleton() {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-1.5">
-        {Array.from({ length: 4 }).map((_, i) => {
-          return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
-        })}
-      </div>
-      <div className="flex flex-wrap gap-1.5">
-        {Array.from({ length: 3 }).map((_, i) => {
-          return <Skeleton key={i} className="h-7 w-20 rounded-full" />;
-        })}
-      </div>
+    <div className="flex flex-wrap gap-1.5">
+      {Array.from({ length: 5 }).map((_, i) => {
+        return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
+      })}
     </div>
   );
 }

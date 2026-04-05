@@ -13,7 +13,7 @@ model Event {
     name        String
     description String
     day         String
-    track       String?
+    labels      String     @default("")
     time        String
     speaker     String?
     location    String

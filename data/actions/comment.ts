@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh, revalidateTag } from 'next/cache';
+import { refresh } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
@@ -36,18 +36,22 @@ export async function addComment(eventSlug: string, formData: FormData): Promise
     },
   });
 
-  revalidateTag(`event-${eventSlug}`, 'max');
   refresh();
   return { success: true };
 }
 
 export async function deleteComment(commentId: string, eventSlug: string) {
+  const userName = await getCurrentUser();
+  if (!userName) return;
+
+  const comment = await prisma.comment.findUnique({ where: { id: commentId } });
+  if (!comment || comment.userName !== userName) return;
+
   await slow(400);
   await prisma.comment.delete({
     where: { id: commentId },
   });
 
-  revalidateTag(`event-${eventSlug}`, 'max');
   refresh();
 }
 
@@ -75,6 +79,5 @@ export async function toggleLike(commentId: string, eventSlug: string) {
     });
   }
 
-  revalidateTag(`event-${eventSlug}`, 'max');
   refresh();
 }

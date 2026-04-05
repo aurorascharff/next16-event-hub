@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh, revalidateTag } from 'next/cache';
+import { refresh } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
@@ -36,7 +36,6 @@ export async function addQuestion(eventSlug: string, formData: FormData): Promis
     },
   });
 
-  revalidateTag(`event-${eventSlug}`, 'max');
   refresh();
   return { success: true };
 }
@@ -59,6 +58,5 @@ export async function upvoteQuestion(questionId: string, eventSlug: string) {
     where: { id: questionId },
   });
 
-  revalidateTag(`event-${eventSlug}`, 'max');
   refresh();
 }

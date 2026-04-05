@@ -1,35 +1,32 @@
 'use client';
 
-import { useActionState, useRef } from 'react';
+import { useRef } from 'react';
 import { SubmitButton } from '@/components/design/SubmitButton';
 import { Textarea } from '@/components/ui/textarea';
-import { addQuestion, type QuestionActionResult } from '@/data/actions/question';
 
 type Props = {
-  eventSlug: string;
+  onSubmit: (content: string) => void;
+  isPending: boolean;
 };
 
-export function QuestionForm({ eventSlug }: Props) {
+export function QuestionForm({ onSubmit, isPending }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
 
-  async function submitAction(_prev: QuestionActionResult | null, formData: FormData) {
-    const result = await addQuestion(eventSlug, formData);
-    if (result.success) {
-      formRef.current?.reset();
-    }
-    return result;
+  function handleSubmit(formData: FormData) {
+    const content = (formData.get('content') as string)?.trim();
+    if (!content) return;
+    onSubmit(content);
+    formRef.current?.reset();
   }
 
-  const [state, action] = useActionState(submitAction, null);
-
   return (
-    <form ref={formRef} action={action} className="flex gap-2">
+    <form ref={formRef} action={handleSubmit} className="flex gap-2">
       <Textarea
         name="content"
         placeholder="Ask a question..."
         required
         rows={1}
-        className="min-h-[38px] flex-1 resize-none"
+        className="h-8 min-h-0 flex-1 resize-none py-1.5"
         onKeyDown={e => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
@@ -37,10 +34,7 @@ export function QuestionForm({ eventSlug }: Props) {
           }
         }}
       />
-      <SubmitButton size="sm">Ask</SubmitButton>
-      {state && !state.success && (
-        <p className="text-destructive text-xs">{state.error}</p>
-      )}
+      <SubmitButton size="sm" disabled={isPending}>Ask</SubmitButton>
     </form>
   );
 }

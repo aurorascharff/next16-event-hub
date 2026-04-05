@@ -3,24 +3,22 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import { cn, TRACKS } from '@/lib/utils';
+import { cn, LABELS } from '@/lib/utils';
 
-export function TrackFilter() {
+export function LabelFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeTrack = searchParams.get('track') || 'all';
-  const activeDay = searchParams.get('day') || '';
-  const [optimisticTrack, setOptimisticTrack] = useOptimistic(activeTrack);
+  const activeLabel = searchParams.get('label') || 'all';
+  const activeDay = searchParams.get('day') || 'day-1';
+  const [optimisticLabel, setOptimisticLabel] = useOptimistic(activeLabel);
   const [isPending, startTransition] = useTransition();
-
-  const allTabs = [{ label: 'All tracks', value: 'all' }, ...TRACKS];
 
   function handleChange(value: string) {
     startTransition(async () => {
-      setOptimisticTrack(value);
+      setOptimisticLabel(value);
       const params = new URLSearchParams();
       if (activeDay) params.set('day', activeDay);
-      if (value !== 'all') params.set('track', value);
+      if (value !== 'all') params.set('label', value);
       const qs = params.toString();
       router.push(qs ? `/?${qs}` : '/');
     });
@@ -29,22 +27,35 @@ export function TrackFilter() {
   return (
     <div className="flex items-center gap-2">
       <div className="flex flex-wrap gap-1.5">
-        {allTabs.map(tab => {
-          const isActive = tab.value === optimisticTrack;
+        <button
+          onClick={() => {
+            handleChange('all');
+          }}
+          className={cn(
+            'rounded-full px-2.5 py-1 text-xs transition-colors',
+            optimisticLabel === 'all'
+              ? 'bg-foreground text-background font-medium'
+              : 'text-muted-foreground hover:text-foreground',
+          )}
+        >
+          All
+        </button>
+        {LABELS.map(label => {
+          const isActive = label === optimisticLabel;
           return (
             <button
-              key={tab.value}
+              key={label}
               onClick={() => {
-                handleChange(tab.value);
+                handleChange(label);
               }}
               className={cn(
-                'rounded-full px-2.5 py-1 text-xs transition-colors',
+                'rounded-full px-2.5 py-1 text-xs capitalize transition-colors',
                 isActive
                   ? 'bg-foreground text-background font-medium'
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              {tab.label}
+              {label}
             </button>
           );
         })}

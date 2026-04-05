@@ -5,16 +5,16 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
 
-export const getEvents = cache(async (day?: string, track?: string) => {
+export const getEvents = cache(async (day?: string, label?: string) => {
   'use cache';
   cacheTag('events');
 
   const where: Record<string, unknown> = {};
-  if (day && day !== 'all') {
+  if (day) {
     where.day = day;
   }
-  if (track && track !== 'all') {
-    where.track = track;
+  if (label && label !== 'all') {
+    where.labels = { contains: label };
   }
 
   return prisma.event.findMany({
@@ -22,12 +22,12 @@ export const getEvents = cache(async (day?: string, track?: string) => {
     select: {
       day: true,
       description: true,
+      labels: true,
       location: true,
       name: true,
       slug: true,
       speaker: true,
       time: true,
-      track: true,
     },
     where,
   });

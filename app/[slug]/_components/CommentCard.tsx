@@ -2,8 +2,9 @@
 
 import { Trash2 } from 'lucide-react';
 import { useTransition } from 'react';
+import { Avatar } from '@/components/design/Avatar';
 import { deleteComment } from '@/data/actions/comment';
-import { cn, getAvatarUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { LikeButton } from './LikeButton';
 
 type Comment = {
@@ -38,15 +39,11 @@ export function CommentCard({ comment, currentUser }: Props) {
         'data-[pending]:opacity-50',
       )}
     >
-      <img
-        src={getAvatarUrl(comment.userName)}
-        alt=""
-        className="size-7 shrink-0 rounded-full"
-      />
+      <Avatar name={comment.userName} size="md" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium">{comment.userName}</span>
-          <span className="text-muted-foreground text-[10px]">
+          <span className="text-muted-foreground text-xs">
             {new Date(comment.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
           </span>
         </div>
@@ -61,7 +58,7 @@ export function CommentCard({ comment, currentUser }: Props) {
         {isOwner && (
           <button
             onClick={handleDelete}
-            className="text-muted-foreground hover:text-destructive rounded p-1 opacity-0 transition-all group-hover:opacity-100"
+            className="text-muted-foreground hover:text-destructive rounded p-1 transition-colors sm:opacity-0 sm:group-hover:opacity-100"
             aria-label="Delete comment"
           >
             <Trash2 className="size-3" />

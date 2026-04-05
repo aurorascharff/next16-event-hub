@@ -14,10 +14,9 @@ const fetcher = (url: string) => {return fetch(url).then(res => {return res.json
 
 type Props = {
   eventSlug: string;
-  currentUser: string | null;
 };
 
-export function ActiveUsers({ eventSlug, currentUser }: Props) {
+export function ActiveUsers({ eventSlug }: Props) {
   const { data: users } = useSWR<ActiveUser[]>(
     `/api/events/${eventSlug}/presence`,
     fetcher,
@@ -25,8 +24,6 @@ export function ActiveUsers({ eventSlug, currentUser }: Props) {
   );
 
   useEffect(() => {
-    if (!currentUser) return;
-
     recordPresence(eventSlug);
     const interval = setInterval(() => {
       recordPresence(eventSlug);
@@ -35,7 +32,7 @@ export function ActiveUsers({ eventSlug, currentUser }: Props) {
     return () => {
       clearInterval(interval);
     };
-  }, [eventSlug, currentUser]);
+  }, [eventSlug]);
 
   const count = users?.length ?? 0;
 
@@ -56,7 +53,7 @@ export function ActiveUsers({ eventSlug, currentUser }: Props) {
           );
         })}
       </div>
-      <span className="text-muted-foreground text-[10px]">
+      <span className="text-muted-foreground text-xs">
         <span className="text-primary font-bold">{count}</span> here now
       </span>
     </div>

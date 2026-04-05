@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useRef } from 'react';
+import { toast } from 'sonner';
 import { SubmitButton } from '@/components/design/SubmitButton';
 import { Textarea } from '@/components/ui/textarea';
 import { addComment, type CommentActionResult } from '@/data/actions/comment';
@@ -16,11 +17,13 @@ export function CommentForm({ eventSlug }: Props) {
     const result = await addComment(eventSlug, formData);
     if (result.success) {
       formRef.current?.reset();
+    } else {
+      toast.error(result.error);
     }
     return result;
   }
 
-  const [state, action] = useActionState(submitAction, null);
+  const [, action] = useActionState(submitAction, null);
 
   return (
     <form ref={formRef} action={action} className="flex gap-2">
@@ -29,7 +32,7 @@ export function CommentForm({ eventSlug }: Props) {
         placeholder="Add a comment..."
         required
         rows={1}
-        className="min-h-[38px] flex-1 resize-none"
+        className="h-8 min-h-0 flex-1 resize-none py-1.5"
         onKeyDown={e => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
@@ -38,9 +41,6 @@ export function CommentForm({ eventSlug }: Props) {
         }}
       />
       <SubmitButton size="sm">Post</SubmitButton>
-      {state && !state.success && (
-        <p className="text-destructive text-xs">{state.error}</p>
-      )}
     </form>
   );
 }

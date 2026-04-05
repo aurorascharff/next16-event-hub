@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { addTransitionType, startTransition } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { VariantProps } from 'class-variance-authority';
@@ -24,13 +25,20 @@ export function BackButton<T extends string>({
   return (
     <button
       onClick={() => {
-        if (href) {
-          router.push(href);
-        } else {
-          router.back();
-        }
+        startTransition(() => {
+          addTransitionType('nav-back');
+          if (href) {
+            router.push(href);
+          } else {
+            router.back();
+          }
+        });
       }}
-      className={cn(buttonVariants({ size, variant }), className)}
+      className={cn(
+        buttonVariants({ size, variant }),
+        'text-muted-foreground hover:text-foreground cursor-pointer',
+        className,
+      )}
     >
       {children}
     </button>

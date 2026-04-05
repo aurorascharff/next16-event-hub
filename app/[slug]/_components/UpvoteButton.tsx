@@ -2,6 +2,7 @@
 
 import { ChevronUp } from 'lucide-react';
 import { useOptimistic, useTransition } from 'react';
+import { useSWRConfig } from 'swr';
 import { upvoteQuestion } from '@/data/actions/question';
 import { cn } from '@/lib/utils';
 
@@ -9,33 +10,41 @@ type Props = {
   questionId: string;
   eventSlug: string;
   votes: number;
+  hasVoted: boolean;
 };
 
-export function UpvoteButton({ questionId, eventSlug, votes }: Props) {
-  const [optimisticVotes, setOptimisticVotes] = useOptimistic(votes, (current) => {
-    return current + 1;
-  });
+export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) {
+  const [optimisticVotes, setOptimisticVotes] = useOptimistic(votes);
+  const [optimisticHasVoted, setOptimisticHasVoted] = useOptimistic(hasVoted);
   const [isPending, startTransition] = useTransition();
+  const { mutate } = useSWRConfig();
 
   function handleUpvote() {
+    if (optimisticHasVoted) return;
+
     startTransition(async () => {
-      setOptimisticVotes(1);
+      setOptimisticVotes(votes + 1);
+      setOptimisticHasVoted(true);
       await upvoteQuestion(questionId, eventSlug);
+      await mutate(`/api/events/${eventSlug}/questions`);
     });
   }
 
   return (
     <button
       onClick={handleUpvote}
+      disabled={optimisticHasVoted}
       data-pending={isPending || undefined}
       className={cn(
-        'flex flex-col items-center gap-0.5 rounded-md px-2 py-1 text-[10px] font-bold transition-all',
-        'text-muted-foreground hover:bg-primary/10 hover:text-primary',
-        'data-[pending]:text-primary data-[pending]:animate-pulse',
+        'flex flex-col items-center gap-0.5 rounded-md px-2 py-1 text-xs font-bold transition-all',
+        optimisticHasVoted
+          ? 'text-primary'
+          : 'text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer',
+        'data-[pending]:animate-pulse',
       )}
       aria-label={`Upvote (${optimisticVotes})`}
     >
-      <ChevronUp className="size-4" />
+      <ChevronUp className={cn('size-4', optimisticHasVoted && 'fill-current')} />
       <span>{optimisticVotes}</span>
     </button>
   );

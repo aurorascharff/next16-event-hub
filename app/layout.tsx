@@ -1,10 +1,9 @@
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import { Suspense } from 'react';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { Toaster } from '@/components/ui/sonner';
 import { getCurrentUser } from '@/data/queries/auth';
-import { AuthGate } from './_components/AuthGate';
+import { AuthGate } from '@/components/AuthGate';
 import type { Metadata } from 'next';
 
 import './globals.css';
@@ -21,8 +20,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  description: 'Live session companion for React Miami 2026 — comments, questions, and live presence.',
-  title: 'Event Hub | React Miami 2026',
+  description: 'Live event companion app — comments, questions, and live presence for conference sessions.',
+  title: 'Event Hub',
 };
 
 export default function RootLayout({
@@ -38,7 +37,6 @@ export default function RootLayout({
             <AuthGateLoader />
           </Suspense>
           <main>{children}</main>
-          <ThemeToggle />
           <Toaster />
         </ThemeProvider>
       </body>

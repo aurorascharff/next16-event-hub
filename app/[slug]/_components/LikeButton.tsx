@@ -29,7 +29,7 @@ export function LikeButton({ commentId, eventSlug, likes }: Props) {
       onClick={handleLike}
       data-pending={isPending || undefined}
       className={cn(
-        'flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] transition-colors',
+        'flex items-center gap-1 rounded px-1.5 py-0.5 text-xs transition-colors',
         'text-muted-foreground hover:text-primary',
         'data-[pending]:text-primary data-[pending]:animate-pulse',
         optimisticLikes > 0 && 'text-primary',

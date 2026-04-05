@@ -7,18 +7,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Setup
 
 ```bash
-npm install # Install dependencies
-npm run dev # Start dev server (defaults to http://localhost:3000)
+pnpm install        # Install dependencies
+pnpm run dev        # Start dev server (defaults to http://localhost:3000)
 ```
 
 ## Build & Lint
 
 ```bash
-npm run build # Production build
-npm run lint # ESLint check
+pnpm run build      # Production build
+pnpm run lint       # ESLint check
 ```
 
-Always run `npm run build` and `npm run lint` before committing. Fix any errors before finishing.
+Always run `pnpm run build` and `pnpm run lint` before committing. Fix any errors before finishing.
 
 ## Tech Stack
 
@@ -27,7 +27,8 @@ Always run `npm run build` and `npm run lint` before committing. Fix any errors 
 - Tailwind CSS 4.x
 - shadcn/ui components (`components/ui/`)
 - Base UI (`@base-ui/react`) for custom interactive components
-- Prisma with PostgreSQL
+- Prisma with SQLite (`@prisma/adapter-libsql`)
+- SWR for client-side polling
 - Zod for validation
 - Sonner for toasts
 - next-themes for dark/light mode
@@ -58,30 +59,29 @@ These APIs are new in Next.js 16 and may not be in model training data:
 ## Folder Structure
 
 ```text
-app/                    # File-based routing (Next.js App Router)
-  [slug]/               # Public spot detail page
-  dashboard/            # Dashboard routes
-    _components/        # Dashboard-local components
-    [slug]/             # Spot detail in dashboard
-      _components/      # Spot detail components
-      edit/             # Edit spot
-    new/                # Add new spot
-components/             # Shared components
-  ui/                   # shadcn/ui primitives
-  design/               # Design system components
-  errors/               # Error and status components
+app/                        # File-based routing (Next.js App Router)
+  _components/              # Home page components (AuthGate, filters, grid)
+  [slug]/                   # Session detail page
+    _components/            # Session components (comments, questions, presence)
+  api/events/[slug]/        # SWR polling API routes
+    comments/               # GET comments for polling
+    questions/              # GET questions for polling
+    presence/               # GET active users for polling
+components/                 # Shared components
+  ui/                       # shadcn/ui primitives
+  design/                   # Design system components (TabList, SubmitButton)
 data/
-  queries/              # Server-side queries with cache()
-  actions/              # Server Functions (mutations)
-lib/                    # Utility functions
-prisma/                 # Prisma schema and seeds
-public/                 # Static assets
+  queries/                  # Server-side queries with cache()
+  actions/                  # Server Actions (mutations)
+lib/                        # Utility functions
+prisma/                     # Prisma schema and seeds
 ```
 
 - **components/ui** — shadcn/ui primitives
 - **components/design** — Design system components with Action props
 - **data/queries** — Server-side data fetching with `cache()` for deduplication
-- **data/actions** — Server Functions with `"use server"` for mutations
+- **data/actions** — Server Actions with `"use server"` for mutations
+- **app/api** — API routes for SWR client-side polling
 
 Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
 
@@ -90,7 +90,8 @@ Route-specific code goes in `_components` folders. Shared code lives at the near
 Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fetches) as deep as possible in the component tree to maximize static content. Async components accessing dynamic data should be wrapped in `<Suspense>` with skeleton fallbacks.
 
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
-- **Mutating data** — Create Server Functions in `data/actions/` with `"use server"`. Invalidate with `revalidateTag(tag, 'max')` + `refresh()`. Use `useOptimistic` for instant feedback.
+- **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Invalidate with `revalidateTag(tag, 'max')` + `refresh()`. Use `useOptimistic` for instant feedback.
+- **Live data** — Pass server data as promises to client components, unwrap with `use()`, then hand off to SWR for polling. Use `useSWRConfig().mutate` after actions for immediate revalidation.
 - **Caching** — Add `"use cache"` directive to pages, components, or functions you want to cache.
 
 ## Server Components (Default)
@@ -116,15 +117,17 @@ Add `'use client'` only when needed for:
 
 ```typescript
 // Queries - use cache() for deduplication
-export const getSpot = cache(async (slug: string) => {
-  return prisma.spot.findUnique({ where: { slug } });
+export const getEvents = cache(async (day?: string, label?: string) => {
+  'use cache';
+  cacheTag('events');
+  return prisma.event.findMany({ ... });
 });
 
 // Actions - use "use server" directive
-export async function createSpot(data: SpotData) {
+export async function addComment(eventSlug: string, formData: FormData) {
   "use server";
-  // ... create spot
-  revalidateTag("spots", "max");
+  // ... create comment
+  revalidateTag(`event-${eventSlug}`, "max");
   refresh();
 }
 ```
@@ -134,23 +137,22 @@ Use `startTransition` or `useTransition` for pending state and automatic error h
 ## Prisma
 
 ```bash
-npm run prisma.push    # Push schema changes to DB
-npm run prisma.seed    # Seed the database
-npm run prisma.studio  # Open Prisma Studio
-npm run prisma.migrate # Run migrations
-npm run prisma.generate # Generate Prisma client
+pnpm run prisma.push    # Push schema changes to DB
+pnpm run prisma.seed    # Seed the database
+pnpm run prisma.studio  # Open Prisma Studio
+pnpm run prisma.migrate # Run migrations
+pnpm run prisma.generate # Generate Prisma client
 ```
 
 ## Error Handling
 
 - Use `error.tsx` for error boundaries
 - Use `not-found.tsx` with `notFound()` for 404 pages
-- Use `unauthorized.tsx` with `unauthorized()` for auth errors
 - Use `toast.success()`, `toast.error()` from Sonner for user feedback
 
 ## Important Files
 
-- `db.ts` - Prisma client instance
-- `prisma/schema.prisma` - Database schema
-- `lib/utils.ts` - Utility functions including `cn()`, categories, neighborhoods
+- `db.ts` - Prisma client instance (SQLite via libsql adapter)
+- `prisma/schema.prisma` - Database schema (Event, Comment, Question, Presence)
+- `lib/utils.ts` - Utility functions including `cn()`, labels, avatar URLs
 - `components.json` - shadcn/ui configuration

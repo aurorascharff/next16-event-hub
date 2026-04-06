@@ -59,7 +59,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
                   </ViewTransition>
                 }
               >
-                <ViewTransition enter="slide-up" update={{ 'tab-switch': 'auto', default: 'none' }} default="none">
+                <ViewTransition enter="slide-up" default="none">
                   <EventGrid searchParams={searchParams} />
                 </ViewTransition>
               </Suspense>

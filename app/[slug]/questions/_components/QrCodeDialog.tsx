@@ -31,7 +31,6 @@ export function QrCodeDialog({ eventName }: Props) {
       type: 'svg',
       margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
-      width: 300,
     }).then(setSvg);
   }, [open, url]);
 
@@ -48,7 +47,7 @@ export function QrCodeDialog({ eventName }: Props) {
           <DialogDescription>Scan to join the Q&A</DialogDescription>
         </DialogHeader>
         {svg ? (
-          <div className="mx-auto w-64 overflow-hidden rounded-xl" dangerouslySetInnerHTML={{ __html: svg }} />
+          <div className="mx-auto w-64 overflow-hidden rounded-xl [&_svg]:size-full" dangerouslySetInnerHTML={{ __html: svg }} />
         ) : (
           <div className="mx-auto flex size-64 items-center justify-center">
             <QrCode className="text-muted-foreground size-8 animate-pulse" />

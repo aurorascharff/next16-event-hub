@@ -32,7 +32,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 6: Async React Render Cycle — Clean
 
-- The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. That's the goal. (Credit: Async React talk at React Conf)
+- The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. Under 150ms feels synchronous; above 150ms the in-between states appear. That's the goal. (Credit: Async React talk at React Conf)
 - (Exit slides, back to the app) Remove the `useEffect` approach, bring back Server Components and the transition system. Now let's fix the app.
 
 ## Setup and Starting Point
@@ -112,13 +112,11 @@ Making in-between states feel intentional with ViewTransition. Every animation h
 - Add directional ViewTransition to navigation. The home page slides left when entering a session, and the detail page slides in from the right. Going back reverses it.
 - The session detail page uses BottomNav with a "Back" tab that has `transitionTypes: ['nav-back']` to trigger the reverse slide. The Link on session cards uses `transitionTypes={['nav-forward']}`. BottomNav adds a `'tab-switch'` transition type on every tab click and forwards the tab's `transitionTypes` via `addTransitionType` inside `startTransition`.
 
-### Tab Switch Crossfade
+### Card Morphs (Tab Switch & Filter)
 
-- BottomNav wraps children in `<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">`. Swapping between Day 1/Day 2/Favorites crossfades the content smoothly, but other transitions (like navigating into a session) are unaffected because they don't have the `'tab-switch'` type.
-
-### Filter Morphs
-
-- ChipGroup adds `addTransitionType('filter')` inside its `startTransition`, tagging every category filter change. Each event card in EventGrid has `<ViewTransition update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default="none">` — so cards that stay in the list morph to their new grid positions on filter, while other transitions don't animate. The same card-level `update` responds to `'tab-switch'` for day/favorites tab switches.
+- Each event card in EventGrid has `<ViewTransition name={`event-${event.slug}`} share="auto" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default="none">`. Cards that persist across tab or filter changes morph to their new grid positions — other transitions don't animate.
+- BottomNav adds `addTransitionType('tab-switch')` on every tab click. ChipGroup adds `addTransitionType('filter')` on every category filter change. Both types are handled by the per-card `update` map.
+- BottomNav also wraps children in `<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">`, but because the per-card ViewTransitions are innermost, they claim the DOM mutations — the wrapper doesn't produce a visible crossfade.
 
 ### List Animations
 

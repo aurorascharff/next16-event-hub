@@ -22,4 +22,4 @@ Then, we can decide what user interaction is most suitable for the event that ha
 
 ---
 
-The real magic with this model is that when we have asynchronous operations that take very little time to complete, the whole interaction feels as if it was synchronous. I basically just copied this visual from the Async React talk last year at React Conf, so if you're interested in learning more here, check that out. Now let's go fix the app.
+The real magic with this model is that when we have asynchronous operations that take very little time to complete, the whole interaction feels as if it was synchronous. Under 150 milliseconds, it feels synchronous — above that threshold, the in-between states appear. I basically just copied this visual from the Async React talk last year at React Conf, so if you're interested in learning more here, check that out. Now let's go fix the app.

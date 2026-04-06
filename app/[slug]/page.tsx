@@ -7,7 +7,7 @@ import { getEventBySlug, getEvents } from '@/data/queries/event';
 import type { Metadata } from 'next';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
@@ -38,8 +38,10 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
     >
       <div>
         <div className="min-h-56 sm:min-h-72">
-          <ViewTransition>
-            <EventDetails slug={slug} />
+          <ViewTransition name={`event-${slug}`} share="auto">
+            <Suspense fallback={<EventDetailsSkeleton />}>
+              <EventDetails slug={slug} />
+            </Suspense>
           </ViewTransition>
         </div>
         <div className="mt-4 space-y-3">

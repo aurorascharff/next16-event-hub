@@ -138,4 +138,5 @@ Sometimes in-between states are not desirable — and you can eliminate them ent
 - Watch how everything stays in sync — optimistic updates, background polling, and ViewTransition list animations all coordinating through the same transition system we built.
 - (Read top-voted questions from the app, answer them live if time allows)
 - The app's home page has a link to the GitHub repo — check it out for the full source code.
+- You can also install Event Hub as a PWA (progressive web app): use the browser install prompt, **Add to Home Screen** on mobile, or **Install app** in the menu so the conference companion stays on their home screen like a native app.
 - If you want to try adding View Transitions to your own app with AI assistance, install the [View Transitions agent skill](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) — it teaches your coding agent the patterns, CSS recipes, and Next.js integration from this talk.

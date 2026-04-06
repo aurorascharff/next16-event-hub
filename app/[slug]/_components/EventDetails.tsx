@@ -1,5 +1,4 @@
 import { Clock, MapPin } from 'lucide-react';
-import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,40 +16,38 @@ export async function EventDetails({ slug }: { slug: string }) {
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   const hasFavorited = favorites.has(slug);
   return (
-    <ViewTransition name={`event-${slug}`} share="auto" default="none">
-      <article>
-        <SessionMetaStrip dayLabel={getDayLabel(event.day)} location={event.location} time={event.time} />
-        <SessionLabelChips labels={parseLabels(event.labels)} />
-        <SessionPrevNextNav
-          next={next ? { name: next.name, slug: next.slug } : null}
-          nextTransitionTypes={['nav-forward']}
-          prev={prev ? { name: prev.name, slug: prev.slug } : null}
-          prevTransitionTypes={['nav-back']}
-        />
-        <div className="space-y-2 sm:space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
-              {event.name}
-            </h1>
-            <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
-          </div>
-          {event.speaker && (
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Avatar name={event.speaker} variant="speaker" size="lg" />
-              <span className="text-sm font-medium">{event.speaker}</span>
-            </div>
-          )}
-          <div className="h-20 overflow-y-auto sm:h-24">
-            <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
-          </div>
+    <article>
+      <SessionMetaStrip dayLabel={getDayLabel(event.day)} location={event.location} time={event.time} />
+      <SessionLabelChips labels={parseLabels(event.labels)} />
+      <SessionPrevNextNav
+        next={next ? { name: next.name, slug: next.slug } : null}
+        nextTransitionTypes={['nav-forward']}
+        prev={prev ? { name: prev.name, slug: prev.slug } : null}
+        prevTransitionTypes={['nav-back']}
+      />
+      <div className="space-y-2 sm:space-y-3">
+        <div className="flex items-start justify-between gap-2">
+          <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
+            {event.name}
+          </h1>
+          <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
         </div>
-      </article>
-    </ViewTransition>
+        {event.speaker && (
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Avatar name={event.speaker} variant="speaker" size="lg" />
+            <span className="text-sm font-medium">{event.speaker}</span>
+          </div>
+        )}
+        <div className="h-20 overflow-y-auto sm:h-24">
+          <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
+        </div>
+      </div>
+    </article>
   );
 }
 
-export function EventDetailsSkeleton({ slug }: { slug?: string }) {
-  const skeleton = (
+export function EventDetailsSkeleton() {
+  return (
     <article>
       <MetaStripSkeleton />
       <LabelChipsSkeleton />
@@ -64,7 +61,7 @@ export function EventDetailsSkeleton({ slug }: { slug?: string }) {
           <Skeleton className="size-8 shrink-0 rounded-full" />
           <Skeleton className="h-4 w-36" />
         </div>
-        <div className="max-h-20 overflow-hidden sm:max-h-24">
+        <div className="h-20 overflow-hidden sm:h-24">
           <div className="space-y-1.5 sm:space-y-2.5">
             <Skeleton className="h-3.5 w-full" />
             <Skeleton className="h-3.5 w-full" />
@@ -75,14 +72,6 @@ export function EventDetailsSkeleton({ slug }: { slug?: string }) {
       </div>
     </article>
   );
-  if (slug) {
-    return (
-      <ViewTransition name={`event-${slug}`} share="auto" default="none">
-        {skeleton}
-      </ViewTransition>
-    );
-  }
-  return skeleton;
 }
 
 type SessionMetaStripProps = {

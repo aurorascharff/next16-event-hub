@@ -16,26 +16,13 @@
       "</Suspense>"
     ]
   },
-  "directionalNavigationForward": {
-    "prefix": "directionalNavigationForward",
-    "description": "ViewTransition directional slide for forward navigation (home page)",
+  "directionalNavigation": {
+    "prefix": "directionalNavigation",
+    "description": "ViewTransition directional slide for next/previous talk navigation",
     "body": [
       "<ViewTransition",
-      "  enter={{ default: 'none', 'nav-back': 'slide-from-left' }}",
-      "  exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}",
-      "  default=\"none\"",
-      ">",
-      "  ${0}",
-      "</ViewTransition>"
-    ]
-  },
-  "directionalNavigationBack": {
-    "prefix": "directionalNavigationBack",
-    "description": "ViewTransition directional slide for back navigation (session page)",
-    "body": [
-      "<ViewTransition",
-      "  enter={{ default: 'none', 'nav-forward': 'slide-from-right' }}",
-      "  exit={{ default: 'none', 'nav-back': 'slide-to-right' }}",
+      "  enter={{ 'nav-forward': 'slide-from-right', 'nav-back': 'slide-from-left', default: 'none' }}",
+      "  exit={{ 'nav-forward': 'slide-to-left', 'nav-back': 'slide-to-right', default: 'none' }}",
       "  default=\"none\"",
       ">",
       "  ${0}",

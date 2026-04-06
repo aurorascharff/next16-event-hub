@@ -96,12 +96,15 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 - Add ViewTransition to the Suspense reveals. Wrap the skeleton fallback with `exit="slide-down"` and the loaded content with `enter="slide-up"`. The skeleton slides away and content slides in — making the loading feel intentional rather than jarring.
 - Use the same `enter="slide-up"` pattern on individual list items — each comment and question wrapped in ViewTransition slides up on entry, whether from a Suspense reveal, an optimistic add, or a background poll.
 
-### Directional Navigation
+### Shared Element Morph
 
-- Add directional ViewTransition to navigation. The home page slides left when entering a session, and the detail page slides in from the right. Going back reverses it.
-- The session detail page uses BottomNav with a "Back" tab that has `transitionTypes: ['nav-back']` to trigger the reverse slide. The Link on session cards uses `transitionTypes={['nav-forward']}`. BottomNav adds a `'tab-switch'` transition type on every tab click and forwards the tab's `transitionTypes` via `addTransitionType` inside `startTransition`.
-- Add a shared element morph on top of the directional slide. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="auto"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="auto"`. When clicking a card, it morphs into the detail view while the page slides — and reverses when going back.
+- Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="auto"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="auto"`. The card morphs into the detail view on click — and reverses when going back.
 - The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards morph to their new grid positions when switching label filters. ChipGroup adds `addTransitionType('filter')` on category changes.
+
+### Directional Navigation (Next/Previous Talk)
+
+- Add next/previous talk navigation to the session detail page. Fetch adjacent events (ordered by day + time) and render prev/next arrow links in the EventDetails header. Previous uses `transitionTypes={['nav-back']}`, next uses `transitionTypes={['nav-forward']}`.
+- Wrap the session page content in a ViewTransition that handles both directions — `enter` maps `nav-forward` to `slide-from-right` and `nav-back` to `slide-from-left`, `exit` maps `nav-forward` to `slide-to-left` and `nav-back` to `slide-to-right`. The same ViewTransition goes on both the comments page and the questions page. Clicking next slides the content left, clicking previous slides it right.
 
 ### Tab Switch Crossfade
 

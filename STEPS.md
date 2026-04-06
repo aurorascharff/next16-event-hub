@@ -27,7 +27,7 @@
 - Design components like BottomNav, ChipGroup, and BackButton abstract away the complexities of async interactions. The consumer passes data and callbacks — the component handles transitions, optimistic state, and pending indicators internally. As we see more of these primitives adopted by design systems and component libraries, we can integrate these patterns without building them from scratch.
 - Now let's try the raw Async React primitives. Let's look at how ChipGroup works inside — useOptimistic for instant feedback, useTransition to keep the old content visible. This is what design components abstract away from you.
 - Let's add animations to our navigations. Clicking a session card should feel like navigating forward — the home page slides left and the detail page slides in from the right. Going back reverses it. Add ViewTransition with directional transition types. The BackButton uses addTransitionType('nav-back') inside startTransition to trigger the reverse slide.
-- Let's animate the list reordering when we sort questions. Wrap each QuestionCard in ViewTransition with a key. We add addTransitionType('sort-change') in the sort handler and use a type-specific update prop — `update={{ 'sort-change': 'auto', default: 'none' }}`. This way sort reorders animate smoothly, but content changes from upvotes don't flash. useDeferredValue on the sorted array makes React defer the reorder into a concurrent render so ViewTransition can capture before/after positions.
+- Let's animate the list reordering when we sort questions. Wrap each QuestionCard in ViewTransition with a unique key. React automatically captures before/after positions and animates the reorder — no manual transition types needed. useDeferredValue on the sorted array makes React defer the reorder into a concurrent render so ViewTransition can capture the positions.
 
 ### Mutation + Navigation
 
@@ -43,7 +43,7 @@
 
 - **FavoriteButton**: Tapping the star on a session card. We use useOptimistic with a boolean reducer toggle — the star fills instantly. e.preventDefault() + e.stopPropagation() prevent the card link navigation. When we filter by "Favorites" in the label pills, the server filters by the user's favorite records.
 - **LikeButton**: Tapping the heart on a comment. We use useOptimistic with a reducer that manages both hasLiked and likes count in a single state object. The reducer calculates from the current optimistic state, not the original props — so toggling works correctly in both directions. Like increments, unlike decrements.
-- **UpvoteButton**: Same pattern for question upvotes. useOptimistic for instant vote count. The upvote handler calls `addTransitionType('vote-change')` inside `startTransition`, and the QuestionCard's ViewTransition is configured with `update={{ 'vote-change': 'auto', default: 'none' }}` — so the list smoothly reorders when a vote changes the ranking, but doesn't flash on background refreshes.
+- **UpvoteButton**: Same pattern for question upvotes. useOptimistic for instant vote count. Since each QuestionCard is wrapped in ViewTransition with a unique key, the list smoothly reorders when a vote changes the ranking — for both the upvoter and other users watching via live polling.
 - Notice how useOptimistic automatically rolls back the UI if the mutation fails. We just add a toast on error.
 - **DeleteComment**: useTransition with pending opacity on the card — it fades while deleting. ViewTransition exit animation plays when it's removed from the list.
 

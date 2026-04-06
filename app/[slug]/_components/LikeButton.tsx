@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
-  const [optimistic, toggleOptimistic] = useOptimistic({ hasLiked, likes }, current => {
+  const [optimisticLike, setOptimisticLike] = useOptimistic({ hasLiked, likes }, current => {
     return {
       hasLiked: !current.hasLiked,
       likes: current.likes + (current.hasLiked ? -1 : 1),
@@ -23,7 +23,7 @@ export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
 
   function handleLike() {
     startTransition(async () => {
-      toggleOptimistic(null);
+      setOptimisticLike(null);
       await toggleLike(commentId, eventSlug);
     });
   }
@@ -33,12 +33,12 @@ export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
       onClick={handleLike}
       className={cn(
         'flex items-center gap-1 rounded px-1.5 py-0.5 text-xs transition-colors',
-        optimistic.hasLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary',
+        optimisticLike.hasLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary',
       )}
-      aria-label={`Like (${optimistic.likes})`}
+      aria-label={`Like (${optimisticLike.likes})`}
     >
-      <Heart className={cn('size-3.5', optimistic.hasLiked && 'fill-current')} />
-      {optimistic.likes > 0 && <span>{optimistic.likes}</span>}
+      <Heart className={cn('size-3.5', optimisticLike.hasLiked && 'fill-current')} />
+      {optimisticLike.likes > 0 && <span>{optimisticLike.likes}</span>}
     </button>
   );
 }

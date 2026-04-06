@@ -11,14 +11,14 @@ type Props = {
 };
 
 export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
-  const [optimisticHasFavorited, toggleOptimistic] = useOptimistic(hasFavorited, current => {
+  const [optimisticHasFavorited, setOptimisticHasFavorited] = useOptimistic(hasFavorited, current => {
     return !current;
   });
 
   return (
     <form
       action={async () => {
-        toggleOptimistic(null);
+        setOptimisticHasFavorited(null);
         await toggleFavorite(eventSlug);
       }}
       onClick={e => {

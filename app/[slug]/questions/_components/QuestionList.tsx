@@ -24,7 +24,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
 
   usePolling(5000);
 
-  const [optimisticQuestions, addOptimisticQuestion] = useOptimistic(
+  const [optimisticQuestions, setOptimisticQuestions] = useOptimistic(
     initialQuestions,
     (current, newQuestion: Question) => {
       if (
@@ -50,7 +50,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       votes: 0,
     };
 
-    addOptimisticQuestion(tempQuestion);
+    setOptimisticQuestions(tempQuestion);
     const formData = new FormData();
     formData.set('content', content);
     formData.set('id', id);

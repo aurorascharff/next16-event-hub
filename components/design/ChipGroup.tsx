@@ -21,7 +21,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
   const [, startTransition] = useTransition();
 
-  function handleClick(itemValue: V) {
+  function handleSelect(itemValue: V) {
     onChange?.(itemValue);
     startTransition(() => {
       addTransitionType('filter');
@@ -38,7 +38,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
             <button
               key={item.value}
               onClick={() => {
-                handleClick(item.value);
+                handleSelect(item.value);
               }}
               className={cn(
                 'rounded-full px-2.5 py-0.5 text-xs font-medium transition-all',
@@ -62,7 +62,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
           <button
             key={item.value}
             onClick={() => {
-              handleClick(item.value);
+              handleSelect(item.value);
             }}
             className={cn(
               'shrink-0 rounded-full border px-3 py-1 text-sm transition-colors',

@@ -55,7 +55,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   }
 
   return (
-    <div className={cn('flex flex-wrap gap-1.5', className)}>
+    <div className={cn('scrollbar-none flex gap-1.5 overflow-x-auto', className)}>
       {items.map(item => {
         return (
           <button
@@ -64,10 +64,10 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
               handleClick(item.value);
             }}
             className={cn(
-              'rounded-full px-2.5 py-1 text-xs transition-colors',
+              'shrink-0 rounded-full border px-3 py-1 text-sm transition-colors',
               optimisticValue === item.value
-                ? 'bg-foreground text-background font-medium'
-                : 'text-muted-foreground hover:text-foreground',
+                ? 'bg-foreground text-background border-foreground font-medium'
+                : 'border-border text-muted-foreground hover:text-foreground',
             )}
           >
             {item.label}

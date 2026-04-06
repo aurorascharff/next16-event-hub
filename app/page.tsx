@@ -22,7 +22,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       default="none"
     >
       <div className="min-h-screen pb-16">
-        <header className="bg-background sticky top-0 z-30 border-b">
+        <header className="bg-background sticky top-0 z-30 border-b pt-[env(safe-area-inset-top)]">
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-center justify-between">
               <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
@@ -74,9 +74,9 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
 
 function FiltersSkeleton() {
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {Array.from({ length: 5 }).map((_, i) => {
-        return <Skeleton key={i} className="h-7 w-16 rounded-full" />;
+    <div className="flex gap-1.5 overflow-hidden">
+      {Array.from({ length: 8 }).map((_, i) => {
+        return <Skeleton key={i} className="h-7 w-18 shrink-0 rounded-full" />;
       })}
     </div>
   );

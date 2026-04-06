@@ -34,7 +34,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
     );
 
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const nav = (
     <nav
@@ -44,6 +44,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
         className,
       )}
       style={{ viewTransitionName: 'bottom-nav' }}
+      aria-busy={isPending}
     >
       <div className="mx-auto flex max-w-4xl">
         {tabs.map((tab, i) => {
@@ -63,8 +64,9 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
                 });
               }}
               className={cn(
-                'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors',
-                isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
+                'flex flex-1 flex-col items-center gap-0.5 border-t-2 border-transparent py-2.5 text-xs font-medium transition-[color,opacity,border-color]',
+                isActive ? 'border-primary text-primary' : 'text-muted-foreground hover:text-foreground',
+                isPending && !isActive && 'opacity-40',
               )}
             >
               {tab.icon}

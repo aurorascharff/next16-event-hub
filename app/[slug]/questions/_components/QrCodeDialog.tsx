@@ -28,17 +28,15 @@ export function QrCodeDialog({ eventName }: Props) {
   useEffect(() => {
     if (!open || !url) return;
     QRCode.toString(url, {
-      type: 'svg',
-      margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
+      margin: 2,
+      type: 'svg',
     }).then(setSvg);
   }, [open, url]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={<Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" />}
-      >
+      <DialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" />}>
         <QrCode className="size-4" />
       </DialogTrigger>
       <DialogContent className="items-center text-center">
@@ -47,13 +45,16 @@ export function QrCodeDialog({ eventName }: Props) {
           <DialogDescription>Scan to join the Q&A</DialogDescription>
         </DialogHeader>
         {svg ? (
-          <div className="mx-auto w-64 overflow-hidden rounded-xl [&_svg]:size-full" dangerouslySetInnerHTML={{ __html: svg }} />
+          <div
+            className="mx-auto w-64 overflow-hidden rounded-xl [&_svg]:size-full"
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
         ) : (
           <div className="mx-auto flex size-64 items-center justify-center">
             <QrCode className="text-muted-foreground size-8 animate-pulse" />
           </div>
         )}
-        <p className="text-muted-foreground break-all text-xs">{url}</p>
+        <p className="text-muted-foreground text-xs break-all">{url}</p>
       </DialogContent>
     </Dialog>
   );

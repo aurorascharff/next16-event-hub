@@ -15,16 +15,14 @@ export function CommentCard({ comment, currentUser }: Props) {
   const isOwner = currentUser === comment.userName;
 
   return (
-    <div
-      className={cn('group flex items-start gap-3 rounded-lg border p-3 transition-opacity')}
-    >
+    <div className={cn('group flex items-start gap-3 rounded-lg border p-3 transition-opacity')}>
       <Avatar name={comment.userName} size="md" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium">{comment.userName}</span>
           <span className="text-muted-foreground text-xs">{timeAgo(comment.createdAt)}</span>
         </div>
-        <p className="mt-0.5 break-words text-sm leading-relaxed">{comment.content}</p>
+        <p className="mt-0.5 text-sm leading-relaxed break-words">{comment.content}</p>
       </div>
       <div className="flex items-center gap-1">
         <LikeButton

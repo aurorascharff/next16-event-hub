@@ -1,10 +1,10 @@
 import 'server-only';
 
+import { cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
 import { parseTime, slow } from '@/lib/utils';
-import { cacheTag } from 'next/cache';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
   'use cache';
@@ -44,15 +44,15 @@ export const getUserFavorites = cache(async (userName: string) => {
     select: { eventSlug: true },
     where: { userName },
   });
-  return new Set(favorites.map(f => f.eventSlug));
+  return new Set(favorites.map(f => {return f.eventSlug}));
 });
 
 export const getAdjacentEvents = cache(async (slug: string) => {
   const allEvents = await getEvents();
-  const index = allEvents.findIndex(e => e.slug === slug);
+  const index = allEvents.findIndex(e => {return e.slug === slug});
   return {
-    prev: index > 0 ? allEvents[index - 1] : null,
     next: index < allEvents.length - 1 ? allEvents[index + 1] : null,
+    prev: index > 0 ? allEvents[index - 1] : null,
   };
 });
 

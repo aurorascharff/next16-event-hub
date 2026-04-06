@@ -8,13 +8,16 @@ const speakerNotes = parseSpeakerNotes(
   { stripLeadingTitle: true },
 );
 
-export default function SlidesLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SlidesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SlideDeck slides={slides} speakerNotes={speakerNotes} exitUrl="/" basePath="/slides" syncEndpoint="/api/nxs-sync" transition={false}>
+    <SlideDeck
+      slides={slides}
+      speakerNotes={speakerNotes}
+      exitUrl="/"
+      basePath="/slides"
+      syncEndpoint="/api/nxs-sync"
+      transition={false}
+    >
       {children}
     </SlideDeck>
   );

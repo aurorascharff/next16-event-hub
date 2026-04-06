@@ -1,10 +1,5 @@
 import { ChevronRight } from 'lucide-react';
-import {
-  Slide,
-  SlideTitle,
-  SlideBadge,
-  SlideSpeaker,
-} from 'nextjs-slides';
+import { Slide, SlideTitle, SlideBadge, SlideSpeaker } from 'nextjs-slides';
 
 function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
   return (
@@ -18,20 +13,12 @@ function CycleBox({ children, name }: { children: React.ReactNode; name: string 
 }
 
 function CycleArrow({ name }: { name: string }) {
-  return (
-    <ChevronRight
-      className="text-muted-foreground/40 size-5 shrink-0"
-      style={{ viewTransitionName: name }}
-    />
-  );
+  return <ChevronRight className="text-muted-foreground/40 size-5 shrink-0" style={{ viewTransitionName: name }} />;
 }
 
 function CycleLabel({ children, name }: { children: React.ReactNode; name: string }) {
   return (
-    <span
-      className="text-muted-foreground text-lg italic"
-      style={{ viewTransitionName: name }}
-    >
+    <span className="text-muted-foreground text-lg italic" style={{ viewTransitionName: name }}>
       {children}
     </span>
   );
@@ -50,10 +37,7 @@ function Primitive({ children, name }: { children: React.ReactNode; name: string
 
 function NetworkNote({ children, name }: { children: React.ReactNode; name: string }) {
   return (
-    <p
-      className="text-muted-foreground text-base italic"
-      style={{ viewTransitionName: name }}
-    >
+    <p className="text-muted-foreground text-base italic" style={{ viewTransitionName: name }}>
       {children}
     </p>
   );
@@ -112,7 +96,7 @@ export const slides = [
     </div>
     <div className="mt-12 flex flex-col items-center gap-6">
       <p
-        className="text-primary text-xl font-bold tracking-wide font-mono"
+        className="text-primary font-mono text-xl font-bold tracking-wide"
         style={{ viewTransitionName: 'transition-label' }}
       >
         transition
@@ -145,7 +129,7 @@ export const slides = [
     </div>
     <div className="mt-12 flex flex-col items-center gap-6">
       <p
-        className="text-primary text-xl font-bold tracking-wide font-mono"
+        className="text-primary font-mono text-xl font-bold tracking-wide"
         style={{ viewTransitionName: 'transition-label' }}
       >
         transition
@@ -183,7 +167,7 @@ export const slides = [
     </div>
     <div className="mt-12 flex flex-col items-center gap-6">
       <p
-        className="text-primary text-xl font-bold tracking-wide font-mono"
+        className="text-primary font-mono text-xl font-bold tracking-wide"
         style={{ viewTransitionName: 'transition-label' }}
       >
         transition

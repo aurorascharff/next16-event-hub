@@ -22,7 +22,7 @@ export function HomeTabs({ children }: Props) {
   const activeIndex = label === 'favorites' ? 2 : day === 'day-2' ? 1 : 0;
 
   return (
-    <BottomNav tabs={homeTabs} activeIndex={activeIndex} action={href => router.push(href)}>
+    <BottomNav tabs={homeTabs} activeIndex={activeIndex} action={href => {return router.push(href)}}>
       {children}
     </BottomNav>
   );

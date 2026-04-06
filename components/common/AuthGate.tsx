@@ -23,7 +23,9 @@ export function AuthGate({ userPromise }: Props) {
         </DialogHeader>
         <form className="flex gap-2">
           <Input name="name" placeholder="Your name" required maxLength={30} autoFocus className="flex-1" />
-          <SubmitButton action={setUserName} size="sm">Join</SubmitButton>
+          <SubmitButton action={setUserName} size="sm">
+            Join
+          </SubmitButton>
         </form>
       </DialogContent>
     </Dialog>

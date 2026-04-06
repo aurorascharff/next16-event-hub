@@ -13,8 +13,8 @@
       "  <ViewTransition enter=\"slide-up\" default=\"none\">",
       "    ${0}",
       "  </ViewTransition>",
-      "</Suspense>"
-    ]
+      "</Suspense>",
+    ],
   },
   "sameRouteDirectionalShare": {
     "prefix": "sameRouteDirectionalShare",
@@ -31,8 +31,8 @@
       "  default=\"none\"",
       ">",
       "  ${0}",
-      "</ViewTransition>"
-    ]
+      "</ViewTransition>",
+    ],
   },
   "directionalNavigation": {
     "prefix": "directionalNavigation",
@@ -49,8 +49,8 @@
       "  default=\"none\"",
       ">",
       "  ${0}",
-      "</ViewTransition>"
-    ]
+      "</ViewTransition>",
+    ],
   },
   "tabSwitchCrossfade": {
     "prefix": "tabSwitchCrossfade",
@@ -58,8 +58,8 @@
     "body": [
       "<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
       "  ${0}",
-      "</ViewTransition>"
-    ]
+      "</ViewTransition>",
+    ],
   },
   "eventCardMorph": {
     "prefix": "eventCardMorph",
@@ -67,17 +67,13 @@
     "body": [
       "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', default: 'none' }} default=\"none\">",
       "  ${0}",
-      "</ViewTransition>"
-    ]
+      "</ViewTransition>",
+    ],
   },
   "sharedElementTarget": {
     "prefix": "sharedElementTarget",
     "description": "ViewTransition shared element target on detail page",
-    "body": [
-      "<ViewTransition name={`${1:event}-\\${${2:slug}}`} share=\"auto\">",
-      "  ${0}",
-      "</ViewTransition>"
-    ]
+    "body": ["<ViewTransition name={`${1:event}-\\${${2:slug}}`} share=\"auto\">", "  ${0}", "</ViewTransition>"],
   },
   "listAnimationItem": {
     "prefix": "listAnimationItem",
@@ -85,7 +81,7 @@
     "body": [
       "<ViewTransition key={${1:item}.id} name={`${2:comment}-\\${${1:item}.id}`} enter=\"slide-up\" default=\"none\">",
       "  ${0}",
-      "</ViewTransition>"
-    ]
-  }
+      "</ViewTransition>",
+    ],
+  },
 }

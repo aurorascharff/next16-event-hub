@@ -1,10 +1,10 @@
 'use client';
 
-import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { addTransitionType, useOptimistic, useTransition, ViewTransition } from 'react';
 import { cn } from '@/lib/utils';
+import type { Route } from 'next';
 
 type Tab<T extends string> = {
   href: Route<T>;
@@ -58,7 +58,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
                 onChange?.(tab.href);
                 startTransition(async () => {
                   addTransitionType('tab-switch');
-                  tab.transitionTypes?.forEach(t => addTransitionType(t));
+                  tab.transitionTypes?.forEach(t => {return addTransitionType(t)});
                   setOptimisticActive(i);
                   await action(tab.href);
                 });
@@ -81,7 +81,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   if (children) {
     return (
       <>
-        <ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">
+        <ViewTransition update={{ default: 'none', 'tab-switch': 'auto' }} default="none">
           <div>{children}</div>
         </ViewTransition>
         {nav}

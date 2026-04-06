@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
-import type { Metadata } from 'next';
 import { QrCodeDialog } from './_components/QrCodeDialog';
 import { QuestionList } from './_components/QuestionList';
+import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
   const { slug } = await params;

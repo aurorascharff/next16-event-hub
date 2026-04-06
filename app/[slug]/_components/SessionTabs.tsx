@@ -19,7 +19,7 @@ export function SessionTabs({ children }: Props) {
         { href: `/${slug}`, icon: <CalendarDays className="size-5" />, label: 'Session' },
         { href: `/${slug}/questions`, icon: <HelpCircle className="size-5" />, label: 'Questions' },
       ]}
-      action={href => router.push(href)}
+      action={href => {return router.push(href)}}
     >
       {children}
     </BottomNav>

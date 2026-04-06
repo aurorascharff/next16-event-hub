@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarDays, HelpCircle, Home } from 'lucide-react';
+import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { BottomNav } from '@/components/design/BottomNav';
 
@@ -15,7 +15,7 @@ export function SessionTabs({ children }: Props) {
   return (
     <BottomNav
       tabs={[
-        { href: '/', icon: <Home className="size-4" />, label: 'Home', transitionTypes: ['nav-back'] },
+        { href: '/', icon: <ArrowLeft className="size-4" />, label: 'Back', transitionTypes: ['nav-back'] },
         { href: `/${slug}`, icon: <CalendarDays className="size-4" />, label: 'Session' },
         { href: `/${slug}/questions`, icon: <HelpCircle className="size-4" />, label: 'Questions' },
       ]}

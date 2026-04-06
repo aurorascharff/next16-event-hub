@@ -12,15 +12,17 @@ type Props<V extends string> = {
   items: ChipItem<V>[];
   value: V;
   action: (value: V) => void;
+  onChange?: (value: V) => void;
   variant?: 'pill' | 'toggle';
   className?: string;
 };
 
-export function ChipGroup<V extends string>({ items, value, action, variant = 'pill', className }: Props<V>) {
+export function ChipGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
   const [, startTransition] = useTransition();
 
   function handleClick(itemValue: V) {
+    onChange?.(itemValue);
     startTransition(() => {
       setOptimisticValue(itemValue);
       action(itemValue);

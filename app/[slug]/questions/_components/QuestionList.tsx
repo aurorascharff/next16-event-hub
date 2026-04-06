@@ -42,7 +42,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     const id = crypto.randomUUID();
     const tempQuestion: Question = {
       content,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       eventSlug,
       hasVoted: false,
       id,

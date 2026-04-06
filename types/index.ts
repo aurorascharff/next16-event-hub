@@ -1,21 +1,6 @@
-export type Question = {
-  id: string;
-  content: string;
-  userName: string;
-  votes: number;
-  hasVoted: boolean;
-  eventSlug: string;
-  createdAt: Date | string;
-};
+import type { getCommentsByEvent } from '@/data/queries/comment';
+import type { getQuestionsByEvent } from '@/data/queries/question';
 
-export type Comment = {
-  id: string;
-  content: string;
-  userName: string;
-  likes: number;
-  hasLiked: boolean;
-  eventSlug: string;
-  createdAt: Date | string;
-};
-
+export type Comment = Awaited<ReturnType<typeof getCommentsByEvent>>[number];
+export type Question = Awaited<ReturnType<typeof getQuestionsByEvent>>[number];
 export type SortValue = 'top' | 'newest';

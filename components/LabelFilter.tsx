@@ -17,6 +17,10 @@ export function LabelFilter() {
   const activeLabel = searchParams.get('label') || 'all';
   const activeDay = searchParams.get('day') || 'day-1';
 
+  if (activeLabel === 'favorites') {
+    return null;
+  }
+
   function handleChange(value: string) {
     const params = new URLSearchParams();
     if (activeDay) params.set('day', activeDay);

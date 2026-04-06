@@ -15,11 +15,11 @@ export function SessionTabs({ children }: Props) {
   return (
     <BottomNav
       tabs={[
-        { href: '/' as '/', icon: <Home className="size-4" />, label: 'Home', transitionType: 'nav-back' },
+        { href: '/', icon: <Home className="size-4" />, label: 'Home', transitionTypes: ['nav-back'] },
         { href: `/${slug}`, icon: <CalendarDays className="size-4" />, label: 'Session' },
         { href: `/${slug}/questions`, icon: <HelpCircle className="size-4" />, label: 'Questions' },
       ]}
-      action={href => router.push(href as '/')}
+      action={href => router.push(href)}
     >
       {children}
     </BottomNav>

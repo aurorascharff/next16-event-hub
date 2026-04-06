@@ -12,14 +12,18 @@ import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <>
-      <ViewTransition>
-        <Suspense fallback={<SessionSkeleton />}>
-          <div className="min-h-56 sm:min-h-72">
+      <div className="min-h-56 sm:min-h-72">
+        <ViewTransition>
+          <Suspense fallback={<EventDetailsSkeleton />}>
             <EventDetails params={params} />
+          </Suspense>
+        </ViewTransition>
+        <ViewTransition>
+          <Suspense fallback={<EventDescriptionSkeleton />}>
             <EventDescription params={params} />
-          </div>
-        </Suspense>
-      </ViewTransition>
+          </Suspense>
+        </ViewTransition>
+      </div>
       <div className="mt-4 space-y-3">
         <Suspense
           fallback={
@@ -76,16 +80,13 @@ async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
   );
 }
 
-function SessionSkeleton() {
+function EventDescriptionSkeleton() {
   return (
-    <div className="min-h-56 sm:min-h-72">
-      <EventDetailsSkeleton />
-      <div className="mt-2 h-22 space-y-1.5 sm:h-26">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4" />
-      </div>
+    <div className="mt-5 h-22 space-y-1.5 sm:h-26">
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-3/4" />
     </div>
   );
 }

@@ -19,6 +19,17 @@ const events = [
   {
     day: 'day-1',
     description:
+      'Kick off React Miami 2026 with drinks, music, and great company at Cerveceria La Tropical. Meet fellow attendees and speakers before the conference begins.',
+    labels: 'social',
+    location: 'Cerveceria La Tropical',
+    name: 'Opening Party',
+    slug: 'opening-party',
+    speaker: null,
+    time: '6:30 PM',
+  },
+  {
+    day: 'day-1',
+    description:
       "Much of the user experience happens in the moments between actions and the final UI. Page loads, navigations, filtering, and form submissions involve multiple steps where data and code arrive at different times, and handling these intermediate states is essential to keeping interfaces smooth and predictable. This session demonstrates how Async React makes these in-between states manageable. In the context of Next.js, we'll explore patterns like Suspense, optimistic updates, and streaming, and show how caching, prerendering, and animations can smooth or remove intermediate states, making page updates, navigation, and interactions feel fast, reliable, and polished.",
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
@@ -170,8 +181,30 @@ const events = [
     speaker: 'Ken Wheeler',
     time: '5:05 PM',
   },
+  {
+    day: 'day-1',
+    description:
+      'Wind down after a full day of talks with community-led activities across multiple locations in Miami. Board games, karaoke, networking dinners, and more.',
+    labels: 'social',
+    location: 'Multiple Locations',
+    name: 'Community Activities',
+    slug: 'community-activities',
+    speaker: null,
+    time: '6:30 PM',
+  },
 
   // Day 2
+  {
+    day: 'day-2',
+    description:
+      'Start your morning with a 5K run or yoga session at Bayfront Park before the talks begin. All fitness levels welcome.',
+    labels: 'social',
+    location: 'Bayfront Park',
+    name: 'Dev Health 5K + Yoga',
+    slug: 'dev-health-5k',
+    speaker: null,
+    time: '7:30 AM',
+  },
   {
     day: 'day-2',
     description:

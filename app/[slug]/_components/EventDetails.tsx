@@ -69,10 +69,9 @@ export function EventDetailsSkeleton() {
         <Skeleton className="h-6 w-24 rounded-full" />
       </div>
       <div className="space-y-1">
-        <Skeleton className="h-5 w-full sm:h-7" />
         <Skeleton className="h-5 w-4/5 sm:h-7" />
       </div>
-      <div className="mt-2 flex items-center gap-2 sm:mt-4 sm:gap-3">
+      <div className="mt-4 flex items-center gap-2 sm:mt-4 sm:gap-3">
         <Skeleton className="size-8 rounded-full" />
         <Skeleton className="h-4 w-36" />
       </div>

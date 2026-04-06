@@ -1,4 +1,4 @@
-import { Clock, MapPin } from 'lucide-react';
+import { Clock, Heart, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
@@ -24,6 +24,15 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
   }
 
   if (events.length === 0) {
+    if (isFavorites) {
+      return (
+        <EmptyState
+          icon={<Heart className="size-8" />}
+          message="No favorites yet."
+          hint="Tap the heart on any session to save it here."
+        />
+      );
+    }
     return <EmptyState message="No sessions match your filters." hint="Try a different combination." />;
   }
 

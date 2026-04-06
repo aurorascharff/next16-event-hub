@@ -1,27 +1,29 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { addTransitionType, useOptimistic, useTransition } from 'react';
+import { addTransitionType, useOptimistic, useTransition, ViewTransition } from 'react';
 import { cn } from '@/lib/utils';
-import type { Route } from 'next';
 
 type Tab<T extends string> = {
   href: Route<T>;
   icon?: React.ReactNode;
   label: string;
-  transitionType?: string;
+  transitionTypes?: readonly string[];
 };
 
 type Props<T extends string> = {
-  tabs: Tab<T>[];
+  tabs: readonly Tab<T>[];
   activeIndex?: number;
-  action: (href: string) => void | Promise<void>;
+  action: (href: Route<T>) => void | Promise<void>;
+  onChange?: (href: Route<T>) => void;
+  pending?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
 
-export function BottomNav<T extends string>({ tabs, activeIndex, action, className, children }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, activeIndex, action, onChange, pending, className, children }: Props<T>) {
   const pathname = usePathname();
   const resolvedActive =
     activeIndex ??
@@ -53,10 +55,10 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
               href={tab.href}
               onClick={e => {
                 e.preventDefault();
+                onChange?.(tab.href);
                 startTransition(async () => {
-                  if (tab.transitionType) {
-                    addTransitionType(tab.transitionType);
-                  }
+                  addTransitionType('tab-switch');
+                  tab.transitionTypes?.forEach(t => addTransitionType(t));
                   setOptimisticActive(i);
                   await action(tab.href);
                 });
@@ -78,7 +80,11 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
   if (children) {
     return (
       <>
-        <div className={isPending ? 'animate-pulse' : undefined}>{children}</div>
+        <ViewTransition default="none" enter={{ default: 'none', 'tab-switch': 'crossfade' }}>
+          <div className={isPending && pending ? 'pointer-events-none opacity-60 transition-opacity duration-150' : ''}>
+            {children}
+          </div>
+        </ViewTransition>
         {nav}
       </>
     );

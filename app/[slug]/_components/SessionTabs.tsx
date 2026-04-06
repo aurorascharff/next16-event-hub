@@ -2,7 +2,9 @@
 
 import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import { ViewTransition } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
+import type { Route } from 'next';
 
 type Props = {
   children: React.ReactNode;
@@ -11,17 +13,29 @@ type Props = {
 export function SessionTabs({ children }: Props) {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
+  const sessionHref = `/${slug}`;
+  const questionsHref = `${sessionHref}/questions`;
 
   return (
     <BottomNav
       tabs={[
         { href: '/', icon: <ArrowLeft className="size-5" />, label: 'Back' },
-        { href: `/${slug}`, icon: <CalendarDays className="size-5" />, label: 'Session' },
-        { href: `/${slug}/questions`, icon: <HelpCircle className="size-5" />, label: 'Questions' },
+        {
+          href: sessionHref as Route,
+          icon: <CalendarDays className="size-5" />,
+          label: 'Session',
+        },
+        {
+          href: questionsHref as Route,
+          icon: <HelpCircle className="size-5" />,
+          label: 'Questions',
+        },
       ]}
-      action={href => {return router.push(href)}}
+      action={href => {
+        return router.push(href);
+      }}
     >
-      {children}
+      <ViewTransition>{children}</ViewTransition>
     </BottomNav>
   );
 }

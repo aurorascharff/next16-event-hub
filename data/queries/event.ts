@@ -44,16 +44,11 @@ export const getUserFavorites = cache(async (userName: string) => {
     select: { eventSlug: true },
     where: { userName },
   });
-  return new Set(favorites.map(f => {return f.eventSlug}));
-});
-
-export const getAdjacentEvents = cache(async (slug: string) => {
-  const allEvents = await getEvents();
-  const index = allEvents.findIndex(e => {return e.slug === slug});
-  return {
-    next: index < allEvents.length - 1 ? allEvents[index + 1] : null,
-    prev: index > 0 ? allEvents[index - 1] : null,
-  };
+  return new Set(
+    favorites.map(f => {
+      return f.eventSlug;
+    }),
+  );
 });
 
 export const getEventBySlug = cache(async (slug: string) => {

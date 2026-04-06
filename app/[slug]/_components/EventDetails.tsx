@@ -3,28 +3,17 @@ import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
-import { getAdjacentEvents, getEventBySlug, getUserFavorites } from '@/data/queries/event';
+import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
-import { SessionPrevNextNav, SessionPrevNextNavSkeleton } from './SessionPrevNextNav';
 
 export async function EventDetails({ slug }: { slug: string }) {
-  const [event, currentUser, { prev, next }] = await Promise.all([
-    getEventBySlug(slug),
-    getCurrentUser(),
-    getAdjacentEvents(slug),
-  ]);
+  const [event, currentUser] = await Promise.all([getEventBySlug(slug), getCurrentUser()]);
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   const hasFavorited = favorites.has(slug);
   return (
     <article>
       <SessionMetaStrip dayLabel={getDayLabel(event.day)} location={event.location} time={event.time} />
       <SessionLabelChips labels={parseLabels(event.labels)} />
-      <SessionPrevNextNav
-        next={next ? { name: next.name, slug: next.slug } : null}
-        nextTransitionTypes={['nav-forward']}
-        prev={prev ? { name: prev.name, slug: prev.slug } : null}
-        prevTransitionTypes={['nav-back']}
-      />
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
@@ -49,9 +38,8 @@ export async function EventDetails({ slug }: { slug: string }) {
 export function EventDetailsSkeleton() {
   return (
     <article>
-      <MetaStripSkeleton />
-      <LabelChipsSkeleton />
-      <SessionPrevNextNavSkeleton />
+      <SessionMetaStripSkeleton />
+      <SessionLabelChipsSkeleton />
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
           <Skeleton className="h-14 w-4/5 rounded-md sm:h-18" />
@@ -102,7 +90,7 @@ function SessionMetaStrip({ dayLabel, time, location }: SessionMetaStripProps) {
         </span>
         <span className="inline-flex min-w-0 items-center gap-1">
           <MapPin className="text-foreground/75 size-3 shrink-0 sm:size-3.5" aria-hidden />
-          <span className="min-w-0 break-words">{location}</span>
+          <span className="min-w-0 wrap-break-word">{location}</span>
         </span>
       </p>
     </div>
@@ -131,7 +119,7 @@ function SessionLabelChips({ labels }: SessionLabelChipsProps) {
   );
 }
 
-function MetaStripSkeleton() {
+function SessionMetaStripSkeleton() {
   return (
     <div className="mb-2 w-fit max-w-full sm:mb-3">
       <Skeleton className="h-7 w-[min(100%,18rem)] rounded-md sm:h-8" />
@@ -139,7 +127,7 @@ function MetaStripSkeleton() {
   );
 }
 
-function LabelChipsSkeleton() {
+function SessionLabelChipsSkeleton() {
   return (
     <div className="mb-2 flex flex-wrap gap-1.5 sm:mb-3 sm:gap-2">
       <Skeleton className="h-6 w-16 rounded-md" />

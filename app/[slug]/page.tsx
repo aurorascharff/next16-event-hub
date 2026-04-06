@@ -20,39 +20,31 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 
 export async function generateStaticParams() {
   const events = await getEvents();
-  return events.map(event => {return { slug: event.slug }});
+  return events.map(event => {
+    return { slug: event.slug };
+  });
 }
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <ViewTransition
-      key={slug}
-      name="session-content"
-      share={{
-        default: 'none',
-        'nav-back': 'nav-back',
-        'nav-forward': 'nav-forward',
-      }}
-      default="none"
-    >
+    <ViewTransition>
       <div className="flex flex-col gap-6">
         <div className="min-h-56 sm:min-h-72">
+          <ViewTransition>
+            <Suspense fallback={<EventDetailsSkeleton />}>
+              <ViewTransition name={`event-${slug}`} share="morph" default="none">
+                <EventDetails slug={slug} />
+              </ViewTransition>
+            </Suspense>
+          </ViewTransition>
           <Suspense
             fallback={
-              <>
-                <ViewTransition name={`event-${slug}`} share="auto" default="none">
-                  <EventDetailsSkeleton />
-                </ViewTransition>
-                <div className="mt-4 min-h-9">
-                  <CommentFormSkeleton />
-                </div>
-              </>
+              <div className="mt-4 min-h-9">
+                <CommentFormSkeleton />
+              </div>
             }
           >
-            <ViewTransition name={`event-${slug}`} share="auto" default="none">
-              <EventDetails slug={slug} />
-            </ViewTransition>
             <div className="mt-4 min-h-9">
               <CommentForm />
             </div>
@@ -82,21 +74,12 @@ async function CommentList({ slug }: { slug: string }) {
     <div className="space-y-2">
       {comments.map(comment => {
         return (
-          <ViewTransition key={comment.id} name={`comment-${comment.id}`} enter="slide-up" default="none">
+          <ViewTransition key={comment.id} enter="slide-up" default="none">
             <CommentCard comment={comment} currentUser={currentUser} />
           </ViewTransition>
         );
       })}
       {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
-    </div>
-  );
-}
-
-function CommentFormSkeleton() {
-  return (
-    <div className="flex min-h-9 gap-2">
-      <Skeleton className="h-9 flex-1 rounded-md" />
-      <Skeleton className="h-9 w-14 shrink-0 rounded-md" />
     </div>
   );
 }
@@ -115,6 +98,15 @@ function CommentListSkeleton() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function CommentFormSkeleton() {
+  return (
+    <div className="flex min-h-9 gap-2">
+      <Skeleton className="h-9 flex-1 rounded-md" />
+      <Skeleton className="h-9 w-14 shrink-0 rounded-md" />
     </div>
   );
 }

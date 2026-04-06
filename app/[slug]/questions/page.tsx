@@ -18,39 +18,25 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 }
 
 export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
-  const { slug } = await params;
   return (
-    <ViewTransition
-      key={slug}
-      name="session-content"
-      share={{
-        default: 'none',
-        'nav-back': 'nav-back',
-        'nav-forward': 'nav-forward',
-      }}
-      default="none"
-    >
-      <div>
-        <ViewTransition>
-          <Suspense fallback={<HeaderSkeleton />}>
-            <EventHeader params={params} />
-          </Suspense>
-        </ViewTransition>
-        <div className="mt-3">
-          <Suspense
-            fallback={
-              <ViewTransition exit="slide-down">
-                <FeedSkeleton />
-              </ViewTransition>
-            }
-          >
-            <ViewTransition enter="slide-up" default="none">
-              <QuestionFeed params={params} />
+    <div>
+      <Suspense fallback={<EventHeaderSkeleton />}>
+        <EventHeader params={params} />
+      </Suspense>
+      <div className="mt-3">
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <QuestionFeedSkeleton />
             </ViewTransition>
-          </Suspense>
-        </div>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <QuestionFeed params={params} />
+          </ViewTransition>
+        </Suspense>
       </div>
-    </ViewTransition>
+    </div>
   );
 }
 
@@ -76,7 +62,7 @@ async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'pa
   return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
 }
 
-function HeaderSkeleton() {
+function EventHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
       <Skeleton className="size-8 shrink-0 rounded-full" />
@@ -88,7 +74,7 @@ function HeaderSkeleton() {
   );
 }
 
-function FeedSkeleton() {
+function QuestionFeedSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">

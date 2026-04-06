@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { cn, getAvatarUrl } from '@/lib/utils';
 
 type Props = {
@@ -15,12 +16,23 @@ const sizeClasses = {
   xs: 'size-4',
 } as const;
 
+const sizePixels = {
+  lg: 32,
+  md: 28,
+  sm: 20,
+  xs: 16,
+} as const;
+
 export function Avatar({ name, variant = 'user', size = 'sm', className, title }: Props) {
+  const px = sizePixels[size];
   return (
-    <img
+    <Image
       src={getAvatarUrl(name, variant)}
       alt=""
+      width={px}
+      height={px}
       title={title}
+      unoptimized
       className={cn('shrink-0 rounded-full', sizeClasses[size], className)}
     />
   );

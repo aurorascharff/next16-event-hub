@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { addTransitionType, useOptimistic, useTransition, ViewTransition } from 'react';
+import { useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 import type { Route } from 'next';
 
@@ -10,7 +10,6 @@ type Tab<T extends string> = {
   href: Route<T>;
   icon?: React.ReactNode;
   label: string;
-  transitionTypes?: readonly string[];
 };
 
 type Props<T extends string> = {
@@ -57,8 +56,6 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
                 e.preventDefault();
                 onChange?.(tab.href);
                 startTransition(async () => {
-                  addTransitionType('tab-switch');
-                  tab.transitionTypes?.forEach(t => {return addTransitionType(t)});
                   setOptimisticActive(i);
                   await action(tab.href);
                 });
@@ -81,9 +78,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   if (children) {
     return (
       <>
-        <ViewTransition update={{ default: 'none', 'tab-switch': 'auto' }} default="none">
-          <div>{children}</div>
-        </ViewTransition>
+        <div>{children}</div>
         {nav}
       </>
     );

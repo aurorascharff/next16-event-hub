@@ -1,10 +1,11 @@
-import { Github, Presentation } from 'lucide-react';
+import { Presentation } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid } from '@/components/EventGrid';
 import { LabelFilter } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { BottomNavSkeleton } from '@/components/design/BottomNav';
+import { GithubIcon } from '@/components/ui/icons/GithubIcon';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Metadata } from 'next';
 import { HomeTabs } from './_components/HomeTabs';
@@ -33,7 +34,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
                   target="_blank"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Github className="size-4" />
+                  <GithubIcon className="size-4" />
                 </Link>
                 <ThemeToggle />
               </div>

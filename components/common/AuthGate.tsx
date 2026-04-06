@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { use, useActionState } from 'react';
 import { SubmitButton } from '@/components/design/SubmitButton';
 import {
   Dialog,
@@ -12,7 +12,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { setUserName } from '@/data/actions/auth';
 
-export function AuthGate() {
+type Props = {
+  userPromise: Promise<string | null>;
+};
+
+export function AuthGate({ userPromise }: Props) {
+  const userName = use(userPromise);
   const [, action] = useActionState(
     async (_prev: null, formData: FormData) => {
       await setUserName(formData);
@@ -20,6 +25,8 @@ export function AuthGate() {
     },
     null,
   );
+
+  if (userName) return null;
 
   return (
     <Dialog open modal>

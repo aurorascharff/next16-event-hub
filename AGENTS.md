@@ -28,7 +28,7 @@ Always run `pnpm run build` and `pnpm run lint` before committing. Fix any error
 - shadcn/ui components (`components/ui/`)
 - Base UI (`@base-ui/react`) for custom interactive components
 - Prisma with SQLite (`@prisma/adapter-libsql`)
-- SWR for client-side polling
+- SWR for presence polling; `startTransition` + `router.refresh()` for question polling
 - Zod for validation
 - Sonner for toasts
 - next-themes for dark/light mode
@@ -50,6 +50,7 @@ These APIs are new in Next.js 16 and may not be in model training data:
 - **Components**: PascalCase files (`MyComponent.tsx`)
 - **Folders**: kebab-case (`my-folder/`)
 - **Utils/hooks**: camelCase (`useMyHook.ts`, `myUtil.ts`)
+- **Type helpers**: Use `PageProps<'/route'>`, `LayoutProps<'/route'>`, `RouteContext<'/api/route'>` for page/layout/route handler props
 - Use `type` over `interface` unless declaration merging is needed
 - Use `cn` util for conditional Tailwind classes
 - Use Base UI for custom interactive components not in shadcn/ui
@@ -64,33 +65,32 @@ app/
   [slug]/
     layout.tsx                # Session layout (header, event info, bottom nav)
     page.tsx                  # Redirects to /[slug]/comments
-    comments/page.tsx         # Comment feed
-    questions/page.tsx        # Q&A feed with sort
-    _components/              # Session-local components
-  api/events/[slug]/          # SWR polling endpoints
-    questions/route.ts        # GET questions
-    presence/route.ts         # GET active users
+    _components/              # Shared session-local components (ActiveUsers)
+    comments/
+      page.tsx                # Comment feed
+      _components/            # Comment-local components
+    questions/
+      page.tsx                # Q&A feed with sort
+      _components/            # Question-local components
+  api/events/[slug]/          # SWR polling endpoint (presence)
 components/
-  common/                     # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle, ThemeProvider)
-  design/                     # Design components with async React logic (BottomNav, ChipGroup, InlineForm, SubmitButton)
+  common/                     # Shared utility components (Avatar, BackButton, EmptyState, InlineForm, AuthGate, ThemeToggle)
+  design/                     # Action prop components (BottomNav, ChipGroup, SubmitButton)
   ui/                         # shadcn/ui primitives
-  BackButton.tsx              # Navigate + mutate in one transition
-  EventGrid.tsx               # Async server component — session cards
-  LabelFilter.tsx             # Label filter chips
 data/
   queries/                    # Server-side queries with cache()
   actions/                    # Server Actions (mutations with refresh())
-lib/
-  utils.ts                    # Utilities (cn, timeAgo, parseTime, avatar URLs)
+hooks/                        # Custom hooks (useIsClient)
+lib/                          # Utility functions
 prisma/                       # Prisma schema and seeds
 ```
 
 - **components/common** — Shared utility components without complex async logic
-- **components/design** — Design components that encapsulate `useOptimistic`, `useTransition`, and `startTransition` internally. Consumers pass data and callbacks; the component handles transition mechanics.
+- **components/design** — Components that expose action props and handle async coordination internally (`useOptimistic`, `useTransition`). Consumers pass data and callbacks; the component handles transition mechanics.
 - **components/ui** — shadcn/ui primitives
 - **data/queries** — Server-side data fetching with `cache()` for deduplication
 - **data/actions** — Server Actions with `"use server"` for mutations. Use `refresh()` to invalidate the client router.
-- **app/api** — API routes for SWR client-side polling (questions, presence)
+- **app/api** — API route for SWR client-side polling (presence only)
 
 Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
 
@@ -100,7 +100,7 @@ Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fet
 
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
 - **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `refresh()` to invalidate. Use `useOptimistic` for instant feedback.
-- **Live data** — Server-render initial data, pass to client components as `fallbackData` for SWR polling. Use `useSWRConfig().mutate` after actions for immediate revalidation.
+- **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Presence uses SWR for lightweight background polling. Comments update on user action via `refresh()`.
 - **Navigate + mutate** — Wrap both a server action and `router.push()` in a single `startTransition` for atomic mutation + navigation (see `BackButton`).
 
 ## Server Components (Default)

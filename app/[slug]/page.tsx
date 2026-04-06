@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-export default async function SessionPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   redirect(`/${slug}/comments`);
 }

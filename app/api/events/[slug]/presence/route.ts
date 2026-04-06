@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/db';
 
-export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
+export async function GET(_req: Request, { params }: RouteContext<'/api/events/[slug]/presence'>) {
   const { slug } = await params;
 
   const cutoff = new Date(Date.now() - 30_000);

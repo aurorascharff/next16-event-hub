@@ -6,16 +6,12 @@ import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { BottomNav } from '@/components/design/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type Props = {
-  searchParams: Promise<{ day?: string; label?: string }>;
-};
-
 const dayTabs = [
   { href: '/?day=day-1' as '/', icon: <Calendar className="size-4" />, label: 'Day 1' },
   { href: '/?day=day-2' as '/', icon: <Calendar className="size-4" />, label: 'Day 2' },
 ];
 
-export default function HomePage({ searchParams }: Props) {
+export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
     <ViewTransition
       enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
@@ -53,11 +49,17 @@ export default function HomePage({ searchParams }: Props) {
         </div>
 
         <Suspense fallback={<BottomNavSkeleton />}>
-          <BottomNav tabs={dayTabs} />
+          <DayNav searchParams={searchParams} />
         </Suspense>
       </div>
     </ViewTransition>
   );
+}
+
+async function DayNav({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
+  const sp = await searchParams;
+  const day = typeof sp.day === 'string' ? sp.day : 'day-1';
+  return <BottomNav tabs={dayTabs} activeIndex={day === 'day-2' ? 1 : 0} />;
 }
 
 function FiltersSkeleton() {

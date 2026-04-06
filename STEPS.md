@@ -3,7 +3,7 @@
 ## Setup and starting point
 
 - The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, favorite sessions, and see who's actively watching. It's a great example because it has all three async coordination patterns — data loading, navigations, and mutations — plus a live data sync layer on top.
-- The setup is the Next.js 16 App Router, Prisma ORM with SQLite, Tailwind CSS, SWR for live polling. Using React Server Components as my data fetching framework. I also use Next.js Cache Components here for the static/dynamic hybrid.
+- The setup is the Next.js 16 App Router, Prisma ORM with SQLite, Tailwind CSS. Using React Server Components as my data fetching framework. I also use Next.js Cache Components here for the static/dynamic hybrid. For live data, questions poll with `startTransition` + `router.refresh()` and presence uses SWR.
 - Demo app: Data fetching has been slowed down to simulate worse network conditions. You can see this is the bad UX we had from the beginning in the slides. Let's fix it by designing the appropriate in-between states.
 
 ## Async Data Loading
@@ -27,7 +27,7 @@
 - Design components like BottomNav, ChipGroup, and BackButton abstract away the complexities of async interactions. The consumer passes data and callbacks — the component handles transitions, optimistic state, and pending indicators internally. As we see more of these primitives adopted by design systems and component libraries, we can integrate these patterns without building them from scratch.
 - Now let's try the raw Async React primitives. Let's look at how ChipGroup works inside — useOptimistic for instant feedback, useTransition to keep the old content visible. This is what design components abstract away from you.
 - Let's add animations to our navigations. Clicking a session card should feel like navigating forward — the home page slides left and the detail page slides in from the right. Going back reverses it. Add ViewTransition with directional transition types. The BackButton uses addTransitionType('nav-back') inside startTransition to trigger the reverse slide.
-- Let's animate the list reordering when we sort questions. Wrap each QuestionCard in ViewTransition with a key. When the sort changes, questions smoothly slide to their new positions.
+- Let's animate the list reordering when we sort questions. Wrap each QuestionCard in ViewTransition with a key. We add addTransitionType('sort-change') in the sort handler and use a type-specific update prop — `update={{ 'sort-change': 'auto', default: 'none' }}`. This way sort reorders animate smoothly, but content changes from upvotes don't flash. useDeferredValue on the sorted array makes React defer the reorder into a concurrent render so ViewTransition can capture before/after positions.
 
 ### Mutation + Navigation
 
@@ -43,7 +43,7 @@
 
 - **FavoriteButton**: Tapping the star on a session card. We use useOptimistic with a boolean reducer toggle — the star fills instantly. e.preventDefault() + e.stopPropagation() prevent the card link navigation. When we filter by "Favorites" in the label pills, the server filters by the user's favorite records.
 - **LikeButton**: Tapping the heart on a comment. We use useOptimistic with a reducer that manages both hasLiked and likes count in a single state object. The reducer calculates from the current optimistic state, not the original props — so toggling works correctly in both directions. Like increments, unlike decrements.
-- **UpvoteButton**: Same pattern for question upvotes. useOptimistic for instant vote count.
+- **UpvoteButton**: Same pattern for question upvotes. useOptimistic for instant vote count. The upvote handler calls `addTransitionType('vote-change')` inside `startTransition`, and the QuestionCard's ViewTransition is configured with `update={{ 'vote-change': 'auto', default: 'none' }}` — so the list smoothly reorders when a vote changes the ranking, but doesn't flash on background refreshes.
 - Notice how useOptimistic automatically rolls back the UI if the mutation fails. We just add a toast on error.
 - **DeleteComment**: useTransition with pending opacity on the card — it fades while deleting. ViewTransition exit animation plays when it's removed from the list.
 
@@ -57,11 +57,10 @@
 ## Live Data Sync
 
 - Everything so far has been about in-between states — what happens between a user action and the result. But this app also has a background data cycle that runs without user action. Questions need to update when other attendees upvote, and you should see who else is watching the session.
-- This is a different pattern. The server renders the initial data in async RSCs and passes it to client components as props. Then SWR takes over with polling — every 3 seconds for questions, every 5 seconds for active users. The initial server data is the starting point, SWR keeps it fresh.
-- After mutations, SWR mutate() triggers an immediate revalidation so the UI stays in sync without waiting for the next poll cycle.
-- We use useDeferredValue on the sorted question array so that when SWR polls and the ranking changes (someone else upvoted), the list reorder goes through a React transition and animates with ViewTransition.
+- For questions, we poll using `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, which fetch fresh data from the database. The new `initialQuestions` flow down as props to the client component. Because it's inside `startTransition`, the update coordinates with `useOptimistic` (in-flight optimistic values stay stable), `useDeferredValue` (reorders get deferred into concurrent renders), and ViewTransition (new questions enter with slide-up animation).
+- This is the key difference from using SWR — `router.refresh()` inside `startTransition` keeps everything in React's transition system. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
+- For active users, we use SWR polling against an API route — it's purely observational display data with no interaction conflicts, so SWR is the right tool.
 - Active users are tracked via a presence heartbeat — a useEffect interval calls the recordPresence server action every 10 seconds. When you leave, leavePresence cleans up (inside that mutation+navigation transition we saw earlier).
-- The live data layer sits on top of the async patterns — it reuses the same optimistic and animation infrastructure but drives it from background polling instead of user actions.
 
 ## Review
 

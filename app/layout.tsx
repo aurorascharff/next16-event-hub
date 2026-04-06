@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className="font-mono antialiased">
         <ThemeProvider>
           <Suspense>
-            <AuthGateLoader />
+            <AuthGate userPromise={getCurrentUser()} />
           </Suspense>
           <main>{children}</main>
           <Toaster />
@@ -42,10 +42,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
-
-async function AuthGateLoader() {
-  const userName = await getCurrentUser();
-  if (userName) return null;
-  return <AuthGate />;
 }

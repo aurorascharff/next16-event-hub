@@ -1,13 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useDeferredValue, useOptimistic, ViewTransition } from 'react';
+import { addTransitionType, startTransition, useEffect, useDeferredValue, useOptimistic, ViewTransition } from 'react';
 import { toast } from 'sonner';
-import useSWR from 'swr';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
 import { addQuestion } from '@/data/actions/question';
-import { useIsClient } from '@/hooks/useIsClient';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
 
@@ -23,8 +21,6 @@ type Question = {
 
 type SortValue = 'top' | 'newest';
 
-const fetcher = (url: string) => {return fetch(url).then(res => {return res.json()})};
-
 type Props = {
   initialQuestions: Question[];
   eventSlug: string;
@@ -36,20 +32,21 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const searchParams = useSearchParams();
   const sort = (searchParams.get('sort') as SortValue) || 'top';
 
-  const isClient = useIsClient();
-
-  const { data: polledData, mutate } = useSWR<Question[]>(
-    isClient ? `/api/events/${eventSlug}/questions` : null,
-    fetcher,
-    { refreshInterval: 3000 },
-  );
-
-  const questions = polledData ?? initialQuestions;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      startTransition(() => {
+        router.refresh();
+      });
+    }, 5000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [router]);
 
   const [optimisticQuestions, addOptimisticQuestion] = useOptimistic(
-    questions ?? [],
+    initialQuestions,
     (current, newQuestion: Question) => {
-      if (current.some(q => {return q.content === newQuestion.content && q.userName === newQuestion.userName})) {
+      if (current.some(q => {return q.id === newQuestion.id})) {
         return current;
       }
       return [newQuestion, ...current];
@@ -75,12 +72,11 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     const result = await addQuestion(eventSlug, formData);
     if (!result.success) {
       toast.error(result.error);
-      return;
     }
-    await mutate();
   }
 
   function handleSortChange(value: SortValue) {
+    addTransitionType('sort-change');
     const params = new URLSearchParams(searchParams.toString());
     if (value === 'top') {
       params.delete('sort');
@@ -124,7 +120,12 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       <div className="space-y-2">
         {sortedQuestions.map(question => {
           return (
-            <ViewTransition key={question.id} enter="slide-up" default="none">
+            <ViewTransition
+              key={question.id}
+              enter="slide-up"
+              default="none"
+              update={{ default: 'none', 'sort-change': 'auto', 'vote-change': 'auto' }}
+            >
               <QuestionCard question={question} />
             </ViewTransition>
           );

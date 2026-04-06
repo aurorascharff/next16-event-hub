@@ -1,8 +1,7 @@
 'use client';
 
 import { ChevronUp } from 'lucide-react';
-import { useOptimistic, useTransition } from 'react';
-import { useSWRConfig } from 'swr';
+import { addTransitionType, useOptimistic, useTransition } from 'react';
 import { upvoteQuestion } from '@/data/actions/question';
 import { cn } from '@/lib/utils';
 
@@ -17,16 +16,15 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
   const [optimisticVotes, setOptimisticVotes] = useOptimistic(votes);
   const [optimisticHasVoted, setOptimisticHasVoted] = useOptimistic(hasVoted);
   const [, startTransition] = useTransition();
-  const { mutate } = useSWRConfig();
 
   function handleUpvote() {
     if (optimisticHasVoted) return;
 
     startTransition(async () => {
+      addTransitionType('vote-change');
       setOptimisticVotes(votes + 1);
       setOptimisticHasVoted(true);
       await upvoteQuestion(questionId, eventSlug);
-      await mutate(`/api/events/${eventSlug}/questions`);
     });
   }
 

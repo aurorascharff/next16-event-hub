@@ -7,9 +7,7 @@ import { getCommentsByEvent } from '@/data/queries/comment';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 
-export default async function CommentsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-
+export default function CommentsPage({ params }: PageProps<'/[slug]/comments'>) {
   return (
     <Suspense fallback={
       <ViewTransition exit="slide-down">
@@ -17,13 +15,14 @@ export default async function CommentsPage({ params }: { params: Promise<{ slug:
       </ViewTransition>
     }>
       <ViewTransition enter="slide-up" default="none">
-        <CommentFeed slug={slug} />
+        <CommentFeed params={params} />
       </ViewTransition>
     </Suspense>
   );
 }
 
-async function CommentFeed({ slug }: { slug: string }) {
+async function CommentFeed({ params }: Pick<PageProps<'/[slug]/comments'>, 'params'>) {
+  const { slug } = await params;
   const currentUser = await getCurrentUser();
   const comments = await getCommentsByEvent(slug, currentUser);
 

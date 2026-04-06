@@ -1,6 +1,5 @@
 import 'server-only';
 
-
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';

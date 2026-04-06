@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 import type { Route } from 'next';
@@ -14,19 +14,16 @@ type Tab<T extends string> = {
 
 type Props<T extends string> = {
   tabs: Tab<T>[];
+  activeIndex?: number;
   action?: (href: string) => void | Promise<void>;
   className?: string;
 };
 
-export function BottomNav<T extends string>({ tabs, action, className }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, activeIndex, action, className }: Props<T>) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentUrl = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
-
-  const activeIndex = tabs.findIndex(tab => {
-    return currentUrl === tab.href || pathname === tab.href;
-  });
-  const resolvedActive = activeIndex >= 0 ? activeIndex : 0;
+  const resolvedActive = activeIndex ?? Math.max(0, tabs.findIndex(tab => {
+    return pathname === tab.href;
+  }));
 
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
   const [, startTransition] = useTransition();

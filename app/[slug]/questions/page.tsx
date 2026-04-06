@@ -5,9 +5,7 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import { QuestionList } from './_components/QuestionList';
 
-export default async function QuestionsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-
+export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <Suspense fallback={
       <ViewTransition exit="slide-down">
@@ -15,16 +13,16 @@ export default async function QuestionsPage({ params }: { params: Promise<{ slug
       </ViewTransition>
     }>
       <ViewTransition enter="slide-up" default="none">
-        <QuestionFeed slug={slug} />
+        <QuestionFeed params={params} />
       </ViewTransition>
     </Suspense>
   );
 }
 
-async function QuestionFeed({ slug }: { slug: string }) {
+async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'params'>) {
+  const { slug } = await params;
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
-
   return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
 }
 

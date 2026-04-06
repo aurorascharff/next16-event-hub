@@ -8,12 +8,10 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEvents } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
-type Props = {
-  searchParams: Promise<{ day?: string; label?: string }>;
-};
-
-export async function EventGrid({ searchParams }: Props) {
-  const { day = 'day-1', label } = await searchParams;
+export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
+  const sp = await searchParams;
+  const day = typeof sp.day === 'string' ? sp.day : 'day-1';
+  const label = typeof sp.label === 'string' ? sp.label : undefined;
   const currentUser = await getCurrentUser();
   const events = await getEvents(day, label, currentUser);
 

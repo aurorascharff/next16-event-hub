@@ -54,7 +54,7 @@ export default function RootLayout({
           <Suspense>
             <AuthGate userPromise={getCurrentUser()} />
           </Suspense>
-          <main>{children}</main>
+          <main className="pt-[env(safe-area-inset-top)]">{children}</main>
           <Toaster />
         </ThemeProvider>
       </body>

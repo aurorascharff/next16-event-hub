@@ -17,7 +17,7 @@ export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
     <div className="min-h-screen pb-16">
       <Suspense>
         <SessionTabs>
-          <div className="mx-auto max-w-2xl px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] sm:px-6 sm:pb-8 sm:pt-[calc(env(safe-area-inset-top)+2rem)]">
+          <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
             {children}
           </div>
         </SessionTabs>

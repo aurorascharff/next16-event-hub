@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
     <div className="min-h-screen pb-16">
-        <header className="bg-background sticky top-0 z-30 border-b pt-[env(safe-area-inset-top)]">
+        <header className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b">
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-center justify-between">
               <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>

@@ -11,10 +11,8 @@ export type AdjacentSessionRef = {
 
 type SessionPrevNextNavProps = {
   next: AdjacentSessionRef | null;
-  /** When set, passed to `<Link transitionTypes>` (e.g. `['nav-forward']` for the full demo). */
   nextTransitionTypes?: string[];
   prev: AdjacentSessionRef | null;
-  /** When set, passed to `<Link transitionTypes>` (e.g. `['nav-back']` for the full demo). */
   prevTransitionTypes?: string[];
 };
 

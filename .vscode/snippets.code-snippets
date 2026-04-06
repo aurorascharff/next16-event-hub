@@ -1,50 +1,89 @@
 {
-  "errorUI": {
-    "prefix": "errorUI",
-    "body": [
-      "'use client';",
-      "",
-      "import { ErrorCard } from '@/components/errors/ErrorCard';",
-      "import { useTrackError } from '@/hooks/useTrackError';",
-      "",
-      "type Props = {",
-      "  error: Error & { digest?: string };",
-      "  reset: () => void;",
-      "};",
-      "",
-      "export default function ErrorBoundary({ error, reset }: Props) {",
-      "  useTrackError(error);",
-      "  return <ErrorCard description=\"Failed to load post\" error={error} reset={reset} />;",
-      "}"
-    ]
-  },
-  "suspensePostListWithAnimation": {
-    "prefix": "suspensePostListWithAnimation",
+  "vt-reveal": {
+    "prefix": "vt-reveal",
+    "description": "Suspense with ViewTransition slide-up/slide-down reveal",
     "body": [
       "<Suspense",
       "  fallback={",
       "    <ViewTransition exit=\"slide-down\">",
-      "      <PostListSkeleton />",
+      "      <${1:Skeleton} />",
       "    </ViewTransition>",
       "  }",
       ">",
-      "  <ViewTransition enter=\"slide-up\" exit=\"slide-down\">",
-      "    <PostList searchParams={searchParams} />",
+      "  <ViewTransition enter=\"slide-up\" default=\"none\">",
+      "    ${0}",
       "  </ViewTransition>",
       "</Suspense>"
     ]
-  }, "customAsyncReact": {
-      "prefix": "customAsyncReact",
-      "body": [
-        "const [optimisticSort, setOptimisticSort] = useOptimistic(${1:currentSort});",
-        "const [isPending, startTransition] = useTransition();"
-      ]
-    },
-      "optimisticArchiveState": {
-        "prefix": "optimisticArchiveState",
-        "body": [
-        "const [optimisticArchived, setOptimisticArchived] = useOptimistic(${1:archived} ?? false);",
-        "const isPending = optimisticArchived !== (${1:archived} ?? false);"
-        ]
-      }
+  },
+  "vt-reveal-auto": {
+    "prefix": "vt-reveal-auto",
+    "description": "Suspense with ViewTransition auto crossfade reveal",
+    "body": [
+      "<Suspense",
+      "  fallback={",
+      "    <ViewTransition exit=\"auto\">",
+      "      <${1:Skeleton} />",
+      "    </ViewTransition>",
+      "  }",
+      ">",
+      "  <ViewTransition enter=\"auto\" default=\"none\">",
+      "    ${0}",
+      "  </ViewTransition>",
+      "</Suspense>"
+    ]
+  },
+  "vt-slide-forward": {
+    "prefix": "vt-slide-forward",
+    "description": "ViewTransition directional slide for forward navigation (home page)",
+    "body": [
+      "<ViewTransition",
+      "  enter={{ default: 'none', 'nav-back': 'slide-from-left' }}",
+      "  exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}",
+      "  default=\"none\"",
+      ">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "vt-slide-back": {
+    "prefix": "vt-slide-back",
+    "description": "ViewTransition directional slide for back navigation (session page)",
+    "body": [
+      "<ViewTransition",
+      "  enter={{ default: 'none', 'nav-forward': 'slide-from-right' }}",
+      "  exit={{ default: 'none', 'nav-back': 'slide-to-right' }}",
+      "  default=\"none\"",
+      ">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "vt-tab-crossfade": {
+    "prefix": "vt-tab-crossfade",
+    "description": "ViewTransition crossfade for tab switches",
+    "body": [
+      "<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "vt-card-morph": {
+    "prefix": "vt-card-morph",
+    "description": "ViewTransition card morph for filter/tab changes",
+    "body": [
+      "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "vt-list-item": {
+    "prefix": "vt-list-item",
+    "description": "ViewTransition list item with unique name for enter/exit",
+    "body": [
+      "<ViewTransition key={${1:item}.id} name={`${2:comment}-\\${${1:item}.id}`} enter=\"slide-up\" default=\"none\">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  }
 }

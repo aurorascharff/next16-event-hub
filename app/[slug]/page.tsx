@@ -21,31 +21,37 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <>
-      <div className="min-h-56 sm:min-h-72">
-        <ViewTransition name={`event-${slug}`} share="auto">
-          <Suspense fallback={<EventDetailsSkeleton />}>
-            <EventDetails params={params} />
-          </Suspense>
-        </ViewTransition>
-      </div>
-      <div className="mt-4 space-y-3">
-        <Suspense fallback={<CommentFormSkeleton />}>
-          <CommentForm />
-        </Suspense>
-        <Suspense
-          fallback={
-            <ViewTransition exit="slide-down">
-              <CommentListSkeleton />
-            </ViewTransition>
-          }
-        >
-          <ViewTransition enter="slide-up" default="none">
-            <CommentList params={params} />
+    <ViewTransition
+      enter={{ 'nav-forward': 'slide-from-right', 'nav-back': 'slide-from-left', default: 'none' }}
+      exit={{ 'nav-forward': 'slide-to-left', 'nav-back': 'slide-to-right', default: 'none' }}
+      default="none"
+    >
+      <div>
+        <div className="min-h-56 sm:min-h-72">
+          <ViewTransition name={`event-${slug}`} share="auto">
+            <Suspense fallback={<EventDetailsSkeleton />}>
+              <EventDetails params={params} />
+            </Suspense>
           </ViewTransition>
-        </Suspense>
+        </div>
+        <div className="mt-4 space-y-3">
+          <Suspense fallback={<CommentFormSkeleton />}>
+            <CommentForm />
+          </Suspense>
+          <Suspense
+            fallback={
+              <ViewTransition exit="slide-down">
+                <CommentListSkeleton />
+              </ViewTransition>
+            }
+          >
+            <ViewTransition enter="slide-up" default="none">
+              <CommentList params={params} />
+            </ViewTransition>
+          </Suspense>
+        </div>
       </div>
-    </>
+    </ViewTransition>
   );
 }
 

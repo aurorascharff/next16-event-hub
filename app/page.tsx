@@ -16,12 +16,7 @@ export const metadata: Metadata = {
 
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
-    <ViewTransition
-      enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
-      exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
-      default="none"
-    >
-      <div className="min-h-screen pb-16">
+    <div className="min-h-screen pb-16">
         <header className="bg-background sticky top-0 z-30 border-b pt-[env(safe-area-inset-top)]">
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-center justify-between">
@@ -66,8 +61,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             </div>
           </HomeTabs>
         </Suspense>
-      </div>
-    </ViewTransition>
+    </div>
   );
 }
 

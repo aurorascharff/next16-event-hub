@@ -1,18 +1,55 @@
-import { Clock, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
+import Link from 'next/link';
 import { Avatar } from '@/components/common/Avatar';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
-import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
+import { getAdjacentEvents, getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
 
 export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
   const { slug } = await params;
-  const [event, currentUser] = await Promise.all([getEventBySlug(slug), getCurrentUser()]);
+  const [event, currentUser, { prev, next }] = await Promise.all([
+    getEventBySlug(slug),
+    getCurrentUser(),
+    getAdjacentEvents(slug),
+  ]);
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   const hasFavorited = favorites.has(slug);
   return (
-    <article>
+    <article className="relative">
+      <div className="absolute -left-10 top-1/2 -translate-y-1/2">
+        {prev ? (
+          <Link
+            href={`/${prev.slug}`}
+            transitionTypes={['nav-back']}
+            className="text-muted-foreground hover:text-foreground hover:border-border flex size-8 items-center justify-center rounded-full border border-transparent transition-colors"
+            aria-label={`Previous: ${prev.name}`}
+          >
+            <ChevronLeft className="size-4" />
+          </Link>
+        ) : (
+          <span className="text-muted-foreground/20 flex size-8 items-center justify-center">
+            <ChevronLeft className="size-4" />
+          </span>
+        )}
+      </div>
+      <div className="absolute -right-10 top-1/2 -translate-y-1/2">
+        {next ? (
+          <Link
+            href={`/${next.slug}`}
+            transitionTypes={['nav-forward']}
+            className="text-muted-foreground hover:text-foreground hover:border-border flex size-8 items-center justify-center rounded-full border border-transparent transition-colors"
+            aria-label={`Next: ${next.name}`}
+          >
+            <ChevronRight className="size-4" />
+          </Link>
+        ) : (
+          <span className="text-muted-foreground/20 flex size-8 items-center justify-center">
+            <ChevronRight className="size-4" />
+          </span>
+        )}
+      </div>
       <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-2 text-xs sm:mb-4 sm:gap-3">
         <span className="font-medium tracking-wider uppercase">{getDayLabel(event.day)}</span>
         <span className="text-border">·</span>

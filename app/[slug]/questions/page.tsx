@@ -19,26 +19,32 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
-    <>
-      <ViewTransition>
-        <Suspense fallback={<HeaderSkeleton />}>
-          <EventHeader params={params} />
-        </Suspense>
-      </ViewTransition>
-      <div className="mt-3">
-        <Suspense
-          fallback={
-            <ViewTransition exit="slide-down">
-              <FeedSkeleton />
+    <ViewTransition
+      enter={{ 'nav-forward': 'slide-from-right', 'nav-back': 'slide-from-left', default: 'none' }}
+      exit={{ 'nav-forward': 'slide-to-left', 'nav-back': 'slide-to-right', default: 'none' }}
+      default="none"
+    >
+      <div>
+        <ViewTransition>
+          <Suspense fallback={<HeaderSkeleton />}>
+            <EventHeader params={params} />
+          </Suspense>
+        </ViewTransition>
+        <div className="mt-3">
+          <Suspense
+            fallback={
+              <ViewTransition exit="slide-down">
+                <FeedSkeleton />
+              </ViewTransition>
+            }
+          >
+            <ViewTransition enter="slide-up" default="none">
+              <QuestionFeed params={params} />
             </ViewTransition>
-          }
-        >
-          <ViewTransition enter="slide-up" default="none">
-            <QuestionFeed params={params} />
-          </ViewTransition>
-        </Suspense>
+          </Suspense>
+        </div>
       </div>
-    </>
+    </ViewTransition>
   );
 }
 

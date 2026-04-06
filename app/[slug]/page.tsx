@@ -22,17 +22,11 @@ export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <>
       <div className="min-h-56 sm:min-h-72">
-        <Suspense
-          fallback={
-            <ViewTransition exit="auto">
-              <EventDetailsSkeleton />
-            </ViewTransition>
-          }
-        >
-          <ViewTransition enter="auto" default="none">
+        <ViewTransition>
+          <Suspense fallback={<EventDetailsSkeleton />}>
             <EventDetails params={params} />
-          </ViewTransition>
-        </Suspense>
+          </Suspense>
+        </ViewTransition>
       </div>
       <div className="mt-4 space-y-3">
         <Suspense fallback={<CommentFormSkeleton />}>

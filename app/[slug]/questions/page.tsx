@@ -20,17 +20,11 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <>
-      <Suspense
-        fallback={
-          <ViewTransition exit="auto">
-            <HeaderSkeleton />
-          </ViewTransition>
-        }
-      >
-        <ViewTransition enter="auto" default="none">
+      <ViewTransition>
+        <Suspense fallback={<HeaderSkeleton />}>
           <EventHeader params={params} />
-        </ViewTransition>
-      </Suspense>
+        </Suspense>
+      </ViewTransition>
       <div className="mt-3">
         <Suspense
           fallback={

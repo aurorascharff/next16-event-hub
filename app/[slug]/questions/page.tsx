@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { Metadata } from 'next';
+import { QrCodeDialog } from './_components/QrCodeDialog';
 import { QuestionList } from './_components/QuestionList';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
@@ -52,6 +53,7 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
         <h1 className="truncate font-sans text-sm font-bold tracking-tight sm:text-base">{event.name}</h1>
         {event.speaker && <p className="text-muted-foreground text-xs">{event.speaker}</p>}
       </div>
+      <QrCodeDialog eventName={event.name} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function SlidesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SlideDeck slides={slides} speakerNotes={speakerNotes} exitUrl="/" basePath="/slides" syncEndpoint="/api/nxs-sync">
+    <SlideDeck slides={slides} speakerNotes={speakerNotes} exitUrl="/" basePath="/slides" syncEndpoint="/api/nxs-sync" transition={false}>
       {children}
     </SlideDeck>
   );

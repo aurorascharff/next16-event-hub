@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react';
 import {
   Slide,
   SlideTitle,
@@ -5,19 +6,56 @@ import {
   SlideSpeaker,
 } from 'nextjs-slides';
 
-function CycleBox({ children }: { children: React.ReactNode }) {
-  return <div className="border-primary rounded-lg border px-6 py-3 text-lg font-medium">{children}</div>;
-}
-
-function CycleLabel({ children }: { children: React.ReactNode }) {
-  return <span className="text-muted-foreground text-base">{children}</span>;
-}
-
-function Primitive({ children }: { children: React.ReactNode }) {
+function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
   return (
-    <span className="text-primary border-primary/40 border-b-2 border-dashed pb-1 font-mono text-lg">
+    <div
+      className="border-primary bg-primary/5 rounded-xl border px-7 py-3.5 text-xl font-semibold"
+      style={{ viewTransitionName: name }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CycleArrow({ name }: { name: string }) {
+  return (
+    <ChevronRight
+      className="text-muted-foreground/40 size-5 shrink-0"
+      style={{ viewTransitionName: name }}
+    />
+  );
+}
+
+function CycleLabel({ children, name }: { children: React.ReactNode; name: string }) {
+  return (
+    <span
+      className="text-muted-foreground text-lg italic"
+      style={{ viewTransitionName: name }}
+    >
       {children}
     </span>
+  );
+}
+
+function Primitive({ children, name }: { children: React.ReactNode; name: string }) {
+  return (
+    <span
+      className="text-primary border-primary/40 border-b-2 border-dashed pb-1 font-mono text-lg"
+      style={{ viewTransitionName: name }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function NetworkNote({ children, name }: { children: React.ReactNode; name: string }) {
+  return (
+    <p
+      className="text-muted-foreground text-base italic"
+      style={{ viewTransitionName: name }}
+    >
+      {children}
+    </p>
   );
 }
 
@@ -31,84 +69,145 @@ export const slides = [
 
   // 2. Basic render cycle — Event → Update → Render → Commit
   <Slide key="cycle-basic">
-    <SlideTitle>Async React Render Cycle</SlideTitle>
-    <div className="mt-16 flex items-center justify-center gap-4">
-      <CycleBox>Event</CycleBox>
-      <CycleBox>Update</CycleBox>
-      <CycleBox>Render</CycleBox>
-      <CycleBox>Commit</CycleBox>
+    <div style={{ viewTransitionName: 'cycle-title' }}>
+      <SlideTitle>Async React Render Cycle</SlideTitle>
+    </div>
+    <div className="mt-16 flex items-center justify-center gap-5">
+      <CycleBox name="box-event">Event</CycleBox>
+      <CycleArrow name="arrow-1" />
+      <CycleBox name="box-update">Update</CycleBox>
+      <CycleArrow name="arrow-2" />
+      <CycleBox name="box-render">Render</CycleBox>
+      <CycleArrow name="arrow-3" />
+      <CycleBox name="box-commit">Commit</CycleBox>
     </div>
   </Slide>,
 
   // 3. With in-between states — busy, loading, done
   <Slide key="cycle-states">
-    <SlideTitle>Async React Render Cycle</SlideTitle>
-    <div className="mt-16 flex items-center justify-center gap-4">
-      <CycleBox>Event</CycleBox>
-      <CycleLabel>busy</CycleLabel>
-      <CycleBox>Update</CycleBox>
-      <CycleLabel>loading</CycleLabel>
-      <CycleBox>Render</CycleBox>
-      <CycleLabel>done</CycleLabel>
-      <CycleBox>Commit</CycleBox>
+    <div style={{ viewTransitionName: 'cycle-title' }}>
+      <SlideTitle>Async React Render Cycle</SlideTitle>
+    </div>
+    <div className="mt-16 flex items-center justify-center gap-5">
+      <CycleBox name="box-event">Event</CycleBox>
+      <CycleArrow name="arrow-1" />
+      <CycleLabel name="label-busy">busy</CycleLabel>
+      <CycleArrow name="arrow-2" />
+      <CycleBox name="box-update">Update</CycleBox>
+      <CycleArrow name="arrow-3" />
+      <CycleLabel name="label-loading">loading</CycleLabel>
+      <CycleArrow name="arrow-4" />
+      <CycleBox name="box-render">Render</CycleBox>
+      <CycleArrow name="arrow-5" />
+      <CycleLabel name="label-done">done</CycleLabel>
+      <CycleArrow name="arrow-6" />
+      <CycleBox name="box-commit">Commit</CycleBox>
     </div>
   </Slide>,
 
   // 4. Wrapped in a transition
   <Slide key="cycle-transition">
-    <SlideTitle>Async React Render Cycle</SlideTitle>
-    <div className="mt-12 flex flex-col items-center gap-8">
-      <p className="text-primary text-xl font-bold tracking-wide">transition</p>
-      <div className="border-primary/40 flex items-center gap-4 rounded-2xl border-2 px-6 py-5">
-        <CycleBox>Event</CycleBox>
-        <CycleLabel>busy</CycleLabel>
-        <CycleBox>Update</CycleBox>
-        <CycleLabel>loading</CycleLabel>
-        <CycleBox>Render</CycleBox>
-        <CycleLabel>done</CycleLabel>
-        <CycleBox>Commit</CycleBox>
+    <div style={{ viewTransitionName: 'cycle-title' }}>
+      <SlideTitle>Async React Render Cycle</SlideTitle>
+    </div>
+    <div className="mt-12 flex flex-col items-center gap-6">
+      <p
+        className="text-primary text-xl font-bold tracking-wide font-mono"
+        style={{ viewTransitionName: 'transition-label' }}
+      >
+        transition
+      </p>
+      <div
+        className="bg-primary/5 border-primary/30 flex items-center gap-5 rounded-2xl border-2 border-dashed px-8 py-6"
+        style={{ viewTransitionName: 'transition-border' }}
+      >
+        <CycleBox name="box-event">Event</CycleBox>
+        <CycleArrow name="arrow-1" />
+        <CycleLabel name="label-busy">busy</CycleLabel>
+        <CycleArrow name="arrow-2" />
+        <CycleBox name="box-update">Update</CycleBox>
+        <CycleArrow name="arrow-3" />
+        <CycleLabel name="label-loading">loading</CycleLabel>
+        <CycleArrow name="arrow-4" />
+        <CycleBox name="box-render">Render</CycleBox>
+        <CycleArrow name="arrow-5" />
+        <CycleLabel name="label-done">done</CycleLabel>
+        <CycleArrow name="arrow-6" />
+        <CycleBox name="box-commit">Commit</CycleBox>
       </div>
     </div>
   </Slide>,
 
   // 5. With primitives mapped to each phase
   <Slide key="cycle-primitives">
-    <SlideTitle>Async React Render Cycle</SlideTitle>
-    <div className="mt-12 flex flex-col items-center gap-8">
-      <p className="text-primary text-xl font-bold tracking-wide">transition</p>
-      <div className="border-primary/40 flex items-center gap-4 rounded-2xl border-2 px-6 py-5">
-        <CycleBox>Event</CycleBox>
-        <CycleLabel>busy</CycleLabel>
-        <CycleBox>Update</CycleBox>
-        <CycleLabel>loading</CycleLabel>
-        <CycleBox>Render</CycleBox>
-        <CycleLabel>done</CycleLabel>
-        <CycleBox>Commit</CycleBox>
+    <div style={{ viewTransitionName: 'cycle-title' }}>
+      <SlideTitle>Async React Render Cycle</SlideTitle>
+    </div>
+    <div className="mt-12 flex flex-col items-center gap-6">
+      <p
+        className="text-primary text-xl font-bold tracking-wide font-mono"
+        style={{ viewTransitionName: 'transition-label' }}
+      >
+        transition
+      </p>
+      <div
+        className="bg-primary/5 border-primary/30 flex items-center gap-5 rounded-2xl border-2 border-dashed px-8 py-6"
+        style={{ viewTransitionName: 'transition-border' }}
+      >
+        <CycleBox name="box-event">Event</CycleBox>
+        <CycleArrow name="arrow-1" />
+        <CycleLabel name="label-busy">busy</CycleLabel>
+        <CycleArrow name="arrow-2" />
+        <CycleBox name="box-update">Update</CycleBox>
+        <CycleArrow name="arrow-3" />
+        <CycleLabel name="label-loading">loading</CycleLabel>
+        <CycleArrow name="arrow-4" />
+        <CycleBox name="box-render">Render</CycleBox>
+        <CycleArrow name="arrow-5" />
+        <CycleLabel name="label-done">done</CycleLabel>
+        <CycleArrow name="arrow-6" />
+        <CycleBox name="box-commit">Commit</CycleBox>
       </div>
-      <div className="flex gap-10">
-        <Primitive>useOptimistic()</Primitive>
-        <Primitive>&lt;Suspense&gt;</Primitive>
-        <Primitive>&lt;ViewTransition&gt;</Primitive>
+      <div className="flex items-start justify-center gap-16" style={{ viewTransitionName: 'primitives-row' }}>
+        <Primitive name="prim-optimistic">useOptimistic()</Primitive>
+        <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
+        <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
       </div>
     </div>
   </Slide>,
 
   // 6. Clean — when async is fast, it feels synchronous
   <Slide key="cycle-clean">
-    <SlideTitle>Async React Render Cycle</SlideTitle>
-    <div className="mt-12 flex flex-col items-center gap-8">
-      <p className="text-primary text-xl font-bold tracking-wide">transition</p>
-      <div className="border-primary/40 flex items-center gap-4 rounded-2xl border-2 px-6 py-5">
-        <CycleBox>Event</CycleBox>
-        <CycleBox>Update</CycleBox>
-        <CycleBox>Render</CycleBox>
-        <CycleBox>Commit</CycleBox>
+    <div style={{ viewTransitionName: 'cycle-title' }}>
+      <SlideTitle>Async React Render Cycle</SlideTitle>
+    </div>
+    <div className="mt-12 flex flex-col items-center gap-6">
+      <p
+        className="text-primary text-xl font-bold tracking-wide font-mono"
+        style={{ viewTransitionName: 'transition-label' }}
+      >
+        transition
+      </p>
+      <div
+        className="bg-primary/5 border-primary/30 flex items-center gap-5 rounded-2xl border-2 border-dashed px-8 py-6"
+        style={{ viewTransitionName: 'transition-border' }}
+      >
+        <CycleBox name="box-event">Event</CycleBox>
+        <CycleArrow name="arrow-1" />
+        <CycleBox name="box-update">Update</CycleBox>
+        <CycleArrow name="arrow-2" />
+        <CycleBox name="box-render">Render</CycleBox>
+        <CycleArrow name="arrow-3" />
+        <CycleBox name="box-commit">Commit</CycleBox>
       </div>
-      <div className="flex gap-10">
-        <Primitive>useOptimistic()</Primitive>
-        <Primitive>&lt;Suspense&gt;</Primitive>
-        <Primitive>&lt;ViewTransition&gt;</Primitive>
+      <div className="flex items-start justify-center gap-16" style={{ viewTransitionName: 'primitives-row' }}>
+        <Primitive name="prim-optimistic">useOptimistic()</Primitive>
+        <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
+        <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
       </div>
+      <NetworkNote name="network-note">
+        &lt; 150ms — feels synchronous · &gt; 150ms — in-between states appear
+      </NetworkNote>
     </div>
   </Slide>,
 ];

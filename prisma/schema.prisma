@@ -3,8 +3,9 @@ generator client {
     output   = "../generated/prisma"
 }
 
+// SQLite (local dev): provider = "sqlite"
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
 }
 
 model Event {

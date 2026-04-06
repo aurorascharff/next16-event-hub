@@ -5,7 +5,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
+import type { Metadata } from 'next';
 import { QuestionList } from './_components/QuestionList';
+
+export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
+  const { slug } = await params;
+  const event = await getEventBySlug(slug);
+  return {
+    description: `Ask and vote on questions for ${event.name}`,
+    title: `Questions · ${event.name} | Event Hub`,
+  };
+}
 
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (

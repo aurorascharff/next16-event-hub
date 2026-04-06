@@ -53,21 +53,25 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
 export function EventDetailsSkeleton() {
   return (
     <article>
+      <MetaStripSkeleton />
       <LabelChipsSkeleton />
       <SessionPrevNextNavSkeleton />
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
-          <Skeleton className="h-8 w-4/5 sm:h-10" />
-          <Skeleton className="size-9 shrink-0 rounded-md" />
+          <Skeleton className="h-14 w-4/5 rounded-md sm:h-18" />
+          <Skeleton className="size-6 shrink-0 rounded-md" />
         </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="size-8 rounded-full" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Skeleton className="size-8 shrink-0 rounded-full" />
           <Skeleton className="h-4 w-36" />
         </div>
-        <div className="space-y-1.5">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
+        <div className="max-h-20 overflow-hidden sm:max-h-24">
+          <div className="space-y-1.5 sm:space-y-2.5">
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-11/12" />
+            <Skeleton className="h-3.5 w-3/4" />
+          </div>
         </div>
       </div>
     </article>

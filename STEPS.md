@@ -100,6 +100,8 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 - Add directional ViewTransition to navigation. The home page slides left when entering a session, and the detail page slides in from the right. Going back reverses it.
 - The session detail page uses BottomNav with a "Back" tab that has `transitionTypes: ['nav-back']` to trigger the reverse slide. The Link on session cards uses `transitionTypes={['nav-forward']}`. BottomNav adds a `'tab-switch'` transition type on every tab click and forwards the tab's `transitionTypes` via `addTransitionType` inside `startTransition`.
+- Add a shared element morph on top of the directional slide. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="auto"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="auto"`. When clicking a card, it morphs into the detail view while the page slides — and reverses when going back.
+- The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards morph to their new grid positions when switching label filters. ChipGroup adds `addTransitionType('filter')` on category changes.
 
 ### Tab Switch Crossfade
 
@@ -107,9 +109,9 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 ### List Animations
 
-- Each event card in EventGrid has `<ViewTransition name={`event-${event.slug}`} share="auto" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default="none">`. Cards that persist across tab or filter changes morph to their new grid positions instead of crossfading. ChipGroup adds `addTransitionType('filter')` on category changes — the per-card `update` map handles both types.
-- Wrap each QuestionCard in ViewTransition with a unique key and `default="none"`. The unique key lets React track each item, and `default="none"` prevents unwanted animations during other transitions like navigation.
-- Each comment is wrapped in ViewTransition with a unique key and `name={`comment-${comment.id}`}`. The `name` enables the exit animation when a comment is deleted. `default="none"` keeps other transitions clean.
+- List animations are visible when sorting questions, when new items arrive via `router.refresh()` polling, and when items are added or deleted via mutations.
+- Wrap each QuestionCard in ViewTransition with a unique key and `default="none"`. The unique key lets React track each item across sort changes — cards animate to their new positions when switching between "Top" and "Newest". `default="none"` prevents unwanted animations during other transitions like navigation.
+- Each comment is wrapped in ViewTransition with a unique key, `name={`comment-${comment.id}`}`, and `enter="slide-up"`. New comments slide in on add, and the `name` enables the exit animation when a comment is deleted. `default="none"` keeps other transitions clean.
 
 ## Eliminating In-Between States
 

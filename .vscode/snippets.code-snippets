@@ -51,18 +51,27 @@
       "</ViewTransition>"
     ]
   },
-  "listAnimationCardMorph": {
-    "prefix": "listAnimationCardMorph",
-    "description": "ViewTransition card morph for filter/tab changes",
+  "eventCardMorph": {
+    "prefix": "eventCardMorph",
+    "description": "ViewTransition shared element morph for event cards (filter + navigation)",
     "body": [
-      "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
+      "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', default: 'none' }} default=\"none\">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "sharedElementTarget": {
+    "prefix": "sharedElementTarget",
+    "description": "ViewTransition shared element target on detail page",
+    "body": [
+      "<ViewTransition name={`${1:event}-\\${${2:slug}}`} share=\"auto\">",
       "  ${0}",
       "</ViewTransition>"
     ]
   },
   "listAnimationItem": {
     "prefix": "listAnimationItem",
-    "description": "ViewTransition list item with unique name for enter/exit",
+    "description": "ViewTransition list item with unique name for sorting/refresh animations",
     "body": [
       "<ViewTransition key={${1:item}.id} name={`${2:comment}-\\${${1:item}.id}`} enter=\"slide-up\" default=\"none\">",
       "  ${0}",

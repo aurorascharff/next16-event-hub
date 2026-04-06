@@ -13,7 +13,6 @@ dotenv.config({ path: '.env.local' });
 // --- PostgreSQL (Vercel) ---
 export default defineConfig({
   datasource: {
-    directUrl: process.env.POSTGRES_URL_NON_POOLING,
     url: process.env.POSTGRES_PRISMA_URL!,
   },
   migrations: {

@@ -5,9 +5,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug } from '@/data/queries/event';
+import type { Metadata } from 'next';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+
+export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
+  const { slug } = await params;
+  const event = await getEventBySlug(slug);
+  return {
+    description: event.description,
+    title: `${event.name} | Event Hub`,
+  };
+}
 
 export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (

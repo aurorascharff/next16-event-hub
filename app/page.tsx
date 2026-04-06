@@ -6,7 +6,13 @@ import { LabelFilter } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { BottomNavSkeleton } from '@/components/design/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Metadata } from 'next';
 import { HomeTabs } from './_components/HomeTabs';
+
+export const metadata: Metadata = {
+  title: 'Event Hub',
+  description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',
+};
 
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (

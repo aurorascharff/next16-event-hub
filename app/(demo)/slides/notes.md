@@ -1,6 +1,8 @@
 # Speaker Notes
 
-Hi everyone! I'm Aurora Scharff, a software engineer from Norway. I work on React and Next.js apps and I'm a Next.js Ambassador. I'm really excited to be here at React Miami — let's get into it.
+---
+
+Hi everyone! I'm Aurora Scharff, a DX Engineer at Vercel. I'm really excited to be here at React Miami — let's get into it.
 
 ---
 

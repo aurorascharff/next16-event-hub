@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     title: 'Event Hub',
   },
   description: 'Live event companion app — comments, questions, and favorites for conference sessions.',
+  icons: {
+    icon: '/favicon.png',
+  },
   manifest: '/manifest.json',
   title: 'Event Hub',
 };

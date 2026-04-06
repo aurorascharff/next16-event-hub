@@ -16,13 +16,36 @@
       "</Suspense>"
     ]
   },
-  "directionalNavigation": {
-    "prefix": "directionalNavigation",
-    "description": "ViewTransition directional slide for next/previous talk navigation",
+  "sameRouteDirectionalShare": {
+    "prefix": "sameRouteDirectionalShare",
+    "description": "Same dynamic segment: key+name+share (prev/next talk). Pair with globals.css .nav-forward/.nav-back and Link transitionTypes",
     "body": [
       "<ViewTransition",
-      "  enter={{ 'nav-forward': 'slide-from-right', 'nav-back': 'slide-from-left', default: 'none' }}",
-      "  exit={{ 'nav-forward': 'slide-to-left', 'nav-back': 'slide-to-right', default: 'none' }}",
+      "  key={${1:slug}}",
+      "  name=\"${2:session-content}\"",
+      "  share={{",
+      "    'nav-forward': 'nav-forward',",
+      "    'nav-back': 'nav-back',",
+      "    default: 'auto',",
+      "  }}",
+      "  default=\"none\"",
+      ">",
+      "  ${0}",
+      "</ViewTransition>"
+    ]
+  },
+  "directionalNavigation": {
+    "prefix": "directionalNavigation",
+    "description": "Alias: same-route directional slides (use sameRouteDirectionalShare)",
+    "body": [
+      "<ViewTransition",
+      "  key={${1:slug}}",
+      "  name=\"${2:session-content}\"",
+      "  share={{",
+      "    'nav-forward': 'nav-forward',",
+      "    'nav-back': 'nav-back',",
+      "    default: 'auto',",
+      "  }}",
       "  default=\"none\"",
       ">",
       "  ${0}",

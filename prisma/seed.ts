@@ -26,7 +26,7 @@ const events = [
     location: 'Cerveceria La Tropical',
     name: 'Opening Party',
     slug: 'opening-party',
-    speaker: null,
+    speaker: 'React Miami Team',
     time: '6:30 PM',
   },
   {
@@ -191,7 +191,7 @@ const events = [
     location: 'Multiple Locations',
     name: 'Community Activities',
     slug: 'community-activities',
-    speaker: null,
+    speaker: 'Community Leads',
     time: '6:30 PM',
   },
 
@@ -204,7 +204,7 @@ const events = [
     location: 'Bayfront Park',
     name: 'Dev Health 5K + Yoga',
     slug: 'dev-health-5k',
-    speaker: null,
+    speaker: 'React Miami Team',
     time: '7:30 AM',
   },
   {
@@ -335,7 +335,7 @@ const events = [
     location: 'Wynwood Marketplace',
     name: 'Afterparty at Wynwood',
     slug: 'afterparty',
-    speaker: null,
+    speaker: 'React Miami Team',
     time: '7:00 PM',
   },
 ];

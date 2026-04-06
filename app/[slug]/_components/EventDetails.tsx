@@ -41,7 +41,7 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
               <span className="text-sm font-medium">{event.speaker}</span>
             </div>
           )}
-          <div className="max-h-20 overflow-y-auto sm:max-h-24">
+          <div className="h-20 overflow-y-auto sm:h-24">
             <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
           </div>
         </div>

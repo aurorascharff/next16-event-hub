@@ -16,23 +16,6 @@
       "</Suspense>"
     ]
   },
-  "suspenseRevealWithCrossfade": {
-    "prefix": "suspenseRevealWithCrossfade",
-    "description": "Suspense with ViewTransition auto crossfade reveal",
-    "body": [
-      "<Suspense",
-      "  fallback={",
-      "    <ViewTransition exit=\"auto\">",
-      "      <${1:Skeleton} />",
-      "    </ViewTransition>",
-      "  }",
-      ">",
-      "  <ViewTransition enter=\"auto\" default=\"none\">",
-      "    ${0}",
-      "  </ViewTransition>",
-      "</Suspense>"
-    ]
-  },
   "directionalNavigationForward": {
     "prefix": "directionalNavigationForward",
     "description": "ViewTransition directional slide for forward navigation (home page)",

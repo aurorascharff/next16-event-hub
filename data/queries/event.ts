@@ -4,10 +4,11 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
 import { parseTime } from '@/lib/utils';
+import { cacheTag } from 'next/cache';
 
 export const getEvents = cache(async (day?: string, label?: string, currentUserName?: string | null) => {
-  // 'use cache';
-  // cacheTag('events');
+  'use cache';
+  cacheTag('events');
 
   const where: Record<string, unknown> = {};
   if (day) {
@@ -23,10 +24,12 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
     select: {
       day: true,
       description: true,
-      favorites: currentUserName ? {
-        select: { id: true },
-        where: { userName: currentUserName },
-      } : false,
+      favorites: currentUserName
+        ? {
+            select: { id: true },
+            where: { userName: currentUserName },
+          }
+        : false,
       labels: true,
       location: true,
       name: true,
@@ -38,10 +41,12 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
   });
 
   return events
-    .map(({ favorites, ...event }) => {return {
-      ...event,
-      hasFavorited: Array.isArray(favorites) && favorites.length > 0,
-    }})
+    .map(({ favorites, ...event }) => {
+      return {
+        ...event,
+        hasFavorited: Array.isArray(favorites) && favorites.length > 0,
+      };
+    })
     .sort((a, b) => {
       if (a.day !== b.day) return a.day.localeCompare(b.day);
       return parseTime(a.time) - parseTime(b.time);
@@ -49,8 +54,8 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  // 'use cache';
-  // cacheTag(`event-${slug}`);
+  'use cache';
+  cacheTag(`event-${slug}`);
 
   const event = await prisma.event.findUnique({
     where: { slug },

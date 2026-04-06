@@ -7,8 +7,8 @@ import { parseTime, slow } from '@/lib/utils';
 import { cacheTag } from 'next/cache';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
-  // 'use cache';
-  // cacheTag('events');
+  'use cache';
+  cacheTag('events');
 
   await slow();
   const where: Record<string, unknown> = {};
@@ -48,8 +48,8 @@ export const getUserFavorites = cache(async (userName: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  // 'use cache';
-  // cacheTag(`event-${slug}`);
+  'use cache';
+  cacheTag(`event-${slug}`);
 
   const event = await prisma.event.findUnique({
     where: { slug },

@@ -3,10 +3,10 @@ import { getEventBySlug, getEvents } from '@/data/queries/event';
 import type { Metadata } from 'next';
 import { SessionTabs } from './_components/SessionTabs';
 
-// export async function generateStaticParams() {
-//   const events = await getEvents();
-//   return events.map(event => ({ slug: event.slug }));
-// }
+export async function generateStaticParams() {
+  const events = await getEvents();
+  return events.map(event => ({ slug: event.slug }));
+}
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;

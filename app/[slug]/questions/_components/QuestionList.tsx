@@ -46,7 +46,11 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const [optimisticQuestions, addOptimisticQuestion] = useOptimistic(
     initialQuestions,
     (current, newQuestion: Question) => {
-      if (current.some(q => {return q.id === newQuestion.id})) {
+      if (
+        current.some(q => {
+          return q.id === newQuestion.id;
+        })
+      ) {
         return current;
       }
       return [newQuestion, ...current];
@@ -106,31 +110,21 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
 
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <span className="bg-emerald-500 inline-block size-1.5 animate-pulse rounded-full" />
+          <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
           Live · {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
         </span>
-        <ChipGroup
-          items={sortOptions}
-          value={sort}
-          onChange={handleSortChange}
-          variant="toggle"
-        />
+        <ChipGroup items={sortOptions} value={sort} onChange={handleSortChange} variant="toggle" />
       </div>
 
       <div className="space-y-2">
         {sortedQuestions.map(question => {
           return (
-            <ViewTransition
-              key={question.id}
-              enter="slide-up"
-            >
+            <ViewTransition key={question.id} enter="slide-up">
               <QuestionCard question={question} />
             </ViewTransition>
           );
         })}
-        {sortedQuestions.length === 0 && (
-          <EmptyState message="No questions yet. Be the first to ask!" />
-        )}
+        {sortedQuestions.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
     </div>
   );

@@ -19,15 +19,10 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       default="none"
     >
       <div className="min-h-screen pb-16">
-        <header
-          className="bg-background sticky top-0 z-30 border-b"
-          style={{ viewTransitionName: 'header' }}
-        >
+        <header className="bg-background sticky top-0 z-30 border-b" style={{ viewTransitionName: 'header' }}>
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-center justify-between">
-              <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">
-                Event Hub
-              </h1>
+              <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
               <ThemeToggle />
             </div>
             <Suspense fallback={<FiltersSkeleton />}>
@@ -37,11 +32,13 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
         </header>
 
         <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-          <Suspense fallback={
-            <ViewTransition exit="slide-down">
-              <EventGridSkeleton />
-            </ViewTransition>
-          }>
+          <Suspense
+            fallback={
+              <ViewTransition exit="slide-down">
+                <EventGridSkeleton />
+              </ViewTransition>
+            }
+          >
             <ViewTransition enter="slide-up" default="none">
               <EventGrid searchParams={searchParams} />
             </ViewTransition>

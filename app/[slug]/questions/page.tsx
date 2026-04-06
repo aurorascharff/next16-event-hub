@@ -7,11 +7,13 @@ import { QuestionList } from './_components/QuestionList';
 
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
-    <Suspense fallback={
-      <ViewTransition exit="slide-down">
-        <FeedSkeleton />
-      </ViewTransition>
-    }>
+    <Suspense
+      fallback={
+        <ViewTransition exit="slide-down">
+          <FeedSkeleton />
+        </ViewTransition>
+      }
+    >
       <ViewTransition enter="slide-up" default="none">
         <QuestionFeed params={params} />
       </ViewTransition>

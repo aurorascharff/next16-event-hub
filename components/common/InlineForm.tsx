@@ -19,26 +19,27 @@ export function InlineForm({ action, placeholder, submitLabel, disabled, resetOn
   const [isPending, setIsPending] = useOptimistic(false);
 
   return (
-    <form ref={formRef} action={async (formData: FormData) => {
-      setIsPending(true);
-      if (resetOnSubmit) {
-        formRef.current?.reset();
-      }
-      await action(formData);
-    }} className="flex gap-2">
-      <Input
-        name="content"
-        placeholder={placeholder}
-        required
-        className="flex-1"
-      />
+    <form
+      ref={formRef}
+      action={async (formData: FormData) => {
+        setIsPending(true);
+        if (resetOnSubmit) {
+          formRef.current?.reset();
+        }
+        await action(formData);
+      }}
+      className="flex gap-2"
+    >
+      <Input name="content" placeholder={placeholder} required className="flex-1" />
       <Button type="submit" disabled={(isPending && !optimistic) || disabled}>
         {isPending && !optimistic ? (
           <span className="flex items-center justify-center gap-2">
             {submitLabel}
             <Spinner />
           </span>
-        ) : submitLabel}
+        ) : (
+          submitLabel
+        )}
       </Button>
     </form>
   );

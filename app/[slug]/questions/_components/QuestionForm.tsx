@@ -13,12 +13,5 @@ export function QuestionForm({ onSubmit }: Props) {
     await onSubmit(content);
   }
 
-  return (
-    <InlineForm
-      action={handleAction}
-      placeholder="Ask a question..."
-      submitLabel="Ask"
-      optimistic
-    />
-  );
+  return <InlineForm action={handleAction} placeholder="Ask a question..." submitLabel="Ask" optimistic />;
 }

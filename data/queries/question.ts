@@ -24,9 +24,20 @@ export const getQuestionsByEvent = cache(async (eventSlug: string, currentUser?:
   if (currentUser) {
     const votes = await prisma.questionVote.findMany({
       select: { questionId: true },
-      where: { questionId: { in: questions.map(q => { return q.id; }) }, userName: currentUser },
+      where: {
+        questionId: {
+          in: questions.map(q => {
+            return q.id;
+          }),
+        },
+        userName: currentUser,
+      },
     });
-    votedIds = new Set(votes.map(v => { return v.questionId; }));
+    votedIds = new Set(
+      votes.map(v => {
+        return v.questionId;
+      }),
+    );
   }
 
   return questions.map(q => {

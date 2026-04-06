@@ -10,9 +10,7 @@ const commentSchema = z.object({
   content: z.string().min(1, 'Comment is required').max(500),
 });
 
-export type CommentActionResult =
-  | { success: true }
-  | { error: string; success: false };
+export type CommentActionResult = { success: true } | { error: string; success: false };
 
 export async function addComment(eventSlug: string, formData: FormData): Promise<CommentActionResult> {
   const userName = await getCurrentUser();

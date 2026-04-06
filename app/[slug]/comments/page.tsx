@@ -9,11 +9,13 @@ import { CommentForm } from './_components/CommentForm';
 
 export default function CommentsPage({ params }: PageProps<'/[slug]/comments'>) {
   return (
-    <Suspense fallback={
-      <ViewTransition exit="slide-down">
-        <FeedSkeleton />
-      </ViewTransition>
-    }>
+    <Suspense
+      fallback={
+        <ViewTransition exit="slide-down">
+          <FeedSkeleton />
+        </ViewTransition>
+      }
+    >
       <ViewTransition enter="slide-up" default="none">
         <CommentFeed params={params} />
       </ViewTransition>
@@ -37,9 +39,7 @@ async function CommentFeed({ params }: Pick<PageProps<'/[slug]/comments'>, 'para
             </ViewTransition>
           );
         })}
-        {comments.length === 0 && (
-          <EmptyState message="No comments yet. Start the conversation!" />
-        )}
+        {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
       </div>
     </div>
   );

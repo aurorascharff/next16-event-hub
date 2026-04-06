@@ -1,7 +1,9 @@
 # AGENTS.md
 
 <!-- BEGIN:nextjs-agent-rules -->
+
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+
 <!-- END:nextjs-agent-rules -->
 
 ## Setup
@@ -27,8 +29,8 @@ Always run `pnpm run build` and `pnpm run lint` before committing. Fix any error
 - Tailwind CSS 4.x
 - shadcn/ui components (`components/ui/`)
 - Base UI (`@base-ui/react`) for custom interactive components
-- Prisma with SQLite (`@prisma/adapter-libsql`)
-- SWR for presence polling; `startTransition` + `router.refresh()` for question polling
+- Prisma with PostgreSQL (`@prisma/adapter-pg`)
+- `startTransition` + `router.refresh()` for question polling
 - Zod for validation
 - Sonner for toasts
 - next-themes for dark/light mode
@@ -65,14 +67,12 @@ app/
   [slug]/
     layout.tsx                # Session layout (header, event info, bottom nav)
     page.tsx                  # Redirects to /[slug]/comments
-    _components/              # Shared session-local components (ActiveUsers)
     comments/
       page.tsx                # Comment feed
       _components/            # Comment-local components
     questions/
       page.tsx                # Q&A feed with sort
       _components/            # Question-local components
-  api/events/[slug]/          # SWR polling endpoint (presence)
 components/
   common/                     # Shared utility components (Avatar, BackButton, EmptyState, InlineForm, AuthGate, ThemeToggle)
   design/                     # Action prop components (BottomNav, ChipGroup, SubmitButton)
@@ -80,7 +80,6 @@ components/
 data/
   queries/                    # Server-side queries with cache()
   actions/                    # Server Actions (mutations with refresh())
-hooks/                        # Custom hooks (useIsClient)
 lib/                          # Utility functions
 prisma/                       # Prisma schema and seeds
 ```
@@ -90,9 +89,7 @@ prisma/                       # Prisma schema and seeds
 - **components/ui** — shadcn/ui primitives
 - **data/queries** — Server-side data fetching with `cache()` for deduplication
 - **data/actions** — Server Actions with `"use server"` for mutations. Use `refresh()` to invalidate the client router.
-- **app/api** — API route for SWR client-side polling (presence only)
-
-Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
+  Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
 
 ## Development Flow
 
@@ -100,7 +97,7 @@ Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fet
 
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
 - **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `refresh()` to invalidate. Use `useOptimistic` for instant feedback.
-- **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Presence uses SWR for lightweight background polling. Comments update on user action via `refresh()`.
+- **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Comments update on user action via `refresh()`.
 - **Navigate + mutate** — Wrap both a server action and `router.push()` in a single `startTransition` for atomic mutation + navigation (see `BackButton`).
 
 ## Server Components (Default)
@@ -159,7 +156,7 @@ pnpm run prisma.generate # Generate Prisma client
 
 ## Important Files
 
-- `db.ts` - Prisma client instance (SQLite via libsql adapter)
-- `prisma/schema.prisma` - Database schema (Event, Comment, Question, Presence)
+- `db.ts` - Prisma client instance (PostgreSQL via pg adapter)
+- `prisma/schema.prisma` - Database schema (Event, Comment, Question, Favorite)
 - `lib/utils.ts` - Utility functions including `cn()`, `timeAgo()`, `parseTime()`, avatar URLs
 - `components.json` - shadcn/ui configuration

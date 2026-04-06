@@ -13,4 +13,3 @@ export function ThemeProvider({ children }: Props) {
     </NextThemesProvider>
   );
 }
-

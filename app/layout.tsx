@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Event Hub',
   },
-  description: 'Live event companion app — comments, questions, and live presence for conference sessions.',
+  description: 'Live event companion app — comments, questions, and favorites for conference sessions.',
   manifest: '/manifest.json',
   themeColor: '#09090b',
   title: 'Event Hub',

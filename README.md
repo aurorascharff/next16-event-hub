@@ -1,8 +1,8 @@
 # Next 16 Event Hub
 
-An interactive, live event companion app exploring Async React patterns with optimistic UI, transition-based polling, and View Transitions. Attendees can browse sessions, post comments, ask and upvote questions, favorite sessions, and see who's actively watching.
+An interactive, live event companion app exploring Async React patterns with optimistic UI and View Transitions. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions.
 
-Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), Prisma (SQLite), and SWR (presence only).
+Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
 
 ## Getting Started
 
@@ -26,7 +26,6 @@ components/
 data/
   actions/                # Server Actions
   queries/                # Data fetching with cache()
-hooks/                    # Custom hooks
 lib/                      # Utility functions
 prisma/                   # Schema and seed data
 ```
@@ -45,7 +44,7 @@ Every route folder should contain everything it needs. Components and functions 
 
 **Async React:** Replace manual `isLoading`/`isError` state with React 19's coordination primitives — `useTransition` for tracking async work, `useOptimistic` for instant feedback, `Suspense` for loading boundaries, and `use()` for reading promises during render.
 
-**Live Data Sync:** Questions poll via `startTransition(() => router.refresh())` — updates flow through React's transition system, coordinating with `useOptimistic`, `useDeferredValue`, and ViewTransition. Active users use SWR for lightweight presence polling.
+**Live Data Sync:** Questions poll via `startTransition(() => router.refresh())` — updates flow through React's transition system, coordinating with `useOptimistic`, `useDeferredValue`, and ViewTransition.
 
 ## Development Flow
 

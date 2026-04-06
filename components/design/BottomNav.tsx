@@ -21,9 +21,14 @@ type Props<T extends string> = {
 
 export function BottomNav<T extends string>({ tabs, activeIndex, action, className }: Props<T>) {
   const pathname = usePathname();
-  const resolvedActive = activeIndex ?? Math.max(0, tabs.findIndex(tab => {
-    return pathname === tab.href;
-  }));
+  const resolvedActive =
+    activeIndex ??
+    Math.max(
+      0,
+      tabs.findIndex(tab => {
+        return pathname === tab.href;
+      }),
+    );
 
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
   const [, startTransition] = useTransition();
@@ -54,9 +59,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
               }}
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors',
-                isActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground',
+                isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
               )}
             >
               {tab.icon}

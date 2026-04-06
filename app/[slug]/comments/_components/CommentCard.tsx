@@ -44,9 +44,7 @@ export function CommentCard({ comment, currentUser }: Props) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium">{comment.userName}</span>
-          <span className="text-muted-foreground text-xs">
-            {timeAgo(comment.createdAt)}
-          </span>
+          <span className="text-muted-foreground text-xs">{timeAgo(comment.createdAt)}</span>
         </div>
         <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{comment.content}</p>
       </div>

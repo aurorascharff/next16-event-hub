@@ -34,14 +34,11 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
             <Link
               href={`/${event.slug}`}
               transitionTypes={['nav-forward']}
-              className={cn(
-                'group block rounded-lg border p-4 transition-all',
-                'bg-card hover:border-primary/40',
-              )}
+              className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
             >
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                  <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                     {getDayLabel(event.day)}
                   </span>
                   <span className="text-border">·</span>
@@ -66,7 +63,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   })}
                 </div>
               )}
-              <h3 className="text-sm font-semibold leading-snug transition-colors group-hover:text-primary sm:text-[15px]">
+              <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
                 {event.name}
               </h3>
               {event.speaker && (
@@ -75,9 +72,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   <span className="text-muted-foreground text-xs">{event.speaker}</span>
                 </div>
               )}
-              <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">
-                {event.description}
-              </p>
+              <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">{event.description}</p>
               <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
                 <span className="flex items-center gap-1">
                   <MapPin className="size-2.5" />

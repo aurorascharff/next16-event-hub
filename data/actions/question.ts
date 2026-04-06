@@ -10,9 +10,7 @@ const questionSchema = z.object({
   content: z.string().min(1, 'Question is required').max(500),
 });
 
-export type QuestionActionResult =
-  | { success: true }
-  | { error: string; success: false };
+export type QuestionActionResult = { success: true } | { error: string; success: false };
 
 export async function addQuestion(eventSlug: string, formData: FormData): Promise<QuestionActionResult> {
   const userName = await getCurrentUser();

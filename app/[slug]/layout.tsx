@@ -5,10 +5,8 @@ import { Avatar } from '@/components/common/Avatar';
 import { BackButton } from '@/components/common/BackButton';
 import { BottomNav } from '@/components/design/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
-import { leavePresence } from '@/data/actions/presence';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
-import { ActiveUsers } from './_components/ActiveUsers';
 import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
@@ -37,19 +35,11 @@ export default async function SessionLayout({ children, params }: LayoutProps<'/
       default="none"
     >
       <div className="min-h-screen pb-16">
-        <header
-          className="bg-background sticky top-0 z-30 border-b"
-          style={{ viewTransitionName: 'header' }}
-        >
+        <header className="bg-background sticky top-0 z-30 border-b" style={{ viewTransitionName: 'header' }}>
           <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6">
-            <div className="flex items-center justify-between">
-              <BackButton href="/" size="sm" action={leavePresence}>
-                ← Sessions
-              </BackButton>
-              <Suspense>
-                <ActiveUsers eventSlug={slug} />
-              </Suspense>
-            </div>
+            <BackButton href="/" size="sm">
+              ← Sessions
+            </BackButton>
           </div>
         </header>
 
@@ -76,9 +66,7 @@ async function EventDetails({ slug }: { slug: string }) {
   return (
     <article className="mb-6">
       <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-2 text-xs sm:mb-4 sm:gap-3">
-        <span className="font-medium uppercase tracking-wider">
-          {getDayLabel(event.day)}
-        </span>
+        <span className="font-medium tracking-wider uppercase">{getDayLabel(event.day)}</span>
         <span className="text-border">·</span>
         <span className="flex items-center gap-1">
           <Clock className="size-3" />
@@ -104,9 +92,7 @@ async function EventDetails({ slug }: { slug: string }) {
           })}
         </div>
       )}
-      <h1 className="font-sans text-lg font-bold tracking-tight sm:text-3xl">
-        {event.name}
-      </h1>
+      <h1 className="font-sans text-lg font-bold tracking-tight sm:text-3xl">{event.name}</h1>
       {event.speaker && (
         <div className="mt-2 flex items-center gap-2 sm:mt-4 sm:gap-3">
           <Avatar name={event.speaker} variant="speaker" size="lg" />

@@ -50,13 +50,22 @@ export const LABELS = [
 ] as const;
 
 export function parseLabels(labels: string): string[] {
-  return labels ? labels.split(',').map(l => {
-    return l.trim();
-  }).filter(Boolean) : [];
+  return labels
+    ? labels
+        .split(',')
+        .map(l => {
+          return l.trim();
+        })
+        .filter(Boolean)
+    : [];
 }
 
 export function getDayLabel(value: string): string {
-  return DAYS.find(d => {return d.value === value})?.label ?? value;
+  return (
+    DAYS.find(d => {
+      return d.value === value;
+    })?.label ?? value
+  );
 }
 
 export function getAvatarUrl(name: string, variant: 'speaker' | 'user' = 'user'): string {

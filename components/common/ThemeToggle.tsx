@@ -15,15 +15,18 @@ export function ThemeToggle() {
   }, []);
 
   return (
-    <div
-      style={{ viewTransitionName: 'theme-toggle' }}
-      className="inline-flex items-center rounded-full p-0.5"
-    >
+    <div style={{ viewTransitionName: 'theme-toggle' }} className="inline-flex items-center rounded-full p-0.5">
       {!mounted ? (
         <>
-          <span className="rounded-full p-2"><Sun className="size-4 opacity-0" /></span>
-          <span className="rounded-full p-2"><Moon className="size-4 opacity-0" /></span>
-          <span className="rounded-full p-2"><Monitor className="size-4 opacity-0" /></span>
+          <span className="rounded-full p-2">
+            <Sun className="size-4 opacity-0" />
+          </span>
+          <span className="rounded-full p-2">
+            <Moon className="size-4 opacity-0" />
+          </span>
+          <span className="rounded-full p-2">
+            <Monitor className="size-4 opacity-0" />
+          </span>
         </>
       ) : (
         <>

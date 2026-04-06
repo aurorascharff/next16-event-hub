@@ -2,8 +2,8 @@
 
 ## Setup and starting point
 
-- The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, favorite sessions, and see who's actively watching. It's a great example because it has all three async coordination patterns — data loading, navigations, and mutations — plus a live data sync layer on top.
-- The setup is the Next.js 16 App Router, Prisma ORM with SQLite, Tailwind CSS. Using React Server Components as my data fetching framework. I also use Next.js Cache Components here for the static/dynamic hybrid. For live data, questions poll with `startTransition` + `router.refresh()` and presence uses SWR.
+- The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. It's a great example because it has all three async coordination patterns — data loading, navigations, and mutations — plus a live data sync layer on top.
+- The setup is the Next.js 16 App Router, Prisma ORM, Tailwind CSS. Using React Server Components as my data fetching framework. I also use Next.js Cache Components here for the static/dynamic hybrid. For live data, questions poll with `startTransition` + `router.refresh()`.
 - Demo app: Data fetching has been slowed down to simulate worse network conditions. You can see this is the bad UX we had from the beginning in the slides. Let's fix it by designing the appropriate in-between states.
 
 ## Async Data Loading
@@ -31,8 +31,8 @@
 
 ### Mutation + Navigation
 
-- Here's something cool — we can combine a mutation and a navigation in the same transition for a seamless experience. When the user taps the back button to leave a session, we also want to clean up their presence record.
-- The BackButton accepts an optional action prop. It calls leavePresence and router.push inside the same startTransition. React treats the whole thing as one atomic transition — one smooth animation, not two separate state changes.
+- Here's something cool — we can combine a mutation and a navigation in the same transition for a seamless experience.
+- The BackButton accepts an optional action prop. It calls the action and router.push inside the same startTransition. React treats the whole thing as one atomic transition — one smooth animation, not two separate state changes.
 - This works because startTransition is async-aware. You can await a server action and then trigger navigation, and React coordinates everything.
 
 ## Async Mutations
@@ -58,9 +58,7 @@
 
 - Everything so far has been about in-between states — what happens between a user action and the result. But this app also has a background data cycle that runs without user action. Questions need to update when other attendees upvote, and you should see who else is watching the session.
 - For questions, we poll using `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, which fetch fresh data from the database. The new `initialQuestions` flow down as props to the client component. Because it's inside `startTransition`, the update coordinates with `useOptimistic` (in-flight optimistic values stay stable), `useDeferredValue` (reorders get deferred into concurrent renders), and ViewTransition (new questions enter with slide-up animation).
-- This is the key difference from using SWR — `router.refresh()` inside `startTransition` keeps everything in React's transition system. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
-- For active users, we use SWR polling against an API route — it's purely observational display data with no interaction conflicts, so SWR is the right tool.
-- Active users are tracked via a presence heartbeat — a useEffect interval calls the recordPresence server action every 10 seconds. When you leave, leavePresence cleans up (inside that mutation+navigation transition we saw earlier).
+- This is the key insight — `router.refresh()` inside `startTransition` keeps everything in React's transition system. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
 
 ## Review
 

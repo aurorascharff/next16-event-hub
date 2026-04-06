@@ -18,17 +18,19 @@ const events = [
   // Day 1
   {
     day: 'day-1',
-    description: 'Handling async operations in UI components can be tricky—flickering pending states, inefficient state updates, and unstable interfaces are common issues. This session demonstrates how React Server Components streamline data fetching while Actions handle async operations with built-in optimistic updates and pending states. We\'ll explore how View Transitions integrate with these patterns to enable fluid visual updates.',
+    description:
+      "Handling async operations in UI components can be tricky—flickering pending states, inefficient state updates, and unstable interfaces are common issues. This session demonstrates how React Server Components streamline data fetching while Actions handle async operations with built-in optimistic updates and pending states. We'll explore how View Transitions integrate with these patterns to enable fluid visual updates.",
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
-    name: 'Modern React Patterns: Concurrent Rendering, Actions & What\'s Next',
+    name: "Modern React Patterns: Concurrent Rendering, Actions & What's Next",
     slug: 'modern-react-patterns',
     speaker: 'Aurora Scharff',
     time: '9:15 AM',
   },
   {
     day: 'day-1',
-    description: 'React isn\'t trying to do more. It\'s trying to do what we already do, but better. In this talk, we\'ll explore new hooks like use and useEventEffect, View Transitions, Partial Prerendering, and the React Compiler. We\'ll look at the real problems they solve, how they\'re reshaping application architecture, and what we can expect heading into 2027. This talk will be presented in Spanish.',
+    description:
+      "React isn't trying to do more. It's trying to do what we already do, but better. In this talk, we'll explore new hooks like use and useEventEffect, View Transitions, Partial Prerendering, and the React Compiler. We'll look at the real problems they solve, how they're reshaping application architecture, and what we can expect heading into 2027. This talk will be presented in Spanish.",
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'El futuro de React es ahora',
@@ -38,7 +40,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'React Router turns 12 this year. After eight major versions we learned how to add features our users want while stripping away old APIs without leaving everyone stranded. This release focuses on better type safety, first-class middleware, RSC support, and much more. I\'ll cover the key changes in v8, how open governance influenced the release, and a practical upgrade plan with common pitfalls.',
+    description:
+      "React Router turns 12 this year. After eight major versions we learned how to add features our users want while stripping away old APIs without leaving everyone stranded. This release focuses on better type safety, first-class middleware, RSC support, and much more. I'll cover the key changes in v8, how open governance influenced the release, and a practical upgrade plan with common pitfalls.",
     labels: 'react,tooling',
     location: 'Hyatt Regency Miami',
     name: 'React Router v8 and Beyond',
@@ -48,7 +51,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'We\'ll look at how engineering teams can introduce React Native and JS into mature, native-only applications. The session walks through practical strategies for phased adoption, cutting-edge tooling, and effective architectural choices. We\'ll dig into the real challenges that come with hybrid integration and wrap up with advanced areas like brownfield state and data exchange.',
+    description:
+      "We'll look at how engineering teams can introduce React Native and JS into mature, native-only applications. The session walks through practical strategies for phased adoption, cutting-edge tooling, and effective architectural choices. We'll dig into the real challenges that come with hybrid integration and wrap up with advanced areas like brownfield state and data exchange.",
     labels: 'mobile',
     location: 'Hyatt Regency Miami',
     name: 'State of Brownfield in React Native',
@@ -58,7 +62,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'React is an excellent framework from a security standpoint, but you need to remain vigilant. Join me in hacking a React application to better understand threats like XSS, injection attacks, and other dangers. You\'ll learn how React already keeps you secure, and where you need to be the last line of defence. Together, we\'ll learn how to keep your users secure!',
+    description:
+      "React is an excellent framework from a security standpoint, but you need to remain vigilant. Join me in hacking a React application to better understand threats like XSS, injection attacks, and other dangers. You'll learn how React already keeps you secure, and where you need to be the last line of defence. Together, we'll learn how to keep your users secure!",
     labels: 'react,security',
     location: 'Hyatt Regency Miami',
     name: 'React with Caution — How to Hack Your React App (And Fix It Too)',
@@ -68,7 +73,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Performance problems in React apps often come from perfectly "valid" code: context updates that rerender too much, event handlers that change identity, or state that\'s too reactive. While preparing the first stable release of Base UI, we had to confront these issues head-on. I\'ll show concrete patterns we used to eliminate unnecessary re-renders and move work out of React\'s render cycle.',
+    description:
+      "Performance problems in React apps often come from perfectly \"valid\" code: context updates that rerender too much, event handlers that change identity, or state that's too reactive. While preparing the first stable release of Base UI, we had to confront these issues head-on. I'll show concrete patterns we used to eliminate unnecessary re-renders and move work out of React's render cycle.",
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
     name: 'What we learned optimizing Base UI',
@@ -78,7 +84,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'What if you could ship native iOS Live Activities and Dynamic Island experiences without writing a single line of Swift? This talk tells the story of Voltra, a library born from a viral tweet to bridge the gap between React and native iOS extensions. We\'ll go behind the scenes of building a custom React renderer from scratch to translate JSX into SwiftUI primitives.',
+    description:
+      "What if you could ship native iOS Live Activities and Dynamic Island experiences without writing a single line of Swift? This talk tells the story of Voltra, a library born from a viral tweet to bridge the gap between React and native iOS extensions. We'll go behind the scenes of building a custom React renderer from scratch to translate JSX into SwiftUI primitives.",
     labels: 'mobile',
     location: 'Hyatt Regency Miami',
     name: 'JSX to Live Activity: The Story of Voltra',
@@ -88,7 +95,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'React\'s useState() can only be used for temporary, frontend state. To interact with important objects in your app, you usually have to query a backend and use state to hold results. In this talk we\'ll explore how sync engines and local-first databases give you global, persistent reactive state — as if you had a local plus cloud database that looked like useState(), without worrying about networking.',
+    description:
+      "React's useState() can only be used for temporary, frontend state. To interact with important objects in your app, you usually have to query a backend and use state to hold results. In this talk we'll explore how sync engines and local-first databases give you global, persistent reactive state — as if you had a local plus cloud database that looked like useState(), without worrying about networking.",
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'What if useState() was your database?',
@@ -98,7 +106,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Most content on the internet was created for human consumption: Pages, posts, and SEO. But as LLMs and RAG pipelines become part of everyday applications, content needs to be optimized for machines as well. Let\'s explore how React developers can evolve beyond "just rendering" to building generative-ready experiences where content is structured and served in ways that LLMs can reliably retrieve.',
+    description:
+      'Most content on the internet was created for human consumption: Pages, posts, and SEO. But as LLMs and RAG pipelines become part of everyday applications, content needs to be optimized for machines as well. Let\'s explore how React developers can evolve beyond "just rendering" to building generative-ready experiences where content is structured and served in ways that LLMs can reliably retrieve.',
     labels: 'ai,react',
     location: 'Hyatt Regency Miami',
     name: 'Generative-Ready Content with React',
@@ -108,7 +117,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Ever built a solid React app that works well but lacks personality? We\'ll explore how to transform functional applications into visually engaging, delightful experiences using React and animation libraries like GSAP. Through practical examples, you\'ll learn how small, intentional design choices can dramatically enhance user experience without sacrificing performance.',
+    description:
+      "Ever built a solid React app that works well but lacks personality? We'll explore how to transform functional applications into visually engaging, delightful experiences using React and animation libraries like GSAP. Through practical examples, you'll learn how small, intentional design choices can dramatically enhance user experience without sacrificing performance.",
     labels: 'design',
     location: 'Hyatt Regency Miami',
     name: 'Code, But Make it Cute',
@@ -118,7 +128,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'In today\'s dev economy, whimsy is a survival skill. Learn why building silly software isn\'t just a side quest, but a useful practice to stay connected, motivated, and sharp.',
+    description:
+      "In today's dev economy, whimsy is a survival skill. Learn why building silly software isn't just a side quest, but a useful practice to stay connected, motivated, and sharp.",
     labels: 'design',
     location: 'Hyatt Regency Miami',
     name: 'Whimsy-Driven Development',
@@ -128,7 +139,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'AI radically changed hiring. Anyone can now submit flawless resumes, thoughtful cover letters, and pristine portfolios, but hiring was never about perfection. It\'s about trust. For companies, hiring is risk. Instead of reducing that risk, AI has obscured the signals used to evaluate it. So what is the reality for you to get hired, and where does AI actually fit in that process?',
+    description:
+      "AI radically changed hiring. Anyone can now submit flawless resumes, thoughtful cover letters, and pristine portfolios, but hiring was never about perfection. It's about trust. For companies, hiring is risk. Instead of reducing that risk, AI has obscured the signals used to evaluate it. So what is the reality for you to get hired, and where does AI actually fit in that process?",
     labels: 'ai,career',
     location: 'Hyatt Regency Miami',
     name: 'AI broke hiring...what now?',
@@ -138,7 +150,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Have you ever wondered how Tailwind CSS actually works? We\'ll explore how thousands of utility classes are generated, the purging techniques that scan your templates to keep bundle sizes small, and how JIT compilation provides unlimited arbitrary values without hurting performance. You\'ll leave with practical knowledge that you can apply right away!',
+    description:
+      "Have you ever wondered how Tailwind CSS actually works? We'll explore how thousands of utility classes are generated, the purging techniques that scan your templates to keep bundle sizes small, and how JIT compilation provides unlimited arbitrary values without hurting performance. You'll leave with practical knowledge that you can apply right away!",
     labels: 'css,tooling',
     location: 'Hyatt Regency Miami',
     name: 'Behind the Scenes of Tailwind CSS',
@@ -148,7 +161,8 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'In the ever changing AI landscape, with so much noise and so little signal, it can be hard to keep up. Between people selling things, delusional takes and downright misinformation, it\'s hard to really get signal. In this talk I\'ll be examining the landscape, exploring LLM assisted coding techniques and separating the wheat from the chaff.',
+    description:
+      "In the ever changing AI landscape, with so much noise and so little signal, it can be hard to keep up. Between people selling things, delusional takes and downright misinformation, it's hard to really get signal. In this talk I'll be examining the landscape, exploring LLM assisted coding techniques and separating the wheat from the chaff.",
     labels: 'ai',
     location: 'Hyatt Regency Miami',
     name: 'ai is ok i guess',
@@ -160,7 +174,8 @@ const events = [
   // Day 2
   {
     day: 'day-2',
-    description: 'Last year, I deployed a large-scale React application where I personally wrote less than 1% of the codebase—yet delivered a product that impressed users, managers, and engineers alike. In this session, I\'ll reveal the workflow: TanStack Query for robust data synchronization, TanStack Router for type-safe routing, HeyAPI for automated API client generation, and AI copilots for the heavy lifting.',
+    description:
+      "Last year, I deployed a large-scale React application where I personally wrote less than 1% of the codebase—yet delivered a product that impressed users, managers, and engineers alike. In this session, I'll reveal the workflow: TanStack Query for robust data synchronization, TanStack Router for type-safe routing, HeyAPI for automated API client generation, and AI copilots for the heavy lifting.",
     labels: 'react,ai,tooling',
     location: 'Hyatt Regency Miami',
     name: '10x React Development with TanStack Query, HeyAPI, and AI Copilots',
@@ -170,7 +185,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'The new React Compiler promises to "automatically optimize your React app"... but what is it actually doing to your component? We\'ll clear up the confusion and provide a solid foundation for understanding when, why, and how React renders. We\'ll demystify the Compiler\'s output, break down exactly what that code does, and see how the Compiler rewrites our mindset of using React itself.',
+    description:
+      "The new React Compiler promises to \"automatically optimize your React app\"... but what is it actually doing to your component? We'll clear up the confusion and provide a solid foundation for understanding when, why, and how React renders. We'll demystify the Compiler's output, break down exactly what that code does, and see how the Compiler rewrites our mindset of using React itself.",
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
     name: 'A Guide to React Compiler Rendering',
@@ -180,17 +196,19 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'We are moving from a navigation-based web, where you go to a site, to an intent-based web, where the result comes to you. If the user won\'t go to your URL, your app has to go to them. Learn about MCP-UI and MCP Apps, an open standard that allows developers to render fully interactive interfaces directly inside AI agents. Your React skills position you to build the mini apps of the agentic era.',
+    description:
+      "We are moving from a navigation-based web, where you go to a site, to an intent-based web, where the result comes to you. If the user won't go to your URL, your app has to go to them. Learn about MCP-UI and MCP Apps, an open standard that allows developers to render fully interactive interfaces directly inside AI agents. Your React skills position you to build the mini apps of the agentic era.",
     labels: 'react,ai',
     location: 'Hyatt Regency Miami',
-    name: 'The Last Website You\'ll Ever Visit (in the Browser)',
+    name: "The Last Website You'll Ever Visit (in the Browser)",
     slug: 'last-website',
     speaker: 'Rizel Scarlett',
     time: '10:05 AM',
   },
   {
     day: 'day-2',
-    description: 'React introduced a generation of developers to functional programming. For me, it was the start of an obsession that sent me down the rabbit hole of learning a new paradigm, working with different languages, shipping a few compilers, implementing a type system, and eventually reimplementing React. I\'ll share insights that transformed me from someone who uses React to someone who understands why it works.',
+    description:
+      "React introduced a generation of developers to functional programming. For me, it was the start of an obsession that sent me down the rabbit hole of learning a new paradigm, working with different languages, shipping a few compilers, implementing a type system, and eventually reimplementing React. I'll share insights that transformed me from someone who uses React to someone who understands why it works.",
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'React From Another Universe',
@@ -200,7 +218,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'TypeScript performance problems are one of the most common and least understood sources of pain in large React codebases. These issues quietly slow you down, showing up as sluggish editors, long CI times, and confusing "type too complex" errors. You\'ll learn how to diagnose what\'s actually happening and fix it with tools like --generateTrace, Attest, and TypeSlayer.',
+    description:
+      'TypeScript performance problems are one of the most common and least understood sources of pain in large React codebases. These issues quietly slow you down, showing up as sluggish editors, long CI times, and confusing "type too complex" errors. You\'ll learn how to diagnose what\'s actually happening and fix it with tools like --generateTrace, Attest, and TypeSlayer.',
     labels: 'typescript,performance',
     location: 'Hyatt Regency Miami',
     name: 'Solving Your TypeScript Performance Problems',
@@ -210,7 +229,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Agentic AI promises program autonomy and "intelligent" workflows. But integrating agentic systems into React introduces real challenges: indefinite loops, stalled responses, unpredictable state updates, UI desynchronization, and missing guardrails. I\'ll share lessons from building agentic workflows and practical patterns for making agents observable, controllable, and user-safe in a React UI.',
+    description:
+      'Agentic AI promises program autonomy and "intelligent" workflows. But integrating agentic systems into React introduces real challenges: indefinite loops, stalled responses, unpredictable state updates, UI desynchronization, and missing guardrails. I\'ll share lessons from building agentic workflows and practical patterns for making agents observable, controllable, and user-safe in a React UI.',
     labels: 'ai,react',
     location: 'Hyatt Regency Miami',
     name: 'Agentic AI Without the Magic',
@@ -220,7 +240,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'A long-term, real-world case study of how a React monorepo actually evolves in production — beyond blog-post architectures and conference demos. Rather than celebrating every new framework or pattern, this talk focuses on what stayed, what broke, and what quietly paid off. Topics include dependency discipline, state management migrations, and how to evaluate "new" React ideas without destabilizing your system.',
+    description:
+      'A long-term, real-world case study of how a React monorepo actually evolves in production — beyond blog-post architectures and conference demos. Rather than celebrating every new framework or pattern, this talk focuses on what stayed, what broke, and what quietly paid off. Topics include dependency discipline, state management migrations, and how to evaluate "new" React ideas without destabilizing your system.',
     labels: 'career',
     location: 'Hyatt Regency Miami',
     name: 'The Anti-Shiny Object Syndrome',
@@ -230,7 +251,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Isograph is an opinionated, compiler-driven framework for building stable and performant data-driven apps. The compiler scans your codebase and generates files containing queries for all the data needed by a given screen. Want to dynamically load part of your page? One annotation. Want to load JavaScript only for rendered components? Also one annotation. Come find out more!',
+    description:
+      'Isograph is an opinionated, compiler-driven framework for building stable and performant data-driven apps. The compiler scans your codebase and generates files containing queries for all the data needed by a given screen. Want to dynamically load part of your page? One annotation. Want to load JavaScript only for rendered components? Also one annotation. Come find out more!',
     labels: 'react,tooling',
     location: 'Hyatt Regency Miami',
     name: 'Isograph: a compiler for your UI',
@@ -240,17 +262,19 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'We spent years abstracting away the hardest parts of building software. Now, LLMs use tools like Payload to do the heavy lifting. But when anyone can spin up functioning software, implementation is no longer a superpower. AI is great at producing code, but it has no taste. No point of view. No opinion about what should exist. That part is still on you.',
+    description:
+      'We spent years abstracting away the hardest parts of building software. Now, LLMs use tools like Payload to do the heavy lifting. But when anyone can spin up functioning software, implementation is no longer a superpower. AI is great at producing code, but it has no taste. No point of view. No opinion about what should exist. That part is still on you.',
     labels: 'design,ai',
     location: 'Hyatt Regency Miami',
-    name: 'Robots Can\'t Taste',
+    name: "Robots Can't Taste",
     slug: 'robots-cant-taste',
     speaker: 'James Mikrut',
     time: '2:30 PM',
   },
   {
     day: 'day-2',
-    description: 'How I fully rewrote my application over the course of 2 weeks to a new architecture using AI that unlocked being able to ship quality software faster. Covering setting up development environments for AI, EffectTS, best practices for debugging production, and a starter template you can use for your own applications.',
+    description:
+      'How I fully rewrote my application over the course of 2 weeks to a new architecture using AI that unlocked being able to ship quality software faster. Covering setting up development environments for AI, EffectTS, best practices for debugging production, and a starter template you can use for your own applications.',
     labels: 'typescript,ai',
     location: 'Hyatt Regency Miami',
     name: 'Shipping quality full stack TypeScript apps in the age of AI',
@@ -260,7 +284,8 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'This talk covers building a backend framework at the intersection of MCP, DX & UI. A major turning point was integrating React and introducing native support for rendering components inside tools, rethinking this backend-first framework. This takes tools to the next level and redefines how users interact with interfaces. We\'ll cover practical examples, implementation details, and lessons learned.',
+    description:
+      "This talk covers building a backend framework at the intersection of MCP, DX & UI. A major turning point was integrating React and introducing native support for rendering components inside tools, rethinking this backend-first framework. This takes tools to the next level and redefines how users interact with interfaces. We'll cover practical examples, implementation details, and lessons learned.",
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'React-ing a backend framework',
@@ -287,7 +312,6 @@ async function main() {
   await prisma.questionVote.deleteMany();
   await prisma.comment.deleteMany();
   await prisma.question.deleteMany();
-  await prisma.presence.deleteMany();
   await prisma.favorite.deleteMany();
   await prisma.event.deleteMany();
 
@@ -302,7 +326,7 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
+  .catch(async e => {
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);

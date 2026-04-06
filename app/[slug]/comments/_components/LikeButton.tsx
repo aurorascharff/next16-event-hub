@@ -13,13 +13,12 @@ type Props = {
 };
 
 export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
-  const [optimistic, toggleOptimistic] = useOptimistic(
-    { hasLiked, likes },
-    (current) => {return {
+  const [optimistic, toggleOptimistic] = useOptimistic({ hasLiked, likes }, current => {
+    return {
       hasLiked: !current.hasLiked,
       likes: current.likes + (current.hasLiked ? -1 : 1),
-    }},
-  );
+    };
+  });
   const [, startTransition] = useTransition();
 
   function handleLike() {
@@ -34,9 +33,7 @@ export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
       onClick={handleLike}
       className={cn(
         'flex items-center gap-1 rounded px-1.5 py-0.5 text-xs transition-colors',
-        optimistic.hasLiked
-          ? 'text-primary'
-          : 'text-muted-foreground hover:text-primary',
+        optimistic.hasLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary',
       )}
       aria-label={`Like (${optimistic.likes})`}
     >

@@ -16,13 +16,7 @@ type Props<V extends string> = {
   className?: string;
 };
 
-export function ChipGroup<V extends string>({
-  items,
-  value,
-  onChange,
-  variant = 'pill',
-  className,
-}: Props<V>) {
+export function ChipGroup<V extends string>({ items, value, onChange, variant = 'pill', className }: Props<V>) {
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
   const [, startTransition] = useTransition();
 

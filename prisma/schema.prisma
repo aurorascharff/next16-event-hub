@@ -72,10 +72,3 @@ model Favorite {
 
     @@unique([userName, eventSlug])
 }
-
-model Presence {
-    id        String   @id @default(cuid())
-    userName  String   @unique
-    eventSlug String
-    lastSeen  DateTime @default(now())
-}

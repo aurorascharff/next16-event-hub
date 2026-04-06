@@ -1,6 +1,6 @@
 {
-  "vt-reveal": {
-    "prefix": "vt-reveal",
+  "suspenseRevealWithAnimation": {
+    "prefix": "suspenseRevealWithAnimation",
     "description": "Suspense with ViewTransition slide-up/slide-down reveal",
     "body": [
       "<Suspense",
@@ -16,8 +16,8 @@
       "</Suspense>"
     ]
   },
-  "vt-reveal-auto": {
-    "prefix": "vt-reveal-auto",
+  "suspenseRevealWithCrossfade": {
+    "prefix": "suspenseRevealWithCrossfade",
     "description": "Suspense with ViewTransition auto crossfade reveal",
     "body": [
       "<Suspense",
@@ -33,8 +33,8 @@
       "</Suspense>"
     ]
   },
-  "vt-slide-forward": {
-    "prefix": "vt-slide-forward",
+  "directionalNavigationForward": {
+    "prefix": "directionalNavigationForward",
     "description": "ViewTransition directional slide for forward navigation (home page)",
     "body": [
       "<ViewTransition",
@@ -46,8 +46,8 @@
       "</ViewTransition>"
     ]
   },
-  "vt-slide-back": {
-    "prefix": "vt-slide-back",
+  "directionalNavigationBack": {
+    "prefix": "directionalNavigationBack",
     "description": "ViewTransition directional slide for back navigation (session page)",
     "body": [
       "<ViewTransition",
@@ -59,8 +59,8 @@
       "</ViewTransition>"
     ]
   },
-  "vt-tab-crossfade": {
-    "prefix": "vt-tab-crossfade",
+  "tabSwitchCrossfade": {
+    "prefix": "tabSwitchCrossfade",
     "description": "ViewTransition crossfade for tab switches",
     "body": [
       "<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
@@ -68,8 +68,8 @@
       "</ViewTransition>"
     ]
   },
-  "vt-card-morph": {
-    "prefix": "vt-card-morph",
+  "listAnimationCardMorph": {
+    "prefix": "listAnimationCardMorph",
     "description": "ViewTransition card morph for filter/tab changes",
     "body": [
       "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
@@ -77,8 +77,8 @@
       "</ViewTransition>"
     ]
   },
-  "vt-list-item": {
-    "prefix": "vt-list-item",
+  "listAnimationItem": {
+    "prefix": "listAnimationItem",
     "description": "ViewTransition list item with unique name for enter/exit",
     "body": [
       "<ViewTransition key={${1:item}.id} name={`${2:comment}-\\${${1:item}.id}`} enter=\"slide-up\" default=\"none\">",

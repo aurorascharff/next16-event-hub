@@ -212,15 +212,6 @@
     var(--duration-move) var(--ease-motion) both slide-x reverse;
 }
 
-/* --- Home day-tab content swap (BottomNav update) --- */
-
-::view-transition-old(.tab-switch) {
-  animation: var(--duration-exit) var(--ease-motion) both fade-nav reverse;
-}
-::view-transition-new(.tab-switch) {
-  animation: var(--duration-enter) var(--ease-motion) both fade-nav;
-}
-
 /* --- Shared element morph (card -> detail) --- */
 
 ::view-transition-group(.morph) {

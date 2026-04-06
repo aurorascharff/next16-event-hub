@@ -72,7 +72,7 @@ async function CommentList({ slug }: { slug: string }) {
     <div className="space-y-2">
       {comments.map(comment => {
         return (
-          <ViewTransition key={comment.id} enter="slide-up" default="none">
+          <ViewTransition key={comment.id}>
             <CommentCard comment={comment} currentUser={currentUser} />
           </ViewTransition>
         );

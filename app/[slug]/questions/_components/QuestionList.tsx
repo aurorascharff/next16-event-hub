@@ -97,7 +97,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       <div className="space-y-2">
         {sorted.map(question => {
           return (
-            <ViewTransition key={question.id} enter="slide-up" default="none">
+            <ViewTransition key={question.id}>
               <QuestionCard question={question} />
             </ViewTransition>
           );

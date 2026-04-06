@@ -8,8 +8,7 @@ import { getAdjacentEvents, getEventBySlug, getUserFavorites } from '@/data/quer
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 import { SessionPrevNextNav, SessionPrevNextNavSkeleton } from './SessionPrevNextNav';
 
-export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
-  const { slug } = await params;
+export async function EventDetails({ slug }: { slug: string }) {
   const [event, currentUser, { prev, next }] = await Promise.all([
     getEventBySlug(slug),
     getCurrentUser(),

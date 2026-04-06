@@ -1,8 +1,8 @@
 import {
   Slide,
   SlideTitle,
-  SlideSubtitle,
   SlideBadge,
+  SlideSpeaker,
 } from 'nextjs-slides';
 
 function CycleBox({ children }: { children: React.ReactNode }) {
@@ -26,7 +26,7 @@ export const slides = [
   <Slide key="title">
     <SlideBadge>React Miami 2026</SlideBadge>
     <SlideTitle>Designing the In-Between States with Async React</SlideTitle>
-    <SlideSubtitle>Aurora Scharff</SlideSubtitle>
+    <SlideSpeaker name="Aurora Scharff" title="DX Engineer at Vercel" avatar="/aurora.png" />
   </Slide>,
 
   // 2. Basic render cycle — Event → Update → Render → Commit

@@ -2,9 +2,9 @@
 
 GitHub: https://github.com/aurorascharff/next16-event-hub
 
-## Slides: Title (Slide 1)
+## Slide 1: Title
 
-- (Open `/slides`) Intro slide — Designing the In-Between States with Async React.
+- (Open `/slides`) Intro slide — Designing the In-Between States with Async React. Introduce yourself.
 
 ## Opening
 
@@ -13,14 +13,26 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
 - Let's make it worse. Show the `useEffect` + `useState` pattern — the heart button managing favorite state locally. Tap a few hearts quickly, then switch to the Favorites tab. Watch the flickering — the heart fills, reverts, fills again. Stale data, re-render cascades.
 
-## Slides: The Async React Render Cycle (Slides 2–6)
+## Slide 2: Async React Render Cycle — Basic
 
 - (Open `/slides/2`) Let's look at the React render cycle to understand where Async React fits in.
-- **Slide 2**: Basic cycle — Event → Update → Render → Commit. A user click triggers an update, causes a re-render, which is committed to DOM.
-- **Slide 3**: Now bring async into this. The user clicked something, which triggered an async update — a "busy" state. After the Update, there's another async call to load data — a "loading" state. After Render, a "done" state before Commit.
-- **Slide 4**: The key to Async React is transitions. A transition coordinates the async work and ensures the render and commit cycle happens smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
-- **Slide 5**: We can decide what primitive is most suitable for each phase. `useOptimistic()` for the busy/update phase. `<Suspense>` for the loading/render phase. `<ViewTransition>` for the done/commit phase.
-- **Slide 6**: The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. That's the goal.
+- Basic cycle — Event → Update → Render → Commit. A user click triggers an update, causes a re-render, which is committed to DOM.
+
+## Slide 3: Async React Render Cycle — In-Between States
+
+- Now bring async into this. The user clicked something, which triggered an async update — a "busy" state. After the Update, there's another async call to load data — a "loading" state. After Render, a "done" state before Commit. These in-between states are what make the app feel broken.
+
+## Slide 4: Async React Render Cycle — Transitions
+
+- The key to Async React is transitions. A transition coordinates the async work and ensures the render and commit cycle happens smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
+
+## Slide 5: Async React Render Cycle — Primitives
+
+- We can decide what primitive is most suitable for each phase. `useOptimistic()` for the busy/update phase — instant feedback. `<Suspense>` for the loading/render phase — placeholder while data loads. `<ViewTransition>` for the done/commit phase — animate the change.
+
+## Slide 6: Async React Render Cycle — Clean
+
+- The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. That's the goal. (Credit: Async React talk at React Conf)
 - (Exit slides, back to the app) Remove the `useEffect` approach, bring back Server Components and the transition system. Now let's fix the app.
 
 ## Setup and Starting Point

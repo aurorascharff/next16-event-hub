@@ -103,8 +103,8 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 ### Directional Navigation (Next/Previous Talk)
 
-- Add next/previous talk navigation to the session detail page. Fetch adjacent events (ordered by day + time) and render prev/next arrow links in the EventDetails header. Previous uses `transitionTypes={['nav-back']}`, next uses `transitionTypes={['nav-forward']}`.
-- Wrap the session page content in a ViewTransition that handles both directions — `enter` maps `nav-forward` to `slide-from-right` and `nav-back` to `slide-from-left`, `exit` maps `nav-forward` to `slide-to-left` and `nav-back` to `slide-to-right`. The same ViewTransition goes on both the comments page and the questions page. Clicking next slides the content left, clicking previous slides it right.
+- Add next/previous talk navigation to the session detail page. Fetch adjacent events (ordered by day + time) and render prev/next links in EventDetails — plain `<Link>` elements (no `transitionTypes` on this branch; those belong on the full demo where directional view transitions are wired end-to-end).
+- Wrap the session page content in a ViewTransition that handles both directions — `enter` maps `nav-forward` to `slide-from-right` and `nav-back` to `slide-from-left`, `exit` maps `nav-forward` to `slide-to-left` and `nav-back` to `slide-to-right`. The same ViewTransition goes on both the comments page and the questions page. On the full demo, prev/next links use `transitionTypes={['nav-back']}` and `transitionTypes={['nav-forward']}` so clicks line up with those types; clicking next slides the content left, clicking previous slides it right.
 
 ### Tab Switch Crossfade
 

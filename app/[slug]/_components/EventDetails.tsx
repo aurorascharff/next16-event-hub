@@ -58,7 +58,6 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
           {prev ? (
             <Link
               href={`/${prev.slug}` as Route}
-              transitionTypes={['nav-back']}
               className="border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground flex min-h-10 w-full items-center justify-start gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
               aria-label={`Previous session: ${prev.name}`}
             >
@@ -69,7 +68,6 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
           {next ? (
             <Link
               href={`/${next.slug}` as Route}
-              transitionTypes={['nav-forward']}
               className="border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground flex min-h-10 w-full items-center justify-end gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
               aria-label={`Next session: ${next.name}`}
             >

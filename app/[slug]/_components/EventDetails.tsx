@@ -1,12 +1,11 @@
-import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import { Avatar } from '@/components/common/Avatar';
+import { Clock, MapPin } from 'lucide-react';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getAdjacentEvents, getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
-import type { Route } from 'next';
+import { SessionPrevNextNav, SessionPrevNextNavSkeleton } from './SessionPrevNextNav';
 
 export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
   const { slug } = await params;
@@ -19,64 +18,12 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
   const hasFavorited = favorites.has(slug);
   return (
     <article>
-      <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-2 text-xs sm:mb-4 sm:gap-3">
-        <span className="font-medium tracking-wider uppercase">{getDayLabel(event.day)}</span>
-        <span className="text-border">·</span>
-        <span className="flex items-center gap-1">
-          <Clock className="size-3.5" />
-          {event.time}
-        </span>
-        <span className="text-border">·</span>
-        <span className="flex items-center gap-1">
-          <MapPin className="size-3.5" />
-          {event.location}
-        </span>
-      </div>
-      {parseLabels(event.labels).length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
-          {parseLabels(event.labels).map(label => {
-            return (
-              <span
-                key={label}
-                className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize sm:px-2.5"
-              >
-                {label}
-              </span>
-            );
-          })}
-        </div>
-      )}
-      {(prev || next) && (
-        <nav
-          className={cn(
-            'mb-4 grid gap-2 sm:mb-5 sm:gap-3',
-            prev && next ? 'grid-cols-2' : 'grid-cols-1',
-            next && !prev && 'justify-items-end'
-          )}
-          aria-label="Prev and next"
-        >
-          {prev ? (
-            <Link
-              href={`/${prev.slug}` as Route}
-              className="border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground flex min-h-10 w-full items-center justify-start gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
-              aria-label={`Previous session: ${prev.name}`}
-            >
-              <ChevronLeft className="size-4 shrink-0" aria-hidden />
-              Prev
-            </Link>
-          ) : null}
-          {next ? (
-            <Link
-              href={`/${next.slug}` as Route}
-              className="border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground flex min-h-10 w-full items-center justify-end gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
-              aria-label={`Next session: ${next.name}`}
-            >
-              Next
-              <ChevronRight className="size-4 shrink-0" aria-hidden />
-            </Link>
-          ) : null}
-        </nav>
-      )}
+      <SessionMetaStrip dayLabel={getDayLabel(event.day)} time={event.time} location={event.location} />
+      <SessionLabelChips labels={parseLabels(event.labels)} />
+      <SessionPrevNextNav
+        next={next ? { name: next.name, slug: next.slug } : null}
+        prev={prev ? { name: prev.name, slug: prev.slug } : null}
+      />
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
@@ -101,21 +48,9 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
 export function EventDetailsSkeleton() {
   return (
     <article>
-      <div className="mb-2 flex flex-wrap items-center gap-2 sm:mb-4 sm:gap-3">
-        <Skeleton className="h-4 w-12" />
-        <Skeleton className="h-4 w-2" />
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-4 w-2" />
-        <Skeleton className="h-4 w-32" />
-      </div>
-      <div className="mb-2 flex flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
-        <Skeleton className="h-6 w-16 rounded-full" />
-        <Skeleton className="h-6 w-24 rounded-full" />
-      </div>
-      <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-5 sm:gap-3">
-        <Skeleton className="h-10 rounded-lg" />
-        <Skeleton className="h-10 rounded-lg" />
-      </div>
+      <MetaStripSkeleton />
+      <LabelChipsSkeleton />
+      <SessionPrevNextNavSkeleton />
       <div className="space-y-3 sm:space-y-4">
         <div className="flex items-start justify-between gap-2">
           <Skeleton className="h-8 w-4/5 sm:h-10" />
@@ -132,5 +67,79 @@ export function EventDetailsSkeleton() {
         </div>
       </div>
     </article>
+  );
+}
+
+type SessionMetaStripProps = {
+  dayLabel: string;
+  location: string;
+  time: string;
+};
+
+function SessionMetaStrip({ dayLabel, time, location }: SessionMetaStripProps) {
+  return (
+    <div className="mb-2 w-fit max-w-full sm:mb-3">
+      <p
+        className={cn(
+          'text-foreground/92 inline-flex max-w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-md border border-border/70',
+          'bg-muted/60 px-2 py-1 text-[11px] leading-snug shadow-sm sm:gap-x-2 sm:px-2.5 sm:py-1.5 sm:text-xs'
+        )}
+      >
+        <span className="text-muted-foreground shrink-0 font-semibold tracking-wide uppercase">{dayLabel}</span>
+        <span className="text-muted-foreground/50 select-none" aria-hidden>
+          ·
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1">
+          <Clock className="text-foreground/75 size-3 sm:size-3.5" aria-hidden />
+          <span className="tabular-nums">{time}</span>
+        </span>
+        <span className="text-muted-foreground/50 select-none" aria-hidden>
+          ·
+        </span>
+        <span className="inline-flex min-w-0 items-center gap-1">
+          <MapPin className="text-foreground/75 size-3 shrink-0 sm:size-3.5" aria-hidden />
+          <span className="min-w-0 break-words">{location}</span>
+        </span>
+      </p>
+    </div>
+  );
+}
+
+type SessionLabelChipsProps = {
+  labels: string[];
+};
+
+function SessionLabelChips({ labels }: SessionLabelChipsProps) {
+  if (labels.length === 0) return null;
+  return (
+    <div className="mb-2 flex flex-wrap gap-1.5 sm:mb-3 sm:gap-2">
+      {labels.map(label => {
+        return (
+          <span
+            key={label}
+            className="border-border/60 bg-secondary/80 text-secondary-foreground rounded-md border px-2 py-0.5 text-[11px] font-medium capitalize sm:text-xs"
+          >
+            {label}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function MetaStripSkeleton() {
+  return (
+    <div className="mb-2 w-fit max-w-full sm:mb-3">
+      <Skeleton className="h-7 w-[min(100%,18rem)] rounded-md sm:h-8" />
+    </div>
+  );
+}
+
+function LabelChipsSkeleton() {
+  return (
+    <div className="mb-2 flex flex-wrap gap-1.5 sm:mb-3 sm:gap-2">
+      <Skeleton className="h-6 w-16 rounded-md" />
+      <Skeleton className="h-6 w-24 rounded-md" />
+    </div>
   );
 }

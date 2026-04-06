@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronUp } from 'lucide-react';
-import { addTransitionType, useOptimistic, useTransition } from 'react';
+import { useOptimistic, useTransition } from 'react';
 import { upvoteQuestion } from '@/data/actions/question';
 import { cn } from '@/lib/utils';
 
@@ -21,7 +21,6 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
     if (optimisticHasVoted) return;
 
     startTransition(async () => {
-      addTransitionType('vote-change');
       setOptimisticVotes(votes + 1);
       setOptimisticHasVoted(true);
       await upvoteQuestion(questionId, eventSlug);

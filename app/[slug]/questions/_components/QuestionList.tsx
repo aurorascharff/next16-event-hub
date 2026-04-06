@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { addTransitionType, startTransition, useEffect, useDeferredValue, useOptimistic, ViewTransition } from 'react';
+import { startTransition, useEffect, useDeferredValue, useOptimistic, ViewTransition } from 'react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
@@ -35,7 +35,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   useEffect(() => {
     const interval = setInterval(() => {
       startTransition(() => {
-        addTransitionType('live-update');
         router.refresh();
       });
     }, 5000);
@@ -77,7 +76,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   }
 
   function handleSortChange(value: SortValue) {
-    addTransitionType('sort-change');
     const params = new URLSearchParams(searchParams.toString());
     if (value === 'top') {
       params.delete('sort');
@@ -125,8 +123,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
             <ViewTransition
               key={question.id}
               enter="slide-up"
-              default="none"
-              update={{ default: 'none', 'live-update': 'auto', 'sort-change': 'auto', 'vote-change': 'auto' }}
             >
               <QuestionCard question={question} />
             </ViewTransition>

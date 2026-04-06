@@ -106,8 +106,9 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       <QuestionForm onSubmit={handleAddQuestion} />
 
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs">
-          {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
+        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+          <span className="bg-emerald-500 inline-block size-1.5 animate-pulse rounded-full" />
+          Live · {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
         </span>
         <ChipGroup
           items={sortOptions}

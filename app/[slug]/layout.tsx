@@ -5,7 +5,6 @@ import { Avatar } from '@/components/common/Avatar';
 import { BackButton } from '@/components/common/BackButton';
 import { BottomNav } from '@/components/design/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { leavePresence } from '@/data/actions/presence';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
@@ -37,10 +36,9 @@ export default async function SessionLayout({ children, params }: LayoutProps<'/
       exit={{ default: 'none', 'nav-back': 'slide-to-right' }}
       default="none"
     >
-      <TooltipProvider>
       <div className="min-h-screen pb-16">
         <header
-          className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-md"
+          className="bg-background sticky top-0 z-30 border-b"
           style={{ viewTransitionName: 'header' }}
         >
           <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6">
@@ -69,7 +67,6 @@ export default async function SessionLayout({ children, params }: LayoutProps<'/
           ]}
         />
       </div>
-      </TooltipProvider>
     </ViewTransition>
   );
 }

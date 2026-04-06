@@ -28,9 +28,13 @@ async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'pa
 
 function FeedSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <Skeleton className="h-8 w-full rounded-lg" />
-      <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="h-6 w-28 rounded-full" />
+      </div>
+      <div className="space-y-2">
         {Array.from({ length: 3 }).map((_, i) => {
           return (
             <div key={i} className="flex items-start gap-2 rounded-lg border p-3">

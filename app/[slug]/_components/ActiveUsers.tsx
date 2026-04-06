@@ -2,8 +2,6 @@
 
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { Avatar } from '@/components/common/Avatar';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { recordPresence } from '@/data/actions/presence';
 import { useIsClient } from '@/hooks/useIsClient';
 
@@ -43,25 +41,9 @@ export function ActiveUsers({ eventSlug }: Props) {
   if (count === 0) return null;
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex -space-x-1.5">
-        {(users ?? []).slice(0, 5).map(user => {
-          return (
-            <Tooltip key={user.userName}>
-              <TooltipTrigger render={
-                <Avatar
-                  name={user.userName}
-                  className="border-background border-2"
-                />
-              } />
-              <TooltipContent>{user.userName}</TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </div>
-      <span className="text-muted-foreground text-xs">
-        <span className="text-primary font-bold">{count}</span> here now
-      </span>
-    </div>
+    <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+      <span className="bg-emerald-500 inline-block size-1.5 animate-pulse rounded-full" />
+      {count} here
+    </span>
   );
 }

@@ -31,7 +31,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
   return (
     <nav
       className={cn(
-        'bg-background/80 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md',
+        'bg-background fixed inset-x-0 bottom-0 z-40 border-t',
         'pb-[env(safe-area-inset-bottom)]',
         className,
       )}

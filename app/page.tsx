@@ -20,7 +20,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
     >
       <div className="min-h-screen pb-16">
         <header
-          className="bg-background/80 sticky top-0 z-30 border-b backdrop-blur-md"
+          className="bg-background sticky top-0 z-30 border-b"
           style={{ viewTransitionName: 'header' }}
         >
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
@@ -75,7 +75,7 @@ function FiltersSkeleton() {
 function BottomNavSkeleton() {
   return (
     <nav
-      className="bg-background/80 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+      className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
       style={{ viewTransitionName: 'bottom-nav' }}
     >
       <div className="mx-auto flex max-w-4xl">

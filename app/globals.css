@@ -162,7 +162,7 @@
   }
 }
 
-/* --- Persistent element isolation (backdrop-blur workaround) --- */
+/* --- Persistent element isolation (prevent header/nav from animating) --- */
 
 ::view-transition-group(header),
 ::view-transition-group(bottom-nav),

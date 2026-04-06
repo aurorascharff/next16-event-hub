@@ -4,7 +4,7 @@ import { AuthGate } from '@/components/common/AuthGate';
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { getCurrentUser } from '@/data/queries/auth';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
 
@@ -27,8 +27,11 @@ export const metadata: Metadata = {
   },
   description: 'Live event companion app — comments, questions, and favorites for conference sessions.',
   manifest: '/manifest.json',
-  themeColor: '#09090b',
   title: 'Event Hub',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#09090b',
 };
 
 export default function RootLayout({

@@ -50,8 +50,8 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
   );
 }
 
-export function EventDetailsSkeleton() {
-  return (
+export function EventDetailsSkeleton({ slug }: { slug?: string }) {
+  const skeleton = (
     <article>
       <MetaStripSkeleton />
       <LabelChipsSkeleton />
@@ -76,6 +76,14 @@ export function EventDetailsSkeleton() {
       </div>
     </article>
   );
+  if (slug) {
+    return (
+      <ViewTransition name={`event-${slug}`} share="auto" default="none">
+        {skeleton}
+      </ViewTransition>
+    );
+  }
+  return skeleton;
 }
 
 type SessionMetaStripProps = {

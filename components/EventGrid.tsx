@@ -82,7 +82,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   <span className="text-muted-foreground text-xs font-medium">{event.speaker}</span>
                 </div>
               )}
-              <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">{event.description}</p>
+              <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
               <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
                 <span className="flex items-center gap-1">
                   <MapPin className="size-3" />

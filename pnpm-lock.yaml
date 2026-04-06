@@ -46,7 +46,7 @@ importers:
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       nextjs-slides:
         specifier: github:aurorascharff/nextjs-slides
-        version: https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/66060cd020c38eb857cbd1eea7a96d2b4bb4bd22(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2)
+        version: https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/990bb362dd825a4ec9cfbffb79848cb00bd9099e(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2)
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -2983,8 +2983,8 @@ packages:
       sass:
         optional: true
 
-  nextjs-slides@https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/66060cd020c38eb857cbd1eea7a96d2b4bb4bd22:
-    resolution: {tarball: https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/66060cd020c38eb857cbd1eea7a96d2b4bb4bd22}
+  nextjs-slides@https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/990bb362dd825a4ec9cfbffb79848cb00bd9099e:
+    resolution: {tarball: https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/990bb362dd825a4ec9cfbffb79848cb00bd9099e}
     version: 0.10.0
     peerDependencies:
       next: '>=15.0.0'
@@ -6900,7 +6900,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-slides@https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/66060cd020c38eb857cbd1eea7a96d2b4bb4bd22(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2):
+  nextjs-slides@https://codeload.github.com/aurorascharff/nextjs-slides/tar.gz/990bb362dd825a4ec9cfbffb79848cb00bd9099e(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2):
     dependencies:
       clsx: 2.1.1
       highlight.js: 11.11.1

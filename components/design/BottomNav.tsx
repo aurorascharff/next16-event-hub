@@ -18,12 +18,11 @@ type Props<T extends string> = {
   activeIndex?: number;
   action: (href: Route<T>) => void | Promise<void>;
   onChange?: (href: Route<T>) => void;
-  pending?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
 
-export function BottomNav<T extends string>({ tabs, activeIndex, action, onChange, pending, className, children }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, activeIndex, action, onChange, className, children }: Props<T>) {
   const pathname = usePathname();
   const resolvedActive =
     activeIndex ??
@@ -35,7 +34,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
     );
 
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const nav = (
     <nav
@@ -80,10 +79,8 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   if (children) {
     return (
       <>
-        <ViewTransition default="none" enter={{ default: 'none', 'tab-switch': 'crossfade' }}>
-          <div className={isPending && pending ? 'pointer-events-none opacity-60 transition-opacity duration-150' : ''}>
-            {children}
-          </div>
+        <ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">
+          <div>{children}</div>
         </ViewTransition>
         {nav}
       </>

@@ -1,5 +1,4 @@
-import { Suspense } from 'react';
-import { ViewTransition } from 'react';
+import { Suspense, ViewTransition } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
@@ -23,26 +22,20 @@ export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <>
       <div className="min-h-56 sm:min-h-72">
-        <ViewTransition>
-          <Suspense fallback={<EventDetailsSkeleton />}>
-            <EventDetails params={params} />
-          </Suspense>
-        </ViewTransition>
-        <ViewTransition>
-          <Suspense fallback={<EventDescriptionSkeleton />}>
-            <EventDescription params={params} />
-          </Suspense>
-        </ViewTransition>
-      </div>
-      <div className="mt-4 space-y-3">
         <Suspense
           fallback={
-            <div className="flex gap-2">
-              <Skeleton className="h-9 flex-1 rounded-md" />
-              <Skeleton className="h-9 w-14 rounded-md" />a
-            </div>
+            <ViewTransition exit="auto">
+              <EventDetailsSkeleton />
+            </ViewTransition>
           }
         >
+          <ViewTransition enter="auto" default="none">
+            <EventDetails params={params} />
+          </ViewTransition>
+        </Suspense>
+      </div>
+      <div className="mt-4 space-y-3">
+        <Suspense fallback={<CommentFormSkeleton />}>
           <CommentForm />
         </Suspense>
         <Suspense
@@ -61,16 +54,6 @@ export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   );
 }
 
-async function EventDescription({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
-  return (
-    <div className="mt-2 max-h-20 overflow-y-auto sm:max-h-24">
-      <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
-    </div>
-  );
-}
-
 async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
   const { slug } = await params;
   const currentUser = await getCurrentUser();
@@ -80,7 +63,7 @@ async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
     <div className="space-y-2">
       {comments.map(comment => {
         return (
-          <ViewTransition key={comment.id} name={`comment-${comment.id}`} enter="slide-up">
+          <ViewTransition key={comment.id} name={`comment-${comment.id}`} enter="slide-up" default="none">
             <CommentCard comment={comment} currentUser={currentUser} />
           </ViewTransition>
         );
@@ -90,13 +73,11 @@ async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
   );
 }
 
-function EventDescriptionSkeleton() {
+function CommentFormSkeleton() {
   return (
-    <div className="mt-5 h-22 space-y-1.5 sm:h-26">
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-3/4" />
+    <div className="flex gap-2">
+      <Skeleton className="h-9 flex-1 rounded-md" />
+      <Skeleton className="h-9 w-14 rounded-md" />
     </div>
   );
 }

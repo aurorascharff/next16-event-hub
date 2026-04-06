@@ -41,7 +41,9 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
         </div>
       )}
       <div className="flex items-start justify-between gap-2">
-        <h1 className="min-h-[2lh] font-sans text-lg font-bold tracking-tight line-clamp-2 sm:text-3xl">{event.name}</h1>
+        <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
+          {event.name}
+        </h1>
         <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
       </div>
       {event.speaker && (
@@ -50,6 +52,9 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
           <span className="text-sm font-medium">{event.speaker}</span>
         </div>
       )}
+      <div className="mt-2 max-h-20 overflow-y-auto sm:max-h-24">
+        <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
+      </div>
     </article>
   );
 }
@@ -75,6 +80,12 @@ export function EventDetailsSkeleton() {
       <div className="mt-4 flex items-center gap-2 sm:mt-4 sm:gap-3">
         <Skeleton className="size-8 rounded-full" />
         <Skeleton className="h-4 w-36" />
+      </div>
+      <div className="mt-2 h-20 space-y-1.5 sm:h-24">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
       </div>
     </article>
   );

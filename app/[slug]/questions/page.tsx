@@ -1,5 +1,4 @@
-import { Suspense } from 'react';
-import { ViewTransition } from 'react';
+import { Suspense, ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
@@ -21,11 +20,17 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <>
-      <ViewTransition>
-        <Suspense fallback={<HeaderSkeleton />}>
+      <Suspense
+        fallback={
+          <ViewTransition exit="auto">
+            <HeaderSkeleton />
+          </ViewTransition>
+        }
+      >
+        <ViewTransition enter="auto" default="none">
           <EventHeader params={params} />
-        </Suspense>
-      </ViewTransition>
+        </ViewTransition>
+      </Suspense>
       <div className="mt-3">
         <Suspense
           fallback={

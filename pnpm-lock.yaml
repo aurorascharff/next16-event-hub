@@ -45,8 +45,8 @@ importers:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       nextjs-slides:
-        specifier: ^0.8.3
-        version: 0.8.3(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2)
+        specifier: ^0.9.0
+        version: 0.9.0(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2)
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -2983,8 +2983,8 @@ packages:
       sass:
         optional: true
 
-  nextjs-slides@0.8.3:
-    resolution: {integrity: sha512-kxWL81nz2IT0gefot2R1dieKs5l8p/DtOXemFvwuiouQ9sCeX/adnYI5pI6WOMCGF3J2Hn7ZUvi2AdK8jSkyPg==}
+  nextjs-slides@0.9.0:
+    resolution: {integrity: sha512-L7NzRMIrYmVsgDr5WCNS3z3fYCjbxyq7SQrshwr2bqcWFR3Yjykn5xKTI6WqrDbK3jcRLFHVEMY89UsT66UrEQ==}
     peerDependencies:
       next: '>=15.0.0'
       react: '>=19.0.0'
@@ -6899,7 +6899,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nextjs-slides@0.8.3(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2):
+  nextjs-slides@0.9.0(next@16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@19.0.0-beta-ebf51a3-20250411)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.2):
     dependencies:
       clsx: 2.1.1
       highlight.js: 11.11.1

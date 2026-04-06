@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function SlugError({ reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-4 py-16">
       <h1 className="font-sans text-2xl font-bold">Something went wrong</h1>
       <p className="text-muted-foreground text-sm">An error occurred while loading this session.</p>
       <div className="flex gap-4">

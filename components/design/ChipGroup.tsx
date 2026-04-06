@@ -1,6 +1,6 @@
 'use client';
 
-import { useOptimistic, useTransition } from 'react';
+import { addTransitionType, useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 
 type ChipItem<V extends string> = {
@@ -24,6 +24,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   function handleClick(itemValue: V) {
     onChange?.(itemValue);
     startTransition(() => {
+      addTransitionType('filter');
       setOptimisticValue(itemValue);
       action(itemValue);
     });

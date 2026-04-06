@@ -69,18 +69,18 @@ app/
     page.tsx                  # Session detail — description + comment feed
     error.tsx                 # Error boundary for session pages
     not-found.tsx             # 404 for unknown slugs
-    _components/              # Session-level client components (SessionTabs, CommentCard, CommentForm, LikeButton)
+    _components/              # Session-level client components (SessionTabs, EventDetails, CommentCard, CommentForm, LikeButton)
     questions/
       page.tsx                # Q&A feed with sort
       _components/            # Question-local components
 components/
-  common/                     # Shared utility components (Avatar, BackButton, EmptyState, AuthGate, ThemeToggle)
+  common/                     # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle)
   design/                     # Action prop components (BottomNav, ChipGroup, SubmitButton)
   ui/                         # shadcn/ui primitives
 data/
   queries/                    # Server-side queries with cache()
   actions/                    # Server Actions (mutations with refresh())
-types/                        # Shared types (Question, Comment, SortValue)
+types/                        # Shared types derived from query return types (Question, Comment, SortValue)
 lib/                          # Utility functions and hooks (usePolling)
 prisma/                       # Prisma schema and seeds
 ```
@@ -99,7 +99,7 @@ Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fet
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
 - **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `refresh()` to invalidate. Use `useOptimistic` for instant feedback.
 - **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Comments update on user action via `refresh()`.
-- **Navigate + mutate** — Wrap both a server action and `router.push()` in a single `startTransition` for atomic mutation + navigation (see `BackButton`).
+- **Navigate + mutate** — Mutations and navigation coordinate through React's transition system. Favorite sessions, then switch to the Favorites tab — optimistic updates settle naturally when the server responds.
 
 ## Server Components (Default)
 
@@ -115,7 +115,6 @@ Add `'use client'` only when needed for:
 - Event handlers, hooks, browser APIs
 - `useOptimistic()` for optimistic updates and pending state (action prop pattern)
 - `useTransition()` for non-blocking updates
-- `useDeferredValue()` for deferred rendering that triggers view transitions
 - `router.push()` for client-side navigation
 
 ## Data Fetching & Mutations

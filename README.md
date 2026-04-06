@@ -26,7 +26,8 @@ components/
 data/
   actions/                # Server Actions
   queries/                # Data fetching with cache()
-lib/                      # Utility functions
+types/                    # Shared types derived from query return types
+lib/                      # Utility functions and hooks
 prisma/                   # Schema and seed data
 ```
 
@@ -44,7 +45,7 @@ Every route folder should contain everything it needs. Components and functions 
 
 **Async React:** Replace manual `isLoading`/`isError` state with React 19's coordination primitives — `useTransition` for tracking async work, `useOptimistic` for instant feedback, `Suspense` for loading boundaries, and `use()` for reading promises during render.
 
-**Live Data Sync:** Questions poll via `startTransition(() => router.refresh())` — updates flow through React's transition system, coordinating with `useOptimistic`, `useDeferredValue`, and ViewTransition.
+**Live Data Sync:** Questions poll via `startTransition(() => router.refresh())` — updates flow through React's transition system, coordinating with `useOptimistic` and ViewTransition.
 
 ## Development Flow
 
@@ -55,7 +56,7 @@ Every route folder should contain everything it needs. Components and functions 
 
 ## Database
 
-Uses Prisma with SQLite (local `dev.db` file). No external database needed.
+Uses Prisma with PostgreSQL.
 
 ```bash
 pnpm run prisma.push     # Push schema to DB

@@ -1,3 +1,5 @@
+import { Github } from 'lucide-react';
+import Link from 'next/link';
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid } from '@/components/EventGrid';
 import { LabelFilter } from '@/components/LabelFilter';
@@ -18,7 +20,16 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
           <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-center justify-between">
               <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
-              <ThemeToggle />
+              <div className="flex items-center gap-2">
+                <Link
+                  href="https://github.com/aurorascharff/next16-event-hub"
+                  target="_blank"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Github className="size-4" />
+                </Link>
+                <ThemeToggle />
+              </div>
             </div>
             <Suspense fallback={<FiltersSkeleton />}>
               <LabelFilter />

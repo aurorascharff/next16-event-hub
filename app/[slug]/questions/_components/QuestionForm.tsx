@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { SubmitButton } from '@/components/design/SubmitButton';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 type Props = {
@@ -19,9 +19,9 @@ export function QuestionForm({ postAction }: Props) {
   }
 
   return (
-    <form ref={formRef} className="flex gap-2">
+    <form ref={formRef} action={submitAction} className="flex gap-2">
       <Input name="content" placeholder="Ask a question..." required className="flex-1" />
-      <SubmitButton action={submitAction}>Ask</SubmitButton>
+      <Button type="submit">Ask</Button>
     </form>
   );
 }

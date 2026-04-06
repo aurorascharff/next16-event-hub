@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useDeferredValue, useOptimistic, ViewTransition } from 'react';
+import { useOptimistic, ViewTransition } from 'react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
@@ -78,8 +78,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  const sortedQuestions = useDeferredValue(sorted);
-
   const sortOptions: { label: string; value: SortValue }[] = [
     { label: 'Top', value: 'top' },
     { label: 'Newest', value: 'newest' },
@@ -97,14 +95,14 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
       </div>
 
       <div className="space-y-2">
-        {sortedQuestions.map(question => {
+        {sorted.map(question => {
           return (
             <ViewTransition key={question.id} enter="slide-up">
               <QuestionCard question={question} />
             </ViewTransition>
           );
         })}
-        {sortedQuestions.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+        {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
     </div>
   );

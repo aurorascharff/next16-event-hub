@@ -1,6 +1,6 @@
-# Event Hub
+# Next 16 Event Hub
 
-A live session companion app for React Miami 2026 — browse conference sessions, post comments, ask questions with upvotes, and see who's actively watching. Built to demonstrate Async React patterns for the talk "Designing the In-Between States with Async React."
+An interactive, live event companion app exploring Async React patterns with optimistic UI, SWR polling, and View Transitions. Attendees can browse sessions, post comments, ask and upvote questions, favorite sessions, and see who's actively watching.
 
 Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), Prisma (SQLite), and SWR.
 
@@ -15,71 +15,59 @@ pnpm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Database Setup
+## Project Structure
+
+```
+app/                      # Pages and layouts
+components/
+  common/                 # Shared utility components
+  design/                 # Action prop components
+  ui/                     # shadcn/ui primitives
+data/
+  actions/                # Server Actions
+  queries/                # Data fetching with cache()
+hooks/                    # Custom hooks
+lib/                      # Utility functions
+prisma/                   # Schema and seed data
+```
+
+- **components/ui** — shadcn/ui components. Add with `npx shadcn@latest add <component-name>`
+- **components/design** — Components that expose action props and handle async coordination internally (BottomNav, ChipGroup, SubmitButton)
+- **components/common** — Shared utility components without complex async logic
+
+Every route folder should contain everything it needs. Components and functions live at the nearest shared space in the hierarchy.
+
+**Naming:** PascalCase for components, kebab-case for folders, camelCase for functions/hooks. Suffix transition-based functions with "Action".
+
+## Key Patterns
+
+**Cache Components:** Uses `cacheComponents: true` to statically render server components that don't access dynamic data. Keep pages non-async and push dynamic data access into `<Suspense>` boundaries to maximize the static shell.
+
+**Async React:** Replace manual `isLoading`/`isError` state with React 19's coordination primitives — `useTransition` for tracking async work, `useOptimistic` for instant feedback, `Suspense` for loading boundaries, and `use()` for reading promises during render.
+
+**Live Data Sync:** Initial data is fetched server-side in async RSCs and handed off to client components. SWR polls for fresh data in the background. Mutations trigger immediate SWR revalidation.
+
+## Development Flow
+
+- **Fetching data** — Queries in `data/queries/`, wrapped with `cache()`. Await in Server Components directly.
+- **Mutating data** — Server Actions in `data/actions/` with `"use server"`. Invalidate with `refresh()`. Use `useOptimistic` for instant feedback.
+- **Caching** — Add `"use cache"` with `cacheTag()` to pages, components, or functions to include them in the static shell.
+- **Errors** — `error.tsx` for boundaries, `not-found.tsx` + `notFound()` for 404s.
+
+## Database
 
 Uses Prisma with SQLite (local `dev.db` file). No external database needed.
 
 ```bash
 pnpm run prisma.push     # Push schema to DB
-pnpm run prisma.seed     # Seed with React Miami sessions
+pnpm run prisma.seed     # Seed with session data
 pnpm run prisma.studio   # Open Prisma Studio
 ```
 
-## Project Structure
+## Deployment
 
-```
-app/
-  page.tsx                  # Home — session list with day tabs + label filter
-  layout.tsx                # Root layout (auth gate, theme, fonts)
-  [slug]/
-    layout.tsx              # Session layout (header, event info, bottom nav)
-    page.tsx                # Redirects to comments
-    comments/page.tsx       # Comment feed (server-rendered, Suspense)
-    questions/page.tsx      # Q&A feed (server-rendered → SWR handoff)
-    _components/            # Session-local components
-  api/events/[slug]/        # SWR polling endpoints (questions, presence)
-components/
-  common/                   # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle)
-  design/                   # Design components with async React (BottomNav, ChipGroup, InlineForm, SubmitButton)
-  ui/                       # shadcn/ui primitives
-  BackButton.tsx            # Navigate + mutate in one transition
-  EventGrid.tsx             # Async server component — session cards
-  LabelFilter.tsx           # Label filter chips
-data/
-  queries/                  # Server-side data fetching with cache()
-  actions/                  # Server Actions (mutations with refresh())
-lib/
-  utils.ts                  # Utilities (cn, timeAgo, parseTime, avatar URLs)
-prisma/
-  schema.prisma             # Database schema
-  seed.ts                   # React Miami 2026 session seed data
+```bash
+pnpm run build
 ```
 
-## The App
-
-- **Session list** (`/`) — Browse React Miami 2026 sessions by day (bottom tabs) and label (filter chips)
-- **Comments** (`/[slug]/comments`) — Live comment feed with likes, delete own comments
-- **Questions** (`/[slug]/questions`) — Live Q&A with upvotes, sort by Top/Newest with animated reorder
-- **Active users** — See who's currently viewing a session (presence tracking)
-- **Auth** — Cookie-based demo identity (enter a display name to participate)
-
-## Async React Patterns Demonstrated
-
-| Pattern | Where | React APIs |
-|---------|-------|------------|
-| Page load streaming | Session detail pages | `Suspense`, Cache Components (`cacheComponents`) |
-| Navigation transitions | List → detail, back button | `startTransition`, `addTransitionType`, `ViewTransition` |
-| Query param filtering | Day tabs, label pills, sort toggle | `useOptimistic`, `startTransition` (via design components) |
-| Update without URL change | Question list reorder on upvote | `useDeferredValue`, `ViewTransition` |
-| Mutations | Comments, likes, upvotes, questions | `useActionState`, `useOptimistic`, `useTransition` |
-| Navigate + mutate | Back button leaves session + navigates | Single `startTransition` wrapping server action + `router.push` |
-| View Transitions | Page slides, Suspense reveals, list reorder | `<ViewTransition>`, `transitionTypes`, CSS view-transition API |
-| Actions pattern | BottomNav, ChipGroup, InlineForm, BackButton | Components encapsulate `startTransition` + `useOptimistic` internally |
-| Eliminating in-between states | Session pages, event list | `generateStaticParams`, `cache()`, SWR `fallbackData` |
-
-## Component Architecture
-
-- **`components/design/`** — Self-contained components with async/interactive logic (`useOptimistic`, `useTransition`). Consumers pass data and callbacks; the component handles all transition mechanics internally.
-- **`components/common/`** — Shared utility components without complex async logic (Avatar, EmptyState, AuthGate, ThemeToggle, ThemeProvider).
-- **`components/ui/`** — shadcn/ui primitives (Button, Input, Dialog, Tooltip, Skeleton, Spinner).
-- **`app/[slug]/_components/`** — Route-local components only used within the session detail pages.
+See the [Next.js deployment docs](https://nextjs.org/docs/deployment) for more details.

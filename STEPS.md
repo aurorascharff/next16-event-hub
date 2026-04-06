@@ -43,17 +43,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Page Load
 
-The first in-between state. Before: `[load code/data] → [render]`. After: `[load static shell] → [stream] → [load dynamic data] → [complete]`.
-
-- The home page loads the session grid — right now it's a global spinner. With cache components, we get an error if we don't have a Suspense boundary. But we don't want to hide the whole page.
-- Push Suspense down the tree so the shell — the header, day tabs, label pills — renders immediately while only the session grid streams in. Wrap EventGrid in Suspense with a skeleton fallback that mimics the card grid layout.
-- Now the shell appears instantly, then the session grid streams in. The shell is statically prerendered with cache components. Better FCP, better LCP.
-- Same for the session detail page. The session info (title, speaker, schedule) streams in via Suspense. The layout uses `generateMetadata` to set the page title and description from the event data — this runs server-side and doesn't block rendering. Comments and questions are dynamic — they need their own Suspense boundaries with skeletons.
-- Wrap CommentFeed and QuestionFeed in Suspense with skeleton fallbacks. Each skeleton should match the shape of the content — input field skeleton, then card skeletons. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
+- The home page blocks — EventGrid is an async server component with no Suspense boundary, so the entire route waits for data before rendering anything. Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. Better FCP, better LCP.
+- Navigate to the session detail page. It already has Suspense, but with a generic spinner as the fallback — notice the CLS when the event details load in and push the comment section down. Fix: replace the spinner with proper skeleton fallbacks that reserve the right amount of space. Each skeleton should match the shape of the content. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
+- Do the same for the questions page — wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks.
 
 ## Navigation
-
-Navigating to a brand new page. Before: `[load code/data] → [render]`. After: `[load minimal code/data] → [stream in transition, interruptible] → [complete]`.
 
 - Clicking a session card navigates to the detail page. Right now there's no visual feedback during the transition — it just jumps. We'll add animations later.
 
@@ -64,8 +58,6 @@ Navigating to a brand new page. Before: `[load code/data] → [render]`. After: 
 
 ## Updating a Page with Query Params
 
-Filtering — technically a navigation, but conceptually you're on the "same page." Before: `[load new data] → [render]`. After: `[update UI with optimistic filter] → [load new data] → [stream/render]`.
-
 - Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
 - What if these components could handle their own async coordination? The day tabs and favorites use BottomNav — a design component with an action prop. It uses `Route<T>` from Next.js typed routes for type-safe hrefs. The active tab switches instantly while the content loads in the background. The old content stays visible and interactive. The parent just passes an array of routes, no async React code needed.
 - The label filter pills use ChipGroup — same idea. Clicking "React" or "Performance" instantly highlights the pill while the filtered grid loads. Just pass an action, the component does the rest. When the Favorites tab is active, the label filter hides — no conflicting state.
@@ -74,15 +66,11 @@ Filtering — technically a navigation, but conceptually you're on the "same pag
 
 ## Updating a Page Without Changing the URL
 
-Background updates where no user action triggers the change. Before: `[load new data] → [render]`. After: `[optimistic update] → [load new data] → [stream/render]`.
-
 - Questions need to update when other attendees upvote or ask new questions. We poll using the `usePolling` hook — it calls `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — in-flight optimistic values stay stable while fresh data arrives.
 - This is the key insight — `router.refresh()` inside `startTransition` keeps everything in React's transition system. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
 
 ## Mutations
-
-Form submissions and interactions. Before: `[submit form] → [render]`. After: `[submit form] → [optimistic interruptible update] → [render]`.
 
 ### Optimistic Mutations
 

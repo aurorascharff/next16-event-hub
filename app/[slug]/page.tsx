@@ -1,12 +1,14 @@
+import { Suspense } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
+import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug } from '@/data/queries/event';
 import type { Metadata } from 'next';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
@@ -20,10 +22,14 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <>
-      <EventDetails params={params} />
+      <Suspense fallback={<CenteredSpinner />}>
+        <EventDetails params={params} />
+      </Suspense>
       <div className="mt-4 space-y-3">
         <CommentForm />
-        <CommentList params={params} />
+        <Suspense fallback={<CenteredSpinner />}>
+          <CommentList params={params} />
+        </Suspense>
       </div>
     </>
   );

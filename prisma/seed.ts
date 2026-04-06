@@ -19,11 +19,11 @@ const events = [
   {
     day: 'day-1',
     description:
-      "Handling async operations in UI components can be tricky—flickering pending states, inefficient state updates, and unstable interfaces are common issues. This session demonstrates how React Server Components streamline data fetching while Actions handle async operations with built-in optimistic updates and pending states. We'll explore how View Transitions integrate with these patterns to enable fluid visual updates.",
+      "Much of the user experience happens in the moments between actions and the final UI. Page loads, navigations, filtering, and form submissions involve multiple steps where data and code arrive at different times, and handling these intermediate states is essential to keeping interfaces smooth and predictable. This session demonstrates how Async React makes these in-between states manageable. In the context of Next.js, we'll explore patterns like Suspense, optimistic updates, and streaming, and show how caching, prerendering, and animations can smooth or remove intermediate states, making page updates, navigation, and interactions feel fast, reliable, and polished.",
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
-    name: "Modern React Patterns: Concurrent Rendering, Actions & What's Next",
-    slug: 'modern-react-patterns',
+    name: 'Designing the In-Between States with Async React',
+    slug: 'in-between-states',
     speaker: 'Aurora Scharff',
     time: '9:15 AM',
   },

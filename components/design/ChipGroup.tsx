@@ -1,6 +1,5 @@
 'use client';
 
-import { addTransitionType, useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 
 type ChipItem<V extends string> = {
@@ -18,16 +17,9 @@ type Props<V extends string> = {
 };
 
 export function ChipGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
-  const [optimisticValue, setOptimisticValue] = useOptimistic(value);
-  const [, startTransition] = useTransition();
-
   function handleClick(itemValue: V) {
     onChange?.(itemValue);
-    startTransition(() => {
-      addTransitionType('filter');
-      setOptimisticValue(itemValue);
-      action(itemValue);
-    });
+    action(itemValue);
   }
 
   if (variant === 'toggle') {
@@ -42,7 +34,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
               }}
               className={cn(
                 'rounded-full px-2.5 py-0.5 text-xs font-medium transition-all',
-                optimisticValue === item.value
+                value === item.value
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground',
               )}
@@ -66,7 +58,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
             }}
             className={cn(
               'shrink-0 rounded-full border px-3 py-1 text-sm transition-colors',
-              optimisticValue === item.value
+              value === item.value
                 ? 'bg-foreground text-background border-foreground font-medium'
                 : 'border-border text-muted-foreground hover:text-foreground',
             )}

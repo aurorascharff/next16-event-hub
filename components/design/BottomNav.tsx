@@ -3,14 +3,12 @@
 import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { addTransitionType, useOptimistic, useTransition, ViewTransition } from 'react';
 import { cn } from '@/lib/utils';
 
 type Tab<T extends string> = {
   href: Route<T>;
   icon?: React.ReactNode;
   label: string;
-  transitionTypes?: readonly string[];
 };
 
 type Props<T extends string> = {
@@ -33,9 +31,6 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
       }),
     );
 
-  const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
-  const [, startTransition] = useTransition();
-
   const nav = (
     <nav
       className={cn(
@@ -43,11 +38,10 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
         'pb-[env(safe-area-inset-bottom)]',
         className,
       )}
-      style={{ viewTransitionName: 'bottom-nav' }}
     >
       <div className="mx-auto flex max-w-4xl">
         {tabs.map((tab, i) => {
-          const isActive = i === optimisticActive;
+          const isActive = i === resolvedActive;
           return (
             <Link
               key={tab.href}
@@ -55,12 +49,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
               onClick={e => {
                 e.preventDefault();
                 onChange?.(tab.href);
-                startTransition(async () => {
-                  addTransitionType('tab-switch');
-                  tab.transitionTypes?.forEach(t => addTransitionType(t));
-                  setOptimisticActive(i);
-                  await action(tab.href);
-                });
+                action(tab.href);
               }}
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors',
@@ -79,9 +68,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   if (children) {
     return (
       <>
-        <ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">
-          <div>{children}</div>
-        </ViewTransition>
+        <div>{children}</div>
         {nav}
       </>
     );
@@ -92,10 +79,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
 
 export function BottomNavSkeleton({ count }: { count: number }) {
   return (
-    <nav
-      className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
-      style={{ viewTransitionName: 'bottom-nav' }}
-    >
+    <nav className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto flex max-w-4xl">
         {Array.from({ length: count }).map((_, i) => {
           return (

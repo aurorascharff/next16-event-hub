@@ -1,6 +1,4 @@
-import { Suspense, ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
@@ -20,29 +18,9 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <>
-      <Suspense
-        fallback={
-          <ViewTransition exit="auto">
-            <HeaderSkeleton />
-          </ViewTransition>
-        }
-      >
-        <ViewTransition enter="auto" default="none">
-          <EventHeader params={params} />
-        </ViewTransition>
-      </Suspense>
+      <EventHeader params={params} />
       <div className="mt-3">
-        <Suspense
-          fallback={
-            <ViewTransition exit="slide-down">
-              <FeedSkeleton />
-            </ViewTransition>
-          }
-        >
-          <ViewTransition enter="slide-up" default="none">
-            <QuestionFeed params={params} />
-          </ViewTransition>
-        </Suspense>
+        <QuestionFeed params={params} />
       </div>
     </>
   );
@@ -68,44 +46,4 @@ async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'pa
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
   return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
-}
-
-function HeaderSkeleton() {
-  return (
-    <div className="flex items-center gap-3">
-      <Skeleton className="size-8 shrink-0 rounded-full" />
-      <div className="flex-1 space-y-1.5">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-3 w-24" />
-      </div>
-    </div>
-  );
-}
-
-function FeedSkeleton() {
-  return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <Skeleton className="h-9 flex-1 rounded-md" />
-        <Skeleton className="h-9 w-14 rounded-md" />
-      </div>
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-3 w-24" />
-        <Skeleton className="h-6 w-28 rounded-full" />
-      </div>
-      <div className="space-y-2">
-        {Array.from({ length: 3 }).map((_, i) => {
-          return (
-            <div key={i} className="flex items-start gap-2 rounded-lg border p-3">
-              <Skeleton className="h-10 w-8 rounded-md" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-3 w-full" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
 }

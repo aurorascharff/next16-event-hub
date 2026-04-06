@@ -15,7 +15,7 @@ export function ThemeToggle() {
   }, []);
 
   return (
-    <div style={{ viewTransitionName: 'theme-toggle' }} className="inline-flex items-center rounded-full p-0.5">
+    <div className="inline-flex items-center rounded-full p-0.5">
       {!mounted ? (
         <>
           <span className="rounded-full p-2">

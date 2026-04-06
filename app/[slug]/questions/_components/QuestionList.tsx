@@ -35,6 +35,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   useEffect(() => {
     const interval = setInterval(() => {
       startTransition(() => {
+        addTransitionType('live-update');
         router.refresh();
       });
     }, 5000);
@@ -125,7 +126,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
               key={question.id}
               enter="slide-up"
               default="none"
-              update={{ default: 'none', 'sort-change': 'auto', 'vote-change': 'auto' }}
+              update={{ default: 'none', 'live-update': 'auto', 'sort-change': 'auto', 'vote-change': 'auto' }}
             >
               <QuestionCard question={question} />
             </ViewTransition>

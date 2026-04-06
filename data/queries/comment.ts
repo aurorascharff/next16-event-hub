@@ -5,7 +5,7 @@ import { prisma } from '@/db';
 import { slow } from '@/lib/utils';
 
 export const getCommentsByEvent = cache(async (eventSlug: string, currentUserName?: string | null) => {
-  await slow();
+  await slow(1500);
 
   const comments = await prisma.comment.findMany({
     orderBy: { createdAt: 'desc' },

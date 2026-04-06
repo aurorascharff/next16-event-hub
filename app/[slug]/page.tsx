@@ -36,30 +36,39 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
       }}
       default="none"
     >
-      <div>
+      <div className="flex flex-col gap-6">
         <div className="min-h-56 sm:min-h-72">
-          <ViewTransition name={`event-${slug}`} share="auto">
-            <Suspense fallback={<EventDetailsSkeleton />}>
-              <EventDetails slug={slug} />
-            </Suspense>
-          </ViewTransition>
-        </div>
-        <div className="mt-4 space-y-3">
-          <Suspense fallback={<CommentFormSkeleton />}>
-            <CommentForm />
-          </Suspense>
           <Suspense
             fallback={
-              <ViewTransition exit="slide-down">
-                <CommentListSkeleton />
-              </ViewTransition>
+              <>
+                <ViewTransition name={`event-${slug}`} share="auto" default="none">
+                  <EventDetailsSkeleton />
+                </ViewTransition>
+                <div className="mt-4 min-h-9">
+                  <CommentFormSkeleton />
+                </div>
+              </>
             }
           >
-            <ViewTransition enter="slide-up" default="none">
-              <CommentList slug={slug} />
+            <ViewTransition name={`event-${slug}`} share="auto" default="none">
+              <EventDetails slug={slug} />
             </ViewTransition>
+            <div className="mt-4 min-h-9">
+              <CommentForm />
+            </div>
           </Suspense>
         </div>
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <CommentListSkeleton />
+            </ViewTransition>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <CommentList slug={slug} />
+          </ViewTransition>
+        </Suspense>
       </div>
     </ViewTransition>
   );
@@ -85,9 +94,9 @@ async function CommentList({ slug }: { slug: string }) {
 
 function CommentFormSkeleton() {
   return (
-    <div className="flex gap-2">
+    <div className="flex min-h-9 gap-2">
       <Skeleton className="h-9 flex-1 rounded-md" />
-      <Skeleton className="h-9 w-14 rounded-md" />
+      <Skeleton className="h-9 w-14 shrink-0 rounded-md" />
     </div>
   );
 }

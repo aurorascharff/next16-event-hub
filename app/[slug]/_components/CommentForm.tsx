@@ -20,7 +20,7 @@ export function CommentForm() {
   }
 
   return (
-    <form ref={formRef} className="flex gap-2">
+    <form ref={formRef} className="flex min-h-9 gap-2">
       <Input name="content" placeholder="Add a comment..." required className="flex-1" />
       <SubmitButton action={submitAction}>Post</SubmitButton>
     </form>

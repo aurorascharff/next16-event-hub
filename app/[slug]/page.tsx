@@ -1,4 +1,5 @@
 import { EmptyState } from '@/components/common/EmptyState';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug } from '@/data/queries/event';
@@ -39,6 +40,33 @@ async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
         return <CommentCard key={comment.id} comment={comment} currentUser={currentUser} />;
       })}
       {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
+    </div>
+  );
+}
+
+function CommentFormSkeleton() {
+  return (
+    <div className="flex gap-2">
+      <Skeleton className="h-9 flex-1 rounded-md" />
+      <Skeleton className="h-9 w-14 rounded-md" />
+    </div>
+  );
+}
+
+function CommentListSkeleton() {
+  return (
+    <div className="space-y-2">
+      {Array.from({ length: 3 }).map((_, i) => {
+        return (
+          <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
+            <Skeleton className="size-7 rounded-full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

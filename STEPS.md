@@ -35,7 +35,10 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. Under 150ms feels synchronous; above 150ms the in-between states appear. That's the goal. (Credit: Async React talk at React Conf)
 - (Exit slides, back to the app) Remove the `useEffect` approach, bring back Server Components and the transition system. Now let's fix the app.
-- The setup is the Next.js 16 App Router, Prisma ORM, Tailwind CSS. Using React Server Components as the data fetching layer. All data queries are wrapped with React `cache()` for request deduplication — multiple components can call the same query and it only hits the database once per request. Cache Components for the static/dynamic hybrid.
+
+## Setup and Starting Point
+
+- The setup is the Next.js 16 App Router, Prisma ORM, Tailwind CSS. Using React Server Components as the data fetching layer. All data queries are wrapped with React `cache()` for request deduplication — multiple components can call the same query and it only hits the database once per request. Cache Components for the static/dynamic hybrid. For live data, questions poll with `startTransition` + `router.refresh()`.
 - Demo app: Data fetching has been slowed down to simulate worse network conditions. You can see the bad UX — blank screens, frozen buttons, no feedback. Let's fix it by designing the appropriate in-between states.
 
 ## Page Load

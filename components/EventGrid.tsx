@@ -5,7 +5,7 @@ import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
 import { getCurrentUser } from '@/data/queries/auth';
-import { getEvents } from '@/data/queries/event';
+import { getEvents, getUserFavorites } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
 export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
@@ -13,7 +13,14 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
   const day = typeof sp.day === 'string' ? sp.day : 'day-1';
   const label = typeof sp.label === 'string' ? sp.label : undefined;
   const currentUser = await getCurrentUser();
-  const events = await getEvents(day, label, currentUser);
+  const favoritesSlugs = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  let events = (await getEvents(day, label)).map(event => ({
+    ...event,
+    hasFavorited: favoritesSlugs.has(event.slug),
+  }));
+  if (label === 'favorites') {
+    events = events.filter(e => e.hasFavorited);
+  }
 
   if (events.length === 0) {
     return <EmptyState message="No sessions match your filters." hint="Try a different combination." />;

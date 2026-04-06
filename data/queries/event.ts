@@ -6,15 +6,15 @@ import { prisma } from '@/db';
 import { parseTime } from '@/lib/utils';
 import { cacheTag } from 'next/cache';
 
-export const getEvents = cache(async (day?: string, label?: string, currentUserName?: string | null) => {
+export const getEvents = cache(async (day?: string, label?: string) => {
+  'use cache';
+  cacheTag('events');
 
   const where: Record<string, unknown> = {};
   if (day) {
     where.day = day;
   }
-  if (label === 'favorites' && currentUserName) {
-    where.favorites = { some: { userName: currentUserName } };
-  } else if (label && label !== 'all') {
+  if (label && label !== 'all' && label !== 'favorites') {
     where.labels = { contains: label };
   }
 
@@ -22,12 +22,6 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
     select: {
       day: true,
       description: true,
-      favorites: currentUserName
-        ? {
-            select: { id: true },
-            where: { userName: currentUserName },
-          }
-        : false,
       labels: true,
       location: true,
       name: true,
@@ -38,17 +32,18 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
     where,
   });
 
-  return events
-    .map(({ favorites, ...event }) => {
-      return {
-        ...event,
-        hasFavorited: Array.isArray(favorites) && favorites.length > 0,
-      };
-    })
-    .sort((a, b) => {
-      if (a.day !== b.day) return a.day.localeCompare(b.day);
-      return parseTime(a.time) - parseTime(b.time);
-    });
+  return events.sort((a, b) => {
+    if (a.day !== b.day) return a.day.localeCompare(b.day);
+    return parseTime(a.time) - parseTime(b.time);
+  });
+});
+
+export const getUserFavorites = cache(async (userName: string) => {
+  const favorites = await prisma.favorite.findMany({
+    select: { eventSlug: true },
+    where: { userName },
+  });
+  return new Set(favorites.map(f => f.eventSlug));
 });
 
 export const getEventBySlug = cache(async (slug: string) => {

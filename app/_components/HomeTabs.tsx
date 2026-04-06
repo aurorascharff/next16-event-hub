@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { BottomNav } from '@/components/design/BottomNav';
 
 const homeTabs = [
-  { href: '/?day=day-1', icon: <Calendar className="size-4" />, label: 'Day 1' },
-  { href: '/?day=day-2', icon: <Calendar className="size-4" />, label: 'Day 2' },
-  { href: '/?label=favorites', icon: <Heart className="size-4" />, label: 'Favorites' },
+  { href: '/?day=day-1', icon: <Calendar className="size-5" />, label: 'Day 1' },
+  { href: '/?day=day-2', icon: <Calendar className="size-5" />, label: 'Day 2' },
+  { href: '/?label=favorites', icon: <Heart className="size-5" />, label: 'Favorites' },
 ] as const;
 
 type Props = {

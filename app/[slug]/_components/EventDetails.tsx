@@ -17,12 +17,12 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
         <span className="font-medium tracking-wider uppercase">{getDayLabel(event.day)}</span>
         <span className="text-border">·</span>
         <span className="flex items-center gap-1">
-          <Clock className="size-3" />
+          <Clock className="size-3.5" />
           {event.time}
         </span>
         <span className="text-border">·</span>
         <span className="flex items-center gap-1">
-          <MapPin className="size-3" />
+          <MapPin className="size-3.5" />
           {event.location}
         </span>
       </div>
@@ -68,8 +68,9 @@ export function EventDetailsSkeleton() {
         <Skeleton className="h-6 w-16 rounded-full" />
         <Skeleton className="h-6 w-24 rounded-full" />
       </div>
-      <div className="space-y-1">
-        <Skeleton className="h-5 w-4/5 sm:h-7" />
+      <div className="space-y-4">
+        <Skeleton className="h-4 w-4/5 sm:h-7" />
+        <Skeleton className="h-3 w-4/5 sm:h-6" />
       </div>
       <div className="mt-4 flex items-center gap-2 sm:mt-4 sm:gap-3">
         <Skeleton className="size-8 rounded-full" />

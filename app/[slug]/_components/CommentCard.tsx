@@ -24,7 +24,7 @@ export function CommentCard({ comment, currentUser }: Props) {
           <span className="text-xs font-medium">{comment.userName}</span>
           <span className="text-muted-foreground text-xs">{timeAgo(comment.createdAt)}</span>
         </div>
-        <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{comment.content}</p>
+        <p className="mt-0.5 break-words text-sm leading-relaxed">{comment.content}</p>
       </div>
       <div className="flex items-center gap-1">
         <LikeButton

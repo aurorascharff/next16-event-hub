@@ -17,7 +17,7 @@ export function QuestionCard({ question }: Props) {
         hasVoted={question.hasVoted}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-xs leading-relaxed">{question.content}</p>
+        <p className="break-words text-sm leading-relaxed">{question.content}</p>
         <div className="mt-1.5 flex items-center gap-2">
           <Avatar name={question.userName} size="xs" />
           <span className="text-muted-foreground text-xs">{question.userName}</span>

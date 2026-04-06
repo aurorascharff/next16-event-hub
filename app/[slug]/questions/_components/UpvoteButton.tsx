@@ -39,7 +39,7 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
       )}
       aria-label={`Upvote (${optimisticVotes})`}
     >
-      <ChevronUp className={cn('size-4', optimisticHasVoted && 'fill-current')} />
+      <ChevronUp className={cn('size-5', optimisticHasVoted && 'fill-current')} />
       <span>{optimisticVotes}</span>
     </button>
   );

@@ -37,7 +37,7 @@ export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
       )}
       aria-label={`Like (${optimistic.likes})`}
     >
-      <Heart className={cn('size-3', optimistic.hasLiked && 'fill-current')} />
+      <Heart className={cn('size-3.5', optimistic.hasLiked && 'fill-current')} />
       {optimistic.likes > 0 && <span>{optimistic.likes}</span>}
     </button>
   );

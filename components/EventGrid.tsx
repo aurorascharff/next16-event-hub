@@ -53,7 +53,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   </span>
                   <span className="text-border">·</span>
                   <span className="text-muted-foreground flex items-center gap-1 text-xs">
-                    <Clock className="size-2.5" />
+                    <Clock className="size-3" />
                     {event.time}
                   </span>
                 </div>
@@ -79,13 +79,13 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
               {event.speaker && (
                 <div className="mt-2 flex items-center gap-2">
                   <Avatar name={event.speaker} variant="speaker" />
-                  <span className="text-muted-foreground text-xs">{event.speaker}</span>
+                  <span className="text-muted-foreground text-xs font-medium">{event.speaker}</span>
                 </div>
               )}
               <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">{event.description}</p>
               <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
                 <span className="flex items-center gap-1">
-                  <MapPin className="size-2.5" />
+                  <MapPin className="size-3" />
                   {event.location}
                 </span>
               </div>

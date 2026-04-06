@@ -1,25 +1,15 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { startTransition, useEffect, useDeferredValue, useOptimistic, ViewTransition } from 'react';
+import { useDeferredValue, useOptimistic, ViewTransition } from 'react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
 import { addQuestion } from '@/data/actions/question';
+import { usePolling } from '@/lib/usePolling';
+import type { Question, SortValue } from '@/types';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
-
-type Question = {
-  id: string;
-  content: string;
-  userName: string;
-  votes: number;
-  hasVoted: boolean;
-  eventSlug: string;
-  createdAt: Date | string;
-};
-
-type SortValue = 'top' | 'newest';
 
 type Props = {
   initialQuestions: Question[];
@@ -32,16 +22,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const searchParams = useSearchParams();
   const sort = (searchParams.get('sort') as SortValue) || 'top';
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      startTransition(() => {
-        router.refresh();
-      });
-    }, 5000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [router]);
+  usePolling(5000);
 
   const [optimisticQuestions, addOptimisticQuestion] = useOptimistic(
     initialQuestions,
@@ -57,7 +38,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     },
   );
 
-  async function handleAddQuestion(content: string) {
+  async function postAction(content: string) {
     const id = crypto.randomUUID();
     const tempQuestion: Question = {
       content,
@@ -79,7 +60,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     }
   }
 
-  function handleSortChange(value: SortValue) {
+  function sortAction(value: SortValue) {
     const params = new URLSearchParams(searchParams.toString());
     if (value === 'top') {
       params.delete('sort');
@@ -106,14 +87,13 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
 
   return (
     <div className="space-y-3">
-      <QuestionForm onSubmit={handleAddQuestion} />
-
+      <QuestionForm postAction={postAction} />
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
           Live · {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
         </span>
-        <ChipGroup items={sortOptions} value={sort} onChange={handleSortChange} variant="toggle" />
+        <ChipGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />
       </div>
 
       <div className="space-y-2">

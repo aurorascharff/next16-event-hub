@@ -5,17 +5,8 @@ import { useTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { deleteComment } from '@/data/actions/comment';
 import { cn, timeAgo } from '@/lib/utils';
+import type { Comment } from '@/types';
 import { LikeButton } from './LikeButton';
-
-type Comment = {
-  id: string;
-  content: string;
-  userName: string;
-  likes: number;
-  hasLiked: boolean;
-  eventSlug: string;
-  createdAt: Date | string;
-};
 
 type Props = {
   comment: Comment;
@@ -35,10 +26,7 @@ export function CommentCard({ comment, currentUser }: Props) {
   return (
     <div
       data-pending={isPending || undefined}
-      className={cn(
-        'group flex items-start gap-3 rounded-lg border p-3 transition-opacity',
-        'data-[pending]:opacity-50',
-      )}
+      className={cn('group flex items-start gap-3 rounded-lg border p-3 transition-opacity', 'data-pending:opacity-50')}
     >
       <Avatar name={comment.userName} size="md" />
       <div className="min-w-0 flex-1">

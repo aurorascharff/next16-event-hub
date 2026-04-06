@@ -1,17 +1,27 @@
 'use client';
 
-import { InlineForm } from '@/components/common/InlineForm';
+import { useRef } from 'react';
+import { SubmitButton } from '@/components/design/SubmitButton';
+import { Input } from '@/components/ui/input';
 
 type Props = {
-  onSubmit: (content: string) => Promise<void>;
+  postAction: (content: string) => Promise<void>;
 };
 
-export function QuestionForm({ onSubmit }: Props) {
-  async function handleAction(formData: FormData) {
+export function QuestionForm({ postAction }: Props) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  async function submitAction(formData: FormData) {
     const content = (formData.get('content') as string)?.trim();
     if (!content) return;
-    await onSubmit(content);
+    formRef.current?.reset();
+    await postAction(content);
   }
 
-  return <InlineForm action={handleAction} placeholder="Ask a question..." submitLabel="Ask" optimistic />;
+  return (
+    <form ref={formRef} className="flex gap-2">
+      <Input name="content" placeholder="Ask a question..." required className="flex-1" />
+      <SubmitButton action={submitAction}>Ask</SubmitButton>
+    </form>
+  );
 }

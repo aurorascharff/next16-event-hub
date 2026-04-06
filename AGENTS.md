@@ -66,7 +66,10 @@ app/
   layout.tsx                  # Root layout (auth gate, theme, fonts)
   [slug]/
     layout.tsx                # Session layout (header, event info, bottom nav)
-    page.tsx                  # Redirects to /[slug]/comments
+    page.tsx                  # Info tab — full event description
+    error.tsx                 # Error boundary for session pages
+    not-found.tsx             # 404 for unknown slugs
+    _components/              # Session-level client components (SessionTabs)
     comments/
       page.tsx                # Comment feed
       _components/            # Comment-local components
@@ -74,13 +77,14 @@ app/
       page.tsx                # Q&A feed with sort
       _components/            # Question-local components
 components/
-  common/                     # Shared utility components (Avatar, BackButton, EmptyState, InlineForm, AuthGate, ThemeToggle)
+  common/                     # Shared utility components (Avatar, BackButton, EmptyState, AuthGate, ThemeToggle)
   design/                     # Action prop components (BottomNav, ChipGroup, SubmitButton)
   ui/                         # shadcn/ui primitives
 data/
   queries/                    # Server-side queries with cache()
   actions/                    # Server Actions (mutations with refresh())
-lib/                          # Utility functions
+types/                        # Shared types (Question, Comment, SortValue)
+lib/                          # Utility functions and hooks (usePolling)
 prisma/                       # Prisma schema and seeds
 ```
 
@@ -112,8 +116,7 @@ Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fet
 Add `'use client'` only when needed for:
 
 - Event handlers, hooks, browser APIs
-- `useOptimistic()` for optimistic updates
-- `useFormStatus()` for form pending state
+- `useOptimistic()` for optimistic updates and pending state (action prop pattern)
 - `useTransition()` for non-blocking updates
 - `useDeferredValue()` for deferred rendering that triggers view transitions
 - `router.push()` for client-side navigation

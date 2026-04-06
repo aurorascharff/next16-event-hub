@@ -1,7 +1,9 @@
 'use client';
 
+import { useRef } from 'react';
 import { toast } from 'sonner';
-import { InlineForm } from '@/components/common/InlineForm';
+import { SubmitButton } from '@/components/design/SubmitButton';
+import { Input } from '@/components/ui/input';
 import { addComment } from '@/data/actions/comment';
 
 type Props = {
@@ -9,12 +11,20 @@ type Props = {
 };
 
 export function CommentForm({ eventSlug }: Props) {
-  async function handleAction(formData: FormData) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  async function submitAction(formData: FormData) {
+    formRef.current?.reset();
     const result = await addComment(eventSlug, formData);
     if (!result.success) {
       toast.error(result.error);
     }
   }
 
-  return <InlineForm action={handleAction} placeholder="Add a comment..." submitLabel="Post" />;
+  return (
+    <form ref={formRef} className="flex gap-2">
+      <Input name="content" placeholder="Add a comment..." required className="flex-1" />
+      <SubmitButton action={submitAction}>Post</SubmitButton>
+    </form>
+  );
 }

@@ -26,5 +26,5 @@ export function LabelFilter() {
     router.push(qs ? `/?${qs}` : '/');
   }
 
-  return <ChipGroup items={labelItems} value={activeLabel} onChange={handleChange} />;
+  return <ChipGroup items={labelItems} value={activeLabel} action={handleChange} />;
 }

@@ -1,16 +1,7 @@
 import { Avatar } from '@/components/common/Avatar';
 import { timeAgo } from '@/lib/utils';
+import type { Question } from '@/types';
 import { UpvoteButton } from './UpvoteButton';
-
-type Question = {
-  id: string;
-  content: string;
-  userName: string;
-  votes: number;
-  hasVoted: boolean;
-  eventSlug: string;
-  createdAt: Date | string;
-};
 
 type Props = {
   question: Question;

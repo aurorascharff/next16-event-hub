@@ -1,4 +1,5 @@
 import { Clock, MapPin } from 'lucide-react';
+import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,31 +18,35 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   const hasFavorited = favorites.has(slug);
   return (
-    <article>
-      <SessionMetaStrip dayLabel={getDayLabel(event.day)} time={event.time} location={event.location} />
-      <SessionLabelChips labels={parseLabels(event.labels)} />
-      <SessionPrevNextNav
-        next={next ? { name: next.name, slug: next.slug } : null}
-        prev={prev ? { name: prev.name, slug: prev.slug } : null}
-      />
-      <div className="space-y-2 sm:space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
-            {event.name}
-          </h1>
-          <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
-        </div>
-        {event.speaker && (
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Avatar name={event.speaker} variant="speaker" size="lg" />
-            <span className="text-sm font-medium">{event.speaker}</span>
+    <ViewTransition name={`event-${slug}`} share="auto" default="none">
+      <article>
+        <SessionMetaStrip dayLabel={getDayLabel(event.day)} location={event.location} time={event.time} />
+        <SessionLabelChips labels={parseLabels(event.labels)} />
+        <SessionPrevNextNav
+          next={next ? { name: next.name, slug: next.slug } : null}
+          nextTransitionTypes={['nav-forward']}
+          prev={prev ? { name: prev.name, slug: prev.slug } : null}
+          prevTransitionTypes={['nav-back']}
+        />
+        <div className="space-y-2 sm:space-y-3">
+          <div className="flex items-start justify-between gap-2">
+            <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
+              {event.name}
+            </h1>
+            <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
           </div>
-        )}
-        <div className="max-h-20 overflow-y-auto sm:max-h-24">
-          <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
+          {event.speaker && (
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Avatar name={event.speaker} variant="speaker" size="lg" />
+              <span className="text-sm font-medium">{event.speaker}</span>
+            </div>
+          )}
+          <div className="max-h-20 overflow-y-auto sm:max-h-24">
+            <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">{event.description}</p>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </ViewTransition>
   );
 }
 

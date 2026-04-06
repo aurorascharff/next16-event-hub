@@ -30,19 +30,17 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
       key={slug}
       name="session-content"
       share={{
-        'nav-forward': 'nav-forward',
+        default: 'none',
         'nav-back': 'nav-back',
-        default: 'auto',
+        'nav-forward': 'nav-forward',
       }}
       default="none"
     >
       <div>
         <div className="min-h-56 sm:min-h-72">
-          <ViewTransition name={`event-${slug}`} share="auto">
-            <Suspense fallback={<EventDetailsSkeleton />}>
-              <EventDetails params={params} />
-            </Suspense>
-          </ViewTransition>
+          <Suspense fallback={<EventDetailsSkeleton />}>
+            <EventDetails params={params} />
+          </Suspense>
         </div>
         <div className="mt-4 space-y-3">
           <Suspense fallback={<CommentFormSkeleton />}>

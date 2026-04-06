@@ -24,9 +24,9 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
       key={slug}
       name="session-content"
       share={{
-        'nav-forward': 'nav-forward',
+        default: 'none',
         'nav-back': 'nav-back',
-        default: 'auto',
+        'nav-forward': 'nav-forward',
       }}
       default="none"
     >

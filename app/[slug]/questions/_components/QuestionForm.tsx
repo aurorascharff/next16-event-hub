@@ -1,6 +1,6 @@
 'use client';
 
-import { InlineForm } from '@/components/design/InlineForm';
+import { InlineForm } from '@/components/common/InlineForm';
 
 type Props = {
   onSubmit: (content: string) => Promise<void>;
@@ -18,6 +18,7 @@ export function QuestionForm({ onSubmit }: Props) {
       action={handleAction}
       placeholder="Ask a question..."
       submitLabel="Ask"
+      optimistic
     />
   );
 }

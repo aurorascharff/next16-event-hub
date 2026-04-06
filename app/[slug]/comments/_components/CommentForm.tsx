@@ -1,7 +1,7 @@
 'use client';
 
 import { toast } from 'sonner';
-import { InlineForm } from '@/components/design/InlineForm';
+import { InlineForm } from '@/components/common/InlineForm';
 import { addComment } from '@/data/actions/comment';
 
 type Props = {

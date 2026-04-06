@@ -11,9 +11,10 @@ type Props = {
   submitLabel: string;
   disabled?: boolean;
   resetOnSubmit?: boolean;
+  optimistic?: boolean;
 };
 
-export function InlineForm({ action, placeholder, submitLabel, disabled, resetOnSubmit = true }: Props) {
+export function InlineForm({ action, placeholder, submitLabel, disabled, resetOnSubmit = true, optimistic }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, setIsPending] = useOptimistic(false);
 
@@ -31,8 +32,8 @@ export function InlineForm({ action, placeholder, submitLabel, disabled, resetOn
         required
         className="flex-1"
       />
-      <Button type="submit" disabled={isPending || disabled}>
-        {isPending ? (
+      <Button type="submit" disabled={(isPending && !optimistic) || disabled}>
+        {isPending && !optimistic ? (
           <span className="flex items-center justify-center gap-2">
             {submitLabel}
             <Spinner />

@@ -14,10 +14,11 @@ type Tab<T extends string> = {
 
 type Props<T extends string> = {
   tabs: Tab<T>[];
+  action?: (href: string) => void | Promise<void>;
   className?: string;
 };
 
-export function BottomNav<T extends string>({ tabs, className }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, action, className }: Props<T>) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentUrl = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
@@ -47,8 +48,11 @@ export function BottomNav<T extends string>({ tabs, className }: Props<T>) {
               key={tab.href}
               href={tab.href}
               onClick={() => {
-                startTransition(() => {
+                startTransition(async () => {
                   setOptimisticActive(i);
+                  if (action) {
+                    await action(tab.href);
+                  }
                 });
               }}
               className={cn(

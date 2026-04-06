@@ -7,8 +7,6 @@ import { parseTime } from '@/lib/utils';
 import { cacheTag } from 'next/cache';
 
 export const getEvents = cache(async (day?: string, label?: string, currentUserName?: string | null) => {
-  'use cache';
-  cacheTag('events');
 
   const where: Record<string, unknown> = {};
   if (day) {

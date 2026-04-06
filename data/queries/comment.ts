@@ -24,10 +24,10 @@ export const getCommentsByEvent = cache(async (eventSlug: string, currentUserNam
     where: { eventSlug },
   });
 
-  return comments.map(({ commentLikes, ...comment }) => ({
+  return comments.map(({ commentLikes, ...comment }) => {return {
     ...comment,
     hasLiked: Array.isArray(commentLikes) && commentLikes.length > 0,
-  }));
+  }});
 });
 
 export const getCommentCount = cache(async (eventSlug: string) => {

@@ -1,9 +1,9 @@
 import { Clock, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { ViewTransition } from 'react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
-import { FavoriteButton } from '@/components/FavoriteButton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEvents } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';

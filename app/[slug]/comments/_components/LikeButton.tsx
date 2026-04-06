@@ -15,10 +15,10 @@ type Props = {
 export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
   const [optimistic, toggleOptimistic] = useOptimistic(
     { hasLiked, likes },
-    (current) => ({
+    (current) => {return {
       hasLiked: !current.hasLiked,
       likes: current.likes + (current.hasLiked ? -1 : 1),
-    }),
+    }},
   );
   const [, startTransition] = useTransition();
 

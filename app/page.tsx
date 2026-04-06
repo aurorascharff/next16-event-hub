@@ -1,10 +1,10 @@
 import { Calendar } from 'lucide-react';
 import { Suspense, ViewTransition } from 'react';
-import { BottomNav } from '@/components/design/BottomNav';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
-import { Skeleton } from '@/components/ui/skeleton';
 import { EventGrid } from '@/components/EventGrid';
 import { LabelFilter } from '@/components/LabelFilter';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { BottomNav } from '@/components/design/BottomNav';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Props = {
   searchParams: Promise<{ day?: string; label?: string }>;

@@ -4,8 +4,8 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { CommentCard } from '../_components/CommentCard';
-import { CommentForm } from '../_components/CommentForm';
+import { CommentCard } from './_components/CommentCard';
+import { CommentForm } from './_components/CommentForm';
 
 export default async function CommentsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { useIsClient } from '@/lib/useIsClient';
 import { Avatar } from '@/components/common/Avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { recordPresence } from '@/data/actions/presence';
+import { useIsClient } from '@/hooks/useIsClient';
 
 type ActiveUser = {
   userName: string;

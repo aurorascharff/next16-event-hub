@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { cacheTag } from 'next/cache';
+
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
@@ -39,10 +39,10 @@ export const getEvents = cache(async (day?: string, label?: string, currentUserN
   });
 
   return events
-    .map(({ favorites, ...event }) => ({
+    .map(({ favorites, ...event }) => {return {
       ...event,
       hasFavorited: Array.isArray(favorites) && favorites.length > 0,
-    }))
+    }})
     .sort((a, b) => {
       if (a.day !== b.day) return a.day.localeCompare(b.day);
       return parseTime(a.time) - parseTime(b.time);

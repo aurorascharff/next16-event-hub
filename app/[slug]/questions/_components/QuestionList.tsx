@@ -4,10 +4,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useDeferredValue, useOptimistic, ViewTransition } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
-import { ChipGroup } from '@/components/design/ChipGroup';
 import { EmptyState } from '@/components/common/EmptyState';
+import { ChipGroup } from '@/components/design/ChipGroup';
 import { addQuestion } from '@/data/actions/question';
-import { useIsClient } from '@/lib/useIsClient';
+import { useIsClient } from '@/hooks/useIsClient';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
 
@@ -49,7 +49,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   const [optimisticQuestions, addOptimisticQuestion] = useOptimistic(
     questions ?? [],
     (current, newQuestion: Question) => {
-      if (current.some(q => q.content === newQuestion.content && q.userName === newQuestion.userName)) {
+      if (current.some(q => {return q.content === newQuestion.content && q.userName === newQuestion.userName})) {
         return current;
       }
       return [newQuestion, ...current];

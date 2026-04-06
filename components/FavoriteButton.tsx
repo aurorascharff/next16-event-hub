@@ -13,7 +13,7 @@ type Props = {
 export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
   const [optimisticHasFavorited, toggleOptimistic] = useOptimistic(
     hasFavorited,
-    (current) => !current,
+    (current) => {return !current},
   );
   const [isPending, startTransition] = useTransition();
 

@@ -3,7 +3,7 @@ import { ViewTransition } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getQuestionsByEvent } from '@/data/queries/question';
-import { QuestionList } from '../_components/QuestionList';
+import { QuestionList } from './_components/QuestionList';
 
 export default async function QuestionsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

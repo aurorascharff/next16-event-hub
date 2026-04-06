@@ -2,7 +2,7 @@ import { Clock, HelpCircle, MapPin, MessageCircle } from 'lucide-react';
 import { Suspense } from 'react';
 import { ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
-import { BackButton } from '@/components/BackButton';
+import { BackButton } from '@/components/common/BackButton';
 import { BottomNav } from '@/components/design/BottomNav';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { leavePresence } from '@/data/actions/presence';

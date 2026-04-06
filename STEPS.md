@@ -41,22 +41,19 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - The setup is the Next.js 16 App Router, Prisma ORM, Tailwind CSS. Using React Server Components as the data fetching layer. All data queries are wrapped with React `cache()` for request deduplication — multiple components can call the same query and it only hits the database once per request. Cache Components for the static/dynamic hybrid. For live data, questions poll with `startTransition` + `router.refresh()`.
 - Demo app: Data fetching has been slowed down to simulate worse network conditions. You can see the bad UX — blank screens, frozen buttons, no feedback. Let's fix it by designing the appropriate in-between states.
 
-## Page Load
+## In-Between States by Interaction
+
+### 1) Page Load
 
 - Right now the page load goes: load all code and data, then render everything at once. We want: load the static shell first, stream in dynamic data, then complete. The home page blocks — EventGrid is an async server component with no Suspense boundary, so the entire route waits for data before rendering anything. Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. Better FCP, better LCP.
 - Navigate to the session detail page. It already has Suspense, but with a generic spinner as the fallback — notice the CLS when the event details load in and push the comment section down. Fix: replace the spinner with proper skeleton fallbacks that reserve the right amount of space. Each skeleton should match the shape of the content. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
 - Do the same for the questions page — wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks.
 
-## Navigation
+### 2) Route Navigation
 
 - When navigating to a new page, the browser loads all code and data before rendering — a blank gap. With Suspense, we can stream in minimal code first and progressively fill in the rest. Clicking a session card navigates to the detail page. Right now there's no visual feedback during the transition — it just jumps. We'll add animations later.
 
-### Mutation + Navigation
-
-- We can combine mutations and navigation in the same transition. Favorite a few sessions by tapping the heart, then switch to the Favorites tab. The favorites appear immediately — `useOptimistic` handles the instant heart fill, and when you switch tabs, React coordinates the tab transition and the fresh server data in a single render pass.
-- This works because both the `FavoriteButton` form action and the `BottomNav` tab switch go through React's transition system. There's no competing state — optimistic updates settle naturally when the server responds with `refresh()`.
-
-## Updating a Page with Query Params
+### 3) Query Param Navigation
 
 - Filtering is technically a navigation, but conceptually you're on the same page. Without transitions, the UI freezes while new data loads. With optimistic updates, we can update the filter immediately and stream in the new data behind the scenes. Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
 - What if these components could handle their own async coordination? The day tabs and favorites use BottomNav — a design component with an action prop. It uses `Route<T>` from Next.js typed routes for type-safe hrefs. The active tab switches instantly while the content loads in the background. The old content stays visible and interactive. The parent just passes an array of routes, no async React code needed.
@@ -64,34 +61,44 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - This is the **action props pattern**. Most devs shouldn't need to use `startTransition` themselves if they're using a transition-based router and UI components with action props. Design components like BottomNav, ChipGroup, and SubmitButton abstract away the async coordination. The consumer passes data and callbacks; the component handles transitions, optimistic state, and pending indicators.
 - Let's look at how ChipGroup works inside — `useOptimistic` for instant feedback, `useTransition` to keep old content visible. This is what design components abstract away from you. As we see more of these Async React primitives being adopted by design systems and component libraries, we can integrate these patterns without building them from scratch.
 
-## Updating a Page Without Changing the URL
+### 4) Background Update
 
 - Sometimes the page needs to update without any user action — background updates where fresh data arrives from the server. Without transitions, new data would flash in and disrupt whatever the user is doing. Questions need to update when other attendees upvote or ask new questions. We poll using the `usePolling` hook — it calls `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — in-flight optimistic values stay stable while fresh data arrives.
 - This is the key insight — `router.refresh()` inside `startTransition` keeps everything in React's transition system. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
 
-## Mutations
+### 5) Mutations
 
 Form submissions and interactions — the user does something and expects instant feedback. Without transitions, the UI either freezes or waits for the server round-trip before showing any change.
 
+#### Pessimistic Mutations
+
 - **DeleteComment**: The simplest case — deleting a comment uses `useTransition` with pending opacity on the card. The card fades during the action, then disappears on completion.
+- **Comment submit button**: Adding a comment is a form submission. The SubmitButton is a design component — it uses `useOptimistic(false)` with `formAction` to show a spinner while the server processes. The button owns its own pending state, the consumer just passes an `action` prop.
+
+#### Optimistic Mutations
+
 - **FavoriteButton**: Tapping the heart should fill it instantly — we can't wait for the server. Wrap it in a `<form action>` so React handles the transition automatically, then use `useOptimistic` with a boolean reducer to toggle the heart immediately.
 - **LikeButton**: Same idea for comment likes. `useOptimistic` with a reducer that manages both `hasLiked` and `likes` count in a single state object. The reducer calculates from the current optimistic state, not the original props — so toggling works correctly in both directions.
 - **UpvoteButton**: Same pattern for question upvotes, but with two separate `useOptimistic` hooks — one for the vote count, one for the `hasVoted` boolean.
 - `useOptimistic` automatically rolls back if the action fails — just add a toast on error. On the server side, every action calls `refresh()` to invalidate the client router so all server components re-render with fresh data.
 - Tap a few favorites, then switch to the Favorites tab. The entire interaction stays synced — multiple optimistic mutations followed by a tab switch, all coordinated through the same transition system.
 
-### Adding Content
+#### Optimistic Create (Questions)
 
-- Adding a comment is a form submission. The SubmitButton is a design component — it uses `useOptimistic(false)` with `formAction` to show a spinner while the server processes. The button owns its own pending state, the consumer just passes an `action` prop.
 - For questions, we go further — the question appears in the list immediately via `useOptimistic` with a reducer in QuestionList. The temp question gets a client-generated UUID (`crypto.randomUUID()`) that we pass to the server action — so the optimistic and real question share the same ID, and the React key stays stable. No duplicate flash on settle.
 - The reducer also has a safety check — if the real question already exists in the base data (from a background refresh), it deduplicates by matching the ID.
 
-## Animations
+#### Mutation + Navigation
+
+- We can combine mutations and navigation in the same transition. Favorite a few sessions by tapping the heart, then switch to the Favorites tab. The favorites appear immediately — `useOptimistic` handles the instant heart fill, and when you switch tabs, React coordinates the tab transition and the fresh server data in a single render pass.
+- This works because both the `FavoriteButton` form action and the `BottomNav` tab switch go through React's transition system. There's no competing state — optimistic updates settle naturally when the server responds with `refresh()`.
+
+## Animations (Commit Polish)
 
 The final phase — the commit. Without animations, Suspense reveals pop in, navigations jump, and list reorders snap. ViewTransition makes these in-between states feel intentional. Every animation here works with the transition system we've already set up — `startTransition`, `useOptimistic`.
 
-### Page Load Reveals
+### Suspense Reveal Motion
 
 - Add ViewTransition to the Suspense reveals. Wrap the skeleton fallback with `exit="slide-down"` and the loaded content with `enter="slide-up"`. The skeleton slides away and content slides in — making the loading feel intentional rather than jarring.
 - Use the same `enter="slide-up"` pattern on individual list items — each comment and question wrapped in ViewTransition slides up on entry, whether from a Suspense reveal, an optimistic add, or a background poll.
@@ -101,12 +108,12 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 - Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="morph"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="morph"`. The card morphs into the detail view on click — and reverses when going back.
 - The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards animate to their new grid positions when switching label filters.
 
-### Tab Switch Crossfade
+### Tab Content Crossfade
 
-- BottomNav does not inject transition types in this branch.
-- Crossfade wrappers live outside BottomNav at the call sites (for example, wrapping `children` in `HomeTabs`/`SessionTabs`) so animation scope stays explicit.
+- Crossfade wrappers live outside `BottomNav` at the call sites (for example, wrapping `children` in `HomeTabs`/`SessionTabs`) so animation scope stays explicit.
+- `BottomNav` itself does not inject transition types in this branch.
 
-### List Animations
+### List Motion
 
 - List animations are visible when sorting questions, when new items arrive via `router.refresh()` polling, and when items are added or deleted via mutations.
 - Wrap each QuestionCard in ViewTransition with a unique key and `default="none"`. The unique key lets React track each item across sort changes — cards animate to their new positions when switching between "Top" and "Newest". `default="none"` prevents unwanted animations during other transitions like navigation.

@@ -53,7 +53,6 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
 export function EventDetailsSkeleton() {
   return (
     <article>
-      <MetaStripSkeleton />
       <LabelChipsSkeleton />
       <SessionPrevNextNavSkeleton />
       <div className="space-y-3 sm:space-y-4">
@@ -86,8 +85,8 @@ function SessionMetaStrip({ dayLabel, time, location }: SessionMetaStripProps) {
     <div className="mb-2 w-fit max-w-full sm:mb-3">
       <p
         className={cn(
-          'text-foreground/92 inline-flex max-w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-md border border-border/70',
-          'bg-muted/60 px-2 py-1 text-[11px] leading-snug shadow-sm sm:gap-x-2 sm:px-2.5 sm:py-1.5 sm:text-xs'
+          'text-foreground/92 border-border/70 inline-flex max-w-full flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-md border',
+          'bg-muted/60 px-2 py-1 text-[11px] leading-snug shadow-sm sm:gap-x-2 sm:px-2.5 sm:py-1.5 sm:text-xs',
         )}
       >
         <span className="text-muted-foreground shrink-0 font-semibold tracking-wide uppercase">{dayLabel}</span>

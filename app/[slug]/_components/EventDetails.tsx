@@ -41,7 +41,7 @@ export async function EventDetails({ params }: Pick<PageProps<'/[slug]'>, 'param
         </div>
       )}
       <div className="flex items-start justify-between gap-2">
-        <h1 className="font-sans text-lg font-bold tracking-tight sm:text-3xl">{event.name}</h1>
+        <h1 className="min-h-[2lh] font-sans text-lg font-bold tracking-tight line-clamp-2 sm:text-3xl">{event.name}</h1>
         <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
       </div>
       {event.speaker && (

@@ -6,7 +6,6 @@ import { LABELS } from '@/lib/utils';
 
 const labelItems = [
   { label: 'All', value: 'all' },
-  { label: 'Favorites', value: 'favorites' },
   ...LABELS.map(l => {
     return { label: l.charAt(0).toUpperCase() + l.slice(1), value: l };
   }),

@@ -3,10 +3,11 @@ import 'server-only';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
-import { parseTime } from '@/lib/utils';
+import { parseTime, slow } from '@/lib/utils';
 import { cacheTag } from 'next/cache';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
+  await slow();
   // 'use cache';
   // cacheTag('events');
 

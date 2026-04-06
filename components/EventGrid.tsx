@@ -10,15 +10,16 @@ import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
 export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
   const sp = await searchParams;
-  const day = typeof sp.day === 'string' ? sp.day : 'day-1';
   const label = typeof sp.label === 'string' ? sp.label : undefined;
+  const isFavorites = label === 'favorites';
+  const day = isFavorites ? undefined : typeof sp.day === 'string' ? sp.day : 'day-1';
   const currentUser = await getCurrentUser();
   const favoritesSlugs = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  let events = (await getEvents(day, label)).map(event => ({
+  let events = (await getEvents(day, isFavorites ? undefined : label)).map(event => ({
     ...event,
     hasFavorited: favoritesSlugs.has(event.slug),
   }));
-  if (label === 'favorites') {
+  if (isFavorites) {
     events = events.filter(e => e.hasFavorited);
   }
 

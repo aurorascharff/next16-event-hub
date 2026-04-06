@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useOptimistic, useTransition } from 'react';
+import { addTransitionType, useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 import type { Route } from 'next';
 
@@ -10,16 +10,18 @@ type Tab<T extends string> = {
   href: Route<T>;
   icon?: React.ReactNode;
   label: string;
+  transitionType?: string;
 };
 
 type Props<T extends string> = {
   tabs: Tab<T>[];
   activeIndex?: number;
-  action?: (href: string) => void | Promise<void>;
+  action: (href: string) => void | Promise<void>;
   className?: string;
+  children?: React.ReactNode;
 };
 
-export function BottomNav<T extends string>({ tabs, activeIndex, action, className }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, activeIndex, action, className, children }: Props<T>) {
   const pathname = usePathname();
   const resolvedActive =
     activeIndex ??
@@ -31,9 +33,9 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
     );
 
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
-  return (
+  const nav = (
     <nav
       className={cn(
         'bg-background fixed inset-x-0 bottom-0 z-40 border-t',
@@ -49,12 +51,14 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
             <Link
               key={tab.href}
               href={tab.href}
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
                 startTransition(async () => {
-                  setOptimisticActive(i);
-                  if (action) {
-                    await action(tab.href);
+                  if (tab.transitionType) {
+                    addTransitionType(tab.transitionType);
                   }
+                  setOptimisticActive(i);
+                  await action(tab.href);
                 });
               }}
               className={cn(
@@ -65,6 +69,37 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, classNa
               {tab.icon}
               <span>{tab.label}</span>
             </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+
+  if (children) {
+    return (
+      <>
+        <div className={isPending ? 'animate-pulse' : undefined}>{children}</div>
+        {nav}
+      </>
+    );
+  }
+
+  return nav;
+}
+
+export function BottomNavSkeleton({ count }: { count: number }) {
+  return (
+    <nav
+      className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
+      style={{ viewTransitionName: 'bottom-nav' }}
+    >
+      <div className="mx-auto flex max-w-4xl">
+        {Array.from({ length: count }).map((_, i) => {
+          return (
+            <div key={i} className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
+              <div className="size-4" />
+              <span className="text-xs opacity-0">Tab</span>
+            </div>
           );
         })}
       </div>

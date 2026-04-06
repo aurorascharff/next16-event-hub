@@ -66,13 +66,10 @@ app/
   layout.tsx                  # Root layout (auth gate, theme, fonts)
   [slug]/
     layout.tsx                # Session layout (header, event info, bottom nav)
-    page.tsx                  # Info tab — full event description
+    page.tsx                  # Session detail — description + comment feed
     error.tsx                 # Error boundary for session pages
     not-found.tsx             # 404 for unknown slugs
-    _components/              # Session-level client components (SessionTabs)
-    comments/
-      page.tsx                # Comment feed
-      _components/            # Comment-local components
+    _components/              # Session-level client components (SessionTabs, CommentCard, CommentForm, LikeButton)
     questions/
       page.tsx                # Q&A feed with sort
       _components/            # Question-local components

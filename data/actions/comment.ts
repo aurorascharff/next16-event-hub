@@ -39,10 +39,11 @@ export async function addComment(eventSlug: string, formData: FormData): Promise
 }
 
 export async function deleteComment(commentId: string, eventSlug: string) {
-  const userName = await getCurrentUser();
+  const [userName, comment] = await Promise.all([
+    getCurrentUser(),
+    prisma.comment.findUnique({ where: { id: commentId } }),
+  ]);
   if (!userName) return;
-
-  const comment = await prisma.comment.findUnique({ where: { id: commentId } });
   if (!comment || comment.userName !== userName) return;
 
   await slow(400);

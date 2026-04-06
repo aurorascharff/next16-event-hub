@@ -1,23 +1,48 @@
 import { Suspense } from 'react';
 import { ViewTransition } from 'react';
+import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
+import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import { QuestionList } from './_components/QuestionList';
 
 export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
-    <Suspense
-      fallback={
-        <ViewTransition exit="slide-down">
-          <FeedSkeleton />
-        </ViewTransition>
-      }
-    >
-      <ViewTransition enter="slide-up" default="none">
-        <QuestionFeed params={params} />
+    <>
+      <ViewTransition>
+        <Suspense fallback={<HeaderSkeleton />}>
+          <EventHeader params={params} />
+        </Suspense>
       </ViewTransition>
-    </Suspense>
+      <div className="mt-3">
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <FeedSkeleton />
+            </ViewTransition>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <QuestionFeed params={params} />
+          </ViewTransition>
+        </Suspense>
+      </div>
+    </>
+  );
+}
+
+async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'params'>) {
+  const { slug } = await params;
+  const event = await getEventBySlug(slug);
+  return (
+    <div className="flex items-center gap-3">
+      {event.speaker && <Avatar name={event.speaker} variant="speaker" size="lg" />}
+      <div className="min-w-0 flex-1">
+        <h1 className="truncate font-sans text-sm font-bold tracking-tight sm:text-base">{event.name}</h1>
+        {event.speaker && <p className="text-muted-foreground text-xs">{event.speaker}</p>}
+      </div>
+    </div>
   );
 }
 
@@ -28,10 +53,25 @@ async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'pa
   return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
 }
 
+function HeaderSkeleton() {
+  return (
+    <div className="flex items-center gap-3">
+      <Skeleton className="size-8 shrink-0 rounded-full" />
+      <div className="flex-1 space-y-1.5">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-3 w-24" />
+      </div>
+    </div>
+  );
+}
+
 function FeedSkeleton() {
   return (
     <div className="space-y-3">
-      <Skeleton className="h-8 w-full rounded-lg" />
+      <div className="flex gap-2">
+        <Skeleton className="h-9 flex-1 rounded-md" />
+        <Skeleton className="h-9 w-14 rounded-md" />
+      </div>
       <div className="flex items-center justify-between">
         <Skeleton className="h-3 w-24" />
         <Skeleton className="h-6 w-28 rounded-full" />

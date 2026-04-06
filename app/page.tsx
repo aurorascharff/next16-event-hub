@@ -1,15 +1,10 @@
-import { Calendar } from 'lucide-react';
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid } from '@/components/EventGrid';
 import { LabelFilter } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
-import { BottomNav } from '@/components/design/BottomNav';
+import { BottomNavSkeleton } from '@/components/design/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const dayTabs = [
-  { href: '/?day=day-1' as '/', icon: <Calendar className="size-4" />, label: 'Day 1' },
-  { href: '/?day=day-2' as '/', icon: <Calendar className="size-4" />, label: 'Day 2' },
-];
+import { HomeTabs } from './_components/HomeTabs';
 
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
@@ -45,19 +40,14 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
           </Suspense>
         </div>
 
-        <Suspense fallback={<BottomNavSkeleton />}>
-          <DayNav searchParams={searchParams} />
+        <Suspense fallback={<BottomNavSkeleton count={3} />}>
+          <HomeTabs />
         </Suspense>
       </div>
     </ViewTransition>
   );
 }
 
-async function DayNav({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
-  const sp = await searchParams;
-  const day = typeof sp.day === 'string' ? sp.day : 'day-1';
-  return <BottomNav tabs={dayTabs} activeIndex={day === 'day-2' ? 1 : 0} />;
-}
 
 function FiltersSkeleton() {
   return (
@@ -69,25 +59,6 @@ function FiltersSkeleton() {
   );
 }
 
-function BottomNavSkeleton() {
-  return (
-    <nav
-      className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
-      style={{ viewTransitionName: 'bottom-nav' }}
-    >
-      <div className="mx-auto flex max-w-4xl">
-        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
-          <div className="size-4" />
-          <span className="text-xs opacity-0">Day 1</span>
-        </div>
-        <div className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
-          <div className="size-4" />
-          <span className="text-xs opacity-0">Day 2</span>
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function EventGridSkeleton() {
   return (

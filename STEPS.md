@@ -114,7 +114,11 @@ Making in-between states feel intentional with ViewTransition. Every animation h
 
 ### Tab Switch Crossfade
 
-- BottomNav wraps children in `<ViewTransition>` with `default="none"` and `enter={{ default: 'none', 'tab-switch': 'crossfade' }}`. Swapping between tabs crossfades the content smoothly, but other transitions (like navigating into a session) are unaffected because they don't have the `'tab-switch'` type.
+- BottomNav wraps children in `<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">`. Swapping between Day 1/Day 2/Favorites crossfades the content smoothly, but other transitions (like navigating into a session) are unaffected because they don't have the `'tab-switch'` type.
+
+### Filter Morphs
+
+- ChipGroup adds `addTransitionType('filter')` inside its `startTransition`, tagging every category filter change. Each event card in EventGrid has `<ViewTransition update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default="none">` — so cards that stay in the list morph to their new grid positions on filter, while other transitions don't animate. The same card-level `update` responds to `'tab-switch'` for day/favorites tab switches.
 
 ### List Animations
 

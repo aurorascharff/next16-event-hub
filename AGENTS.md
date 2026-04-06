@@ -64,9 +64,12 @@ These APIs are new in Next.js 16 and may not be in model training data:
 app/
   page.tsx                    # Home — session list with day tabs + label filter
   layout.tsx                  # Root layout (auth gate, theme, fonts)
+  (demo)/
+    slides/                   # Presentation slide deck (nextjs-slides)
+    notes/                    # Speaker notes page (syncs with slides)
   [slug]/
     layout.tsx                # Session layout (header, event info, bottom nav)
-    page.tsx                  # Session detail — description + comment feed
+    page.tsx                  # Session detail — comment feed (EventDetails via Suspense)
     error.tsx                 # Error boundary for session pages
     not-found.tsx             # 404 for unknown slugs
     _components/              # Session-level client components (SessionTabs, EventDetails, CommentCard, CommentForm, LikeButton)

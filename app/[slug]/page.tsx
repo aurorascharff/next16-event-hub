@@ -18,11 +18,12 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
   };
 }
 
-export default function SessionPage({ params }: PageProps<'/[slug]'>) {
+export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
+  const { slug } = await params;
   return (
     <>
       <div className="min-h-56 sm:min-h-72">
-        <ViewTransition>
+        <ViewTransition name={`event-${slug}`} share="auto">
           <Suspense fallback={<EventDetailsSkeleton />}>
             <EventDetails params={params} />
           </Suspense>

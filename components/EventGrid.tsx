@@ -40,7 +40,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
     <div className="grid gap-3 sm:grid-cols-2">
       {events.map(event => {
         return (
-          <ViewTransition key={event.slug} name={`event-${event.slug}`} share="auto" update={{ filter: 'auto', 'tab-switch': 'auto', default: 'none' }} default="none">
+          <ViewTransition key={event.slug} name={`event-${event.slug}`} share="auto" update={{ filter: 'auto', default: 'none' }} default="none">
             <Link
               href={`/${event.slug}`}
               transitionTypes={['nav-forward']}

@@ -38,9 +38,11 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
     >
       <div>
         <div className="min-h-56 sm:min-h-72">
-          <Suspense fallback={<EventDetailsSkeleton />}>
-            <EventDetails params={params} />
-          </Suspense>
+          <ViewTransition>
+            <Suspense fallback={<EventDetailsSkeleton />}>
+              <EventDetails params={params} />
+            </Suspense>
+          </ViewTransition>
         </div>
         <div className="mt-4 space-y-3">
           <Suspense fallback={<CommentFormSkeleton />}>

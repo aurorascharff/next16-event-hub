@@ -7,7 +7,7 @@ import { getEventBySlug, getEvents } from '@/data/queries/event';
 import type { Metadata } from 'next';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails } from './_components/EventDetails';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
@@ -54,7 +54,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
             }
           >
             <ViewTransition enter="slide-up" default="none">
-              <CommentList params={params} />
+              <CommentList slug={slug} />
             </ViewTransition>
           </Suspense>
         </div>
@@ -63,8 +63,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   );
 }
 
-async function CommentList({ params }: Pick<PageProps<'/[slug]'>, 'params'>) {
-  const { slug } = await params;
+async function CommentList({ slug }: { slug: string }) {
   const currentUser = await getCurrentUser();
   const comments = await getCommentsByEvent(slug, currentUser);
 

@@ -28,11 +28,13 @@ export async function addQuestion(eventSlug: string, formData: FormData): Promis
   }
 
   await slow();
+  const clientId = (formData.get('id') as string) || undefined;
   await prisma.question.create({
     data: {
       content: result.data.content,
       eventSlug,
       userName,
+      ...(clientId && { id: clientId }),
     },
   });
 

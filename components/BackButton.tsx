@@ -9,6 +9,7 @@ import type { Route } from 'next';
 
 type Props<T extends string = string> = VariantProps<typeof buttonVariants> & {
   href?: Route<T>;
+  action?: () => Promise<void>;
   children?: React.ReactNode;
   className?: string;
 };
@@ -18,6 +19,7 @@ export function BackButton<T extends string>({
   size,
   className,
   href,
+  action,
   children = '← Back',
 }: Props<T>) {
   const router = useRouter();
@@ -25,8 +27,9 @@ export function BackButton<T extends string>({
   return (
     <button
       onClick={() => {
-        startTransition(() => {
+        startTransition(async () => {
           addTransitionType('nav-back');
+          if (action) await action();
           if (href) {
             router.push(href);
           } else {

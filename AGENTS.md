@@ -50,7 +50,6 @@ These APIs are new in Next.js 16 and may not be in model training data:
 - **Components**: PascalCase files (`MyComponent.tsx`)
 - **Folders**: kebab-case (`my-folder/`)
 - **Utils/hooks**: camelCase (`useMyHook.ts`, `myUtil.ts`)
-- Suffix functions that run in transitions with "Action" (e.g., `submitAction`, `deleteAction`)
 - Use `type` over `interface` unless declaration merging is needed
 - Use `cn` util for conditional Tailwind classes
 - Use Base UI for custom interactive components not in shadcn/ui
@@ -59,29 +58,39 @@ These APIs are new in Next.js 16 and may not be in model training data:
 ## Folder Structure
 
 ```text
-app/                        # File-based routing (Next.js App Router)
-  _components/              # Home page components (AuthGate, filters, grid)
-  [slug]/                   # Session detail page
-    _components/            # Session components (comments, questions, presence)
-  api/events/[slug]/        # SWR polling API routes
-    comments/               # GET comments for polling
-    questions/              # GET questions for polling
-    presence/               # GET active users for polling
-components/                 # Shared components
-  ui/                       # shadcn/ui primitives
-  design/                   # Design system components (TabList, SubmitButton)
+app/
+  page.tsx                    # Home — session list with day tabs + label filter
+  layout.tsx                  # Root layout (auth gate, theme, fonts)
+  [slug]/
+    layout.tsx                # Session layout (header, event info, bottom nav)
+    page.tsx                  # Redirects to /[slug]/comments
+    comments/page.tsx         # Comment feed
+    questions/page.tsx        # Q&A feed with sort
+    _components/              # Session-local components
+  api/events/[slug]/          # SWR polling endpoints
+    questions/route.ts        # GET questions
+    presence/route.ts         # GET active users
+components/
+  common/                     # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle, ThemeProvider)
+  design/                     # Design components with async React logic (BottomNav, ChipGroup, InlineForm, SubmitButton)
+  ui/                         # shadcn/ui primitives
+  BackButton.tsx              # Navigate + mutate in one transition
+  EventGrid.tsx               # Async server component — session cards
+  LabelFilter.tsx             # Label filter chips
 data/
-  queries/                  # Server-side queries with cache()
-  actions/                  # Server Actions (mutations)
-lib/                        # Utility functions
-prisma/                     # Prisma schema and seeds
+  queries/                    # Server-side queries with cache()
+  actions/                    # Server Actions (mutations with refresh())
+lib/
+  utils.ts                    # Utilities (cn, timeAgo, parseTime, avatar URLs)
+prisma/                       # Prisma schema and seeds
 ```
 
+- **components/common** — Shared utility components without complex async logic
+- **components/design** — Design components that encapsulate `useOptimistic`, `useTransition`, and `startTransition` internally. Consumers pass data and callbacks; the component handles transition mechanics.
 - **components/ui** — shadcn/ui primitives
-- **components/design** — Design system components with Action props
 - **data/queries** — Server-side data fetching with `cache()` for deduplication
-- **data/actions** — Server Actions with `"use server"` for mutations
-- **app/api** — API routes for SWR client-side polling
+- **data/actions** — Server Actions with `"use server"` for mutations. Use `refresh()` to invalidate the client router.
+- **app/api** — API routes for SWR client-side polling (questions, presence)
 
 Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
 
@@ -90,16 +99,15 @@ Route-specific code goes in `_components` folders. Shared code lives at the near
 Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fetches) as deep as possible in the component tree to maximize static content. Async components accessing dynamic data should be wrapped in `<Suspense>` with skeleton fallbacks.
 
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
-- **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Invalidate with `revalidateTag(tag, 'max')` + `refresh()`. Use `useOptimistic` for instant feedback.
-- **Live data** — Pass server data as promises to client components, unwrap with `use()`, then hand off to SWR for polling. Use `useSWRConfig().mutate` after actions for immediate revalidation.
-- **Caching** — Add `"use cache"` directive to pages, components, or functions you want to cache.
+- **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `refresh()` to invalidate. Use `useOptimistic` for instant feedback.
+- **Live data** — Server-render initial data, pass to client components as `fallbackData` for SWR polling. Use `useSWRConfig().mutate` after actions for immediate revalidation.
+- **Navigate + mutate** — Wrap both a server action and `router.push()` in a single `startTransition` for atomic mutation + navigation (see `BackButton`).
 
 ## Server Components (Default)
 
 - All components are Server Components unless `'use client'` is added
 - Can be `async` and fetch data with `await`
 - Wrap in `<Suspense>` with fallbacks when needed
-- Pass promises (not awaited data) to client components for streaming
 - Use `React.cache()` for data fetching functions
 
 ## Client Components
@@ -107,10 +115,10 @@ Push dynamic data access (`searchParams`, `cookies()`, `headers()`, uncached fet
 Add `'use client'` only when needed for:
 
 - Event handlers, hooks, browser APIs
-- `use()` to unwrap promises
 - `useOptimistic()` for optimistic updates
 - `useFormStatus()` for form pending state
 - `useTransition()` for non-blocking updates
+- `useDeferredValue()` for deferred rendering that triggers view transitions
 - `router.push()` for client-side navigation
 
 ## Data Fetching & Mutations
@@ -127,7 +135,6 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 export async function addComment(eventSlug: string, formData: FormData) {
   "use server";
   // ... create comment
-  revalidateTag(`event-${eventSlug}`, "max");
   refresh();
 }
 ```
@@ -154,5 +161,5 @@ pnpm run prisma.generate # Generate Prisma client
 
 - `db.ts` - Prisma client instance (SQLite via libsql adapter)
 - `prisma/schema.prisma` - Database schema (Event, Comment, Question, Presence)
-- `lib/utils.ts` - Utility functions including `cn()`, labels, avatar URLs
+- `lib/utils.ts` - Utility functions including `cn()`, `timeAgo()`, `parseTime()`, avatar URLs
 - `components.json` - shadcn/ui configuration

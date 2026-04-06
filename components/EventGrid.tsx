@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
+import { FavoriteButton } from '@/components/FavoriteButton';
+import { getCurrentUser } from '@/data/queries/auth';
 import { getEvents } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
@@ -12,7 +14,8 @@ type Props = {
 
 export async function EventGrid({ searchParams }: Props) {
   const { day = 'day-1', label } = await searchParams;
-  const events = await getEvents(day, label);
+  const currentUser = await getCurrentUser();
+  const events = await getEvents(day, label, currentUser);
 
   if (events.length === 0) {
     return <EmptyState message="No sessions match your filters." hint="Try a different combination." />;
@@ -42,6 +45,7 @@ export async function EventGrid({ searchParams }: Props) {
                     {event.time}
                   </span>
                 </div>
+                <FavoriteButton eventSlug={event.slug} hasFavorited={event.hasFavorited} />
               </div>
               {parseLabels(event.labels).length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-1">

@@ -13,3 +13,12 @@ export async function recordPresence(eventSlug: string) {
     where: { userName },
   });
 }
+
+export async function leavePresence() {
+  const userName = await getCurrentUser();
+  if (!userName) return;
+
+  await prisma.presence.deleteMany({
+    where: { userName },
+  });
+}

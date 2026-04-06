@@ -24,10 +24,8 @@ export default async function CommentsPage({ params }: { params: Promise<{ slug:
 }
 
 async function CommentFeed({ slug }: { slug: string }) {
-  const [comments, currentUser] = await Promise.all([
-    getCommentsByEvent(slug),
-    getCurrentUser(),
-  ]);
+  const currentUser = await getCurrentUser();
+  const comments = await getCommentsByEvent(slug, currentUser);
 
   return (
     <div className="space-y-3">

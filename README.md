@@ -29,48 +29,57 @@ pnpm run prisma.studio   # Open Prisma Studio
 
 ```
 app/
-  _components/            # Home page components (AuthGate, filters, grid)
-  [slug]/                 # Session detail page
-    _components/          # Comments, questions, presence, tabs
-  api/events/[slug]/      # SWR polling endpoints (questions, presence)
+  page.tsx                  # Home — session list with day tabs + label filter
+  layout.tsx                # Root layout (auth gate, theme, fonts)
+  [slug]/
+    layout.tsx              # Session layout (header, event info, bottom nav)
+    page.tsx                # Redirects to comments
+    comments/page.tsx       # Comment feed (server-rendered, Suspense)
+    questions/page.tsx      # Q&A feed (server-rendered → SWR handoff)
+    _components/            # Session-local components
+  api/events/[slug]/        # SWR polling endpoints (questions, presence)
 components/
-  design/                 # Design components with async React (BottomNav, ChipGroup, InlineForm, SubmitButton)
-  ui/                     # shadcn/ui primitives
+  common/                   # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle)
+  design/                   # Design components with async React (BottomNav, ChipGroup, InlineForm, SubmitButton)
+  ui/                       # shadcn/ui primitives
+  BackButton.tsx            # Navigate + mutate in one transition
+  EventGrid.tsx             # Async server component — session cards
+  LabelFilter.tsx           # Label filter chips
 data/
-  queries/                # Server-side data fetching with cache()
-  actions/                # Server Actions (mutations)
+  queries/                  # Server-side data fetching with cache()
+  actions/                  # Server Actions (mutations with refresh())
 lib/
-  utils.ts                # Utilities, labels, avatar URLs
+  utils.ts                  # Utilities (cn, timeAgo, parseTime, avatar URLs)
 prisma/
-  schema.prisma           # Database schema
-  seed.ts                 # React Miami session seed data
+  schema.prisma             # Database schema
+  seed.ts                   # React Miami 2026 session seed data
 ```
-
-## Key Patterns
-
-**Cache Components (PPR):** Uses `cacheComponents: true` to statically prerender server components that don't access dynamic data. The session detail page shell renders instantly while comments and presence stream in via Suspense.
-
-**Async React Primitives:** Replaces manual `isLoading`/`isError` state with `useTransition`, `useOptimistic`, `Suspense`, `use()`, `useActionState`, and `useFormStatus`.
-
-**Action Props:** Design components like `TabList` expose a `changeAction` prop and handle transitions + optimistic updates internally.
-
-**SWR Polling:** Live comments, questions, and active user presence poll via SWR with server-rendered initial data passed through `use()` as `fallbackData`.
-
-**View Transitions:** Suspense reveals animate with slide-up/down. Individual comments and questions enter with `ViewTransition`. Session cards use shared element transitions.
 
 ## The App
 
-- **Session list** (`/`) — Browse React Miami 2026 sessions, filter by day and labels
-- **Session detail** (`/[slug]`) — Cached session info + live comments, Q&A with upvotes, and active user presence
+- **Session list** (`/`) — Browse React Miami 2026 sessions by day (bottom tabs) and label (filter chips)
+- **Comments** (`/[slug]/comments`) — Live comment feed with likes, delete own comments
+- **Questions** (`/[slug]/questions`) — Live Q&A with upvotes, sort by Top/Newest with animated reorder
+- **Active users** — See who's currently viewing a session (presence tracking)
 - **Auth** — Cookie-based demo identity (enter a display name to participate)
 
-### Async React Patterns Demonstrated
+## Async React Patterns Demonstrated
 
 | Pattern | Where | React APIs |
 |---------|-------|------------|
-| Page load streaming | Session detail page | `Suspense`, `use()`, Cache Components |
-| Navigation transitions | List → detail | `startTransition`, `ViewTransition` |
-| Optimistic filters | Day tabs, label pills | `useOptimistic`, `useTransition`, action props |
-| Mutations | Comments, likes, upvotes | `useActionState`, `useOptimistic`, `useTransition` |
-| Live data | Comment feed, presence | `use()` → SWR handoff, `useSWRConfig().mutate` |
-| Animations | Suspense reveals, list enter | `ViewTransition`, CSS view-transition API |
+| Page load streaming | Session detail pages | `Suspense`, Cache Components (`cacheComponents`) |
+| Navigation transitions | List → detail, back button | `startTransition`, `addTransitionType`, `ViewTransition` |
+| Query param filtering | Day tabs, label pills, sort toggle | `useOptimistic`, `startTransition` (via design components) |
+| Update without URL change | Question list reorder on upvote | `useDeferredValue`, `ViewTransition` |
+| Mutations | Comments, likes, upvotes, questions | `useActionState`, `useOptimistic`, `useTransition` |
+| Navigate + mutate | Back button leaves session + navigates | Single `startTransition` wrapping server action + `router.push` |
+| View Transitions | Page slides, Suspense reveals, list reorder | `<ViewTransition>`, `transitionTypes`, CSS view-transition API |
+| Actions pattern | BottomNav, ChipGroup, InlineForm, BackButton | Components encapsulate `startTransition` + `useOptimistic` internally |
+| Eliminating in-between states | Session pages, event list | `generateStaticParams`, `cache()`, SWR `fallbackData` |
+
+## Component Architecture
+
+- **`components/design/`** — Self-contained components with async/interactive logic (`useOptimistic`, `useTransition`). Consumers pass data and callbacks; the component handles all transition mechanics internally.
+- **`components/common/`** — Shared utility components without complex async logic (Avatar, EmptyState, AuthGate, ThemeToggle, ThemeProvider).
+- **`components/ui/`** — shadcn/ui primitives (Button, Input, Dialog, Tooltip, Skeleton, Spinner).
+- **`app/[slug]/_components/`** — Route-local components only used within the session detail pages.

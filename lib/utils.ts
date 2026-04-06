@@ -64,6 +64,17 @@ export function getAvatarUrl(name: string, variant: 'speaker' | 'user' = 'user')
   return `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=${bg}&textColor=ffffff&fontSize=40`;
 }
 
+export function parseTime(time: string): number {
+  const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return 0;
+  let hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  const period = match[3].toUpperCase();
+  if (period === 'PM' && hours !== 12) hours += 12;
+  if (period === 'AM' && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+}
+
 export async function slow(delay: number = 700) {
   await new Promise(resolve => {
     return setTimeout(resolve, delay);

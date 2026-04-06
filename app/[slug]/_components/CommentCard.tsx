@@ -12,6 +12,7 @@ type Comment = {
   content: string;
   userName: string;
   likes: number;
+  hasLiked: boolean;
   eventSlug: string;
   createdAt: Date | string;
 };
@@ -54,6 +55,7 @@ export function CommentCard({ comment, currentUser }: Props) {
           commentId={comment.id}
           eventSlug={comment.eventSlug}
           likes={comment.likes}
+          hasLiked={comment.hasLiked}
         />
         {isOwner && (
           <button

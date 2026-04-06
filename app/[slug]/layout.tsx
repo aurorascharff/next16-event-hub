@@ -5,6 +5,7 @@ import { Avatar } from '@/components/common/Avatar';
 import { BackButton } from '@/components/BackButton';
 import { BottomNav } from '@/components/design/BottomNav';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { leavePresence } from '@/data/actions/presence';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
 import { ActiveUsers } from './_components/ActiveUsers';
@@ -51,7 +52,7 @@ export default async function SessionLayout({
         >
           <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6">
             <div className="flex items-center justify-between">
-              <BackButton href="/" size="sm">
+              <BackButton href="/" size="sm" action={leavePresence}>
                 ← Sessions
               </BackButton>
               <Suspense>

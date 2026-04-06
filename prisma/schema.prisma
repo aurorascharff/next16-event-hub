@@ -20,6 +20,7 @@ model Event {
     createdAt   DateTime   @default(now())
     comments    Comment[]
     questions   Question[]
+    favorites   Favorite[]
 }
 
 model Comment {
@@ -60,6 +61,15 @@ model QuestionVote {
     questionId String
 
     @@unique([userName, questionId])
+}
+
+model Favorite {
+    id        String @id @default(cuid())
+    userName  String
+    event     Event  @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
+    eventSlug String
+
+    @@unique([userName, eventSlug])
 }
 
 model Presence {

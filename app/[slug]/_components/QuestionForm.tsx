@@ -3,15 +3,14 @@
 import { InlineForm } from '@/components/design/InlineForm';
 
 type Props = {
-  onSubmit: (content: string) => void;
-  isPending: boolean;
+  onSubmit: (content: string) => Promise<void>;
 };
 
-export function QuestionForm({ onSubmit, isPending }: Props) {
-  function handleAction(formData: FormData) {
+export function QuestionForm({ onSubmit }: Props) {
+  async function handleAction(formData: FormData) {
     const content = (formData.get('content') as string)?.trim();
     if (!content) return;
-    onSubmit(content);
+    await onSubmit(content);
   }
 
   return (
@@ -19,7 +18,6 @@ export function QuestionForm({ onSubmit, isPending }: Props) {
       action={handleAction}
       placeholder="Ask a question..."
       submitLabel="Ask"
-      disabled={isPending}
     />
   );
 }

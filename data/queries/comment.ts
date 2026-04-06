@@ -4,12 +4,16 @@ import { cache } from 'react';
 import { prisma } from '@/db';
 import { slow } from '@/lib/utils';
 
-export const getCommentsByEvent = cache(async (eventSlug: string) => {
+export const getCommentsByEvent = cache(async (eventSlug: string, currentUserName?: string | null) => {
   await slow();
 
-  return prisma.comment.findMany({
+  const comments = await prisma.comment.findMany({
     orderBy: { createdAt: 'desc' },
     select: {
+      commentLikes: currentUserName ? {
+        select: { id: true },
+        where: { userName: currentUserName },
+      } : false,
       content: true,
       createdAt: true,
       eventSlug: true,
@@ -19,6 +23,11 @@ export const getCommentsByEvent = cache(async (eventSlug: string) => {
     },
     where: { eventSlug },
   });
+
+  return comments.map(({ commentLikes, ...comment }) => ({
+    ...comment,
+    hasLiked: Array.isArray(commentLikes) && commentLikes.length > 0,
+  }));
 });
 
 export const getCommentCount = cache(async (eventSlug: string) => {

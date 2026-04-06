@@ -4,8 +4,9 @@ import { cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
+import { parseTime } from '@/lib/utils';
 
-export const getEvents = cache(async (day?: string, label?: string) => {
+export const getEvents = cache(async (day?: string, label?: string, currentUserName?: string | null) => {
   // 'use cache';
   // cacheTag('events');
 
@@ -13,15 +14,20 @@ export const getEvents = cache(async (day?: string, label?: string) => {
   if (day) {
     where.day = day;
   }
-  if (label && label !== 'all') {
+  if (label === 'favorites' && currentUserName) {
+    where.favorites = { some: { userName: currentUserName } };
+  } else if (label && label !== 'all') {
     where.labels = { contains: label };
   }
 
-  return prisma.event.findMany({
-    orderBy: [{ day: 'asc' }, { time: 'asc' }],
+  const events = await prisma.event.findMany({
     select: {
       day: true,
       description: true,
+      favorites: currentUserName ? {
+        select: { id: true },
+        where: { userName: currentUserName },
+      } : false,
       labels: true,
       location: true,
       name: true,
@@ -31,6 +37,16 @@ export const getEvents = cache(async (day?: string, label?: string) => {
     },
     where,
   });
+
+  return events
+    .map(({ favorites, ...event }) => ({
+      ...event,
+      hasFavorited: Array.isArray(favorites) && favorites.length > 0,
+    }))
+    .sort((a, b) => {
+      if (a.day !== b.day) return a.day.localeCompare(b.day);
+      return parseTime(a.time) - parseTime(b.time);
+    });
 });
 
 export const getEventBySlug = cache(async (slug: string) => {

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import { useIsClient } from '@/lib/useIsClient';
 import { Avatar } from '@/components/common/Avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { recordPresence } from '@/data/actions/presence';
@@ -18,8 +19,10 @@ type Props = {
 };
 
 export function ActiveUsers({ eventSlug }: Props) {
+  const isClient = useIsClient();
+
   const { data: users } = useSWR<ActiveUser[]>(
-    `/api/events/${eventSlug}/presence`,
+    isClient ? `/api/events/${eventSlug}/presence` : null,
     fetcher,
     { refreshInterval: 5000 },
   );

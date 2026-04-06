@@ -17,11 +17,17 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
   };
 }
 
-export default function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
+export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
+  const { slug } = await params;
   return (
     <ViewTransition
-      enter={{ 'nav-forward': 'slide-from-right', 'nav-back': 'slide-from-left', default: 'none' }}
-      exit={{ 'nav-forward': 'slide-to-left', 'nav-back': 'slide-to-right', default: 'none' }}
+      key={slug}
+      name="session-content"
+      share={{
+        'nav-forward': 'nav-forward',
+        'nav-back': 'nav-back',
+        default: 'auto',
+      }}
       default="none"
     >
       <div>

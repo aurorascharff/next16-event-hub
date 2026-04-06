@@ -3,7 +3,7 @@ generator client {
     output   = "../generated/prisma"
 }
 
-// SQLite (local dev): provider = "sqlite"
+// PostgreSQL (Vercel) — for SQLite local dev, change to "sqlite"
 datasource db {
     provider = "postgresql"
 }

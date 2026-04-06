@@ -14,25 +14,21 @@ dotenv.config({ path: '.env.local' });
 const adapter = new PrismaPg({ connectionString: process.env.POSTGRES_URL_NON_POOLING });
 const prisma = new PrismaClient({ adapter });
 
-function ago(minutes: number) {
-  return new Date(Date.now() - minutes * 60_000);
-}
-
 const events = [
   // Day 1
   {
     day: 'day-1',
-    description: 'Much of the user experience happens in the moments between actions and the final UI. This session demonstrates how Async React makes these in-between states manageable using Suspense, optimistic updates, and streaming.',
+    description: 'Handling async operations in UI components can be tricky—flickering pending states, inefficient state updates, and unstable interfaces are common issues. This session demonstrates how React Server Components streamline data fetching while Actions handle async operations with built-in optimistic updates and pending states. We\'ll explore how View Transitions integrate with these patterns to enable fluid visual updates.',
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
-    name: 'Designing the In-Between States with Async React',
-    slug: 'in-between-states',
+    name: 'Modern React Patterns: Concurrent Rendering, Actions & What\'s Next',
+    slug: 'modern-react-patterns',
     speaker: 'Aurora Scharff',
     time: '9:15 AM',
   },
   {
     day: 'day-1',
-    description: 'El futuro de React es ahora — explorando las nuevas APIs, patrones y lo que viene para React.',
+    description: 'React isn\'t trying to do more. It\'s trying to do what we already do, but better. In this talk, we\'ll explore new hooks like use and useEventEffect, View Transitions, Partial Prerendering, and the React Compiler. We\'ll look at the real problems they solve, how they\'re reshaping application architecture, and what we can expect heading into 2027. This talk will be presented in Spanish.',
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'El futuro de React es ahora',
@@ -42,7 +38,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'A look at what\'s new in React Router v8, the migration path from earlier versions, and what the future holds.',
+    description: 'React Router turns 12 this year. After eight major versions we learned how to add features our users want while stripping away old APIs without leaving everyone stranded. This release focuses on better type safety, first-class middleware, RSC support, and much more. I\'ll cover the key changes in v8, how open governance influenced the release, and a practical upgrade plan with common pitfalls.',
     labels: 'react,tooling',
     location: 'Hyatt Regency Miami',
     name: 'React Router v8 and Beyond',
@@ -52,7 +48,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Exploring the current state of brownfield adoption in React Native — integrating React Native into existing native apps.',
+    description: 'We\'ll look at how engineering teams can introduce React Native and JS into mature, native-only applications. The session walks through practical strategies for phased adoption, cutting-edge tooling, and effective architectural choices. We\'ll dig into the real challenges that come with hybrid integration and wrap up with advanced areas like brownfield state and data exchange.',
     labels: 'mobile',
     location: 'Hyatt Regency Miami',
     name: 'State of Brownfield in React Native',
@@ -62,27 +58,27 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'How to hack your React app and fix it too — a deep dive into common security vulnerabilities in React applications.',
+    description: 'React is an excellent framework from a security standpoint, but you need to remain vigilant. Join me in hacking a React application to better understand threats like XSS, injection attacks, and other dangers. You\'ll learn how React already keeps you secure, and where you need to be the last line of defence. Together, we\'ll learn how to keep your users secure!',
     labels: 'react,security',
     location: 'Hyatt Regency Miami',
-    name: 'React with Caution',
+    name: 'React with Caution — How to Hack Your React App (And Fix It Too)',
     slug: 'react-with-caution',
     speaker: 'Ramona Schwering',
     time: '11:25 AM',
   },
   {
     day: 'day-1',
-    description: 'What we learned optimizing Base UI — patterns you can steal for faster React apps.',
+    description: 'Performance problems in React apps often come from perfectly "valid" code: context updates that rerender too much, event handlers that change identity, or state that\'s too reactive. While preparing the first stable release of Base UI, we had to confront these issues head-on. I\'ll show concrete patterns we used to eliminate unnecessary re-renders and move work out of React\'s render cycle.',
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
-    name: 'Optimizing Base UI',
+    name: 'What we learned optimizing Base UI',
     slug: 'optimizing-base-ui',
     speaker: 'Michał Dudak',
     time: '11:50 AM',
   },
   {
     day: 'day-1',
-    description: 'The story of Voltra — from JSX to Live Activity, building native iOS experiences with React.',
+    description: 'What if you could ship native iOS Live Activities and Dynamic Island experiences without writing a single line of Swift? This talk tells the story of Voltra, a library born from a viral tweet to bridge the gap between React and native iOS extensions. We\'ll go behind the scenes of building a custom React renderer from scratch to translate JSX into SwiftUI primitives.',
     labels: 'mobile',
     location: 'Hyatt Regency Miami',
     name: 'JSX to Live Activity: The Story of Voltra',
@@ -92,7 +88,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'What if useState() was your database? Exploring local-first architecture and state persistence.',
+    description: 'React\'s useState() can only be used for temporary, frontend state. To interact with important objects in your app, you usually have to query a backend and use state to hold results. In this talk we\'ll explore how sync engines and local-first databases give you global, persistent reactive state — as if you had a local plus cloud database that looked like useState(), without worrying about networking.',
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'What if useState() was your database?',
@@ -102,7 +98,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'How to make your content generative-ready with React — integrating AI-powered content workflows.',
+    description: 'Most content on the internet was created for human consumption: Pages, posts, and SEO. But as LLMs and RAG pipelines become part of everyday applications, content needs to be optimized for machines as well. Let\'s explore how React developers can evolve beyond "just rendering" to building generative-ready experiences where content is structured and served in ways that LLMs can reliably retrieve.',
     labels: 'ai,react',
     location: 'Hyatt Regency Miami',
     name: 'Generative-Ready Content with React',
@@ -112,7 +108,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Making code beautiful and approachable — design patterns and creative coding with React.',
+    description: 'Ever built a solid React app that works well but lacks personality? We\'ll explore how to transform functional applications into visually engaging, delightful experiences using React and animation libraries like GSAP. Through practical examples, you\'ll learn how small, intentional design choices can dramatically enhance user experience without sacrificing performance.',
     labels: 'design',
     location: 'Hyatt Regency Miami',
     name: 'Code, But Make it Cute',
@@ -122,7 +118,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'Building delightful user experiences through whimsy — adding personality and surprise to your React apps.',
+    description: 'In today\'s dev economy, whimsy is a survival skill. Learn why building silly software isn\'t just a side quest, but a useful practice to stay connected, motivated, and sharp.',
     labels: 'design',
     location: 'Hyatt Regency Miami',
     name: 'Whimsy-Driven Development',
@@ -132,7 +128,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'AI broke hiring — what does the future look like for developers navigating AI-powered recruitment?',
+    description: 'AI radically changed hiring. Anyone can now submit flawless resumes, thoughtful cover letters, and pristine portfolios, but hiring was never about perfection. It\'s about trust. For companies, hiring is risk. Instead of reducing that risk, AI has obscured the signals used to evaluate it. So what is the reality for you to get hired, and where does AI actually fit in that process?',
     labels: 'ai,career',
     location: 'Hyatt Regency Miami',
     name: 'AI broke hiring...what now?',
@@ -142,7 +138,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'A behind-the-scenes look at how Tailwind CSS is built — the architecture, decisions, and trade-offs.',
+    description: 'Have you ever wondered how Tailwind CSS actually works? We\'ll explore how thousands of utility classes are generated, the purging techniques that scan your templates to keep bundle sizes small, and how JIT compilation provides unlimited arbitrary values without hurting performance. You\'ll leave with practical knowledge that you can apply right away!',
     labels: 'css,tooling',
     location: 'Hyatt Regency Miami',
     name: 'Behind the Scenes of Tailwind CSS',
@@ -152,7 +148,7 @@ const events = [
   },
   {
     day: 'day-1',
-    description: 'ai is ok i guess.',
+    description: 'In the ever changing AI landscape, with so much noise and so little signal, it can be hard to keep up. Between people selling things, delusional takes and downright misinformation, it\'s hard to really get signal. In this talk I\'ll be examining the landscape, exploring LLM assisted coding techniques and separating the wheat from the chaff.',
     labels: 'ai',
     location: 'Hyatt Regency Miami',
     name: 'ai is ok i guess',
@@ -164,7 +160,7 @@ const events = [
   // Day 2
   {
     day: 'day-2',
-    description: '10x your React development workflow with TanStack Query, HeyAPI, and AI copilots.',
+    description: 'Last year, I deployed a large-scale React application where I personally wrote less than 1% of the codebase—yet delivered a product that impressed users, managers, and engineers alike. In this session, I\'ll reveal the workflow: TanStack Query for robust data synchronization, TanStack Router for type-safe routing, HeyAPI for automated API client generation, and AI copilots for the heavy lifting.',
     labels: 'react,ai,tooling',
     location: 'Hyatt Regency Miami',
     name: '10x React Development with TanStack Query, HeyAPI, and AI Copilots',
@@ -174,7 +170,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'A guide to how the React Compiler handles rendering — what it optimizes and how to work with it.',
+    description: 'The new React Compiler promises to "automatically optimize your React app"... but what is it actually doing to your component? We\'ll clear up the confusion and provide a solid foundation for understanding when, why, and how React renders. We\'ll demystify the Compiler\'s output, break down exactly what that code does, and see how the Compiler rewrites our mindset of using React itself.',
     labels: 'react,performance',
     location: 'Hyatt Regency Miami',
     name: 'A Guide to React Compiler Rendering',
@@ -184,17 +180,17 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'The last website you\'ll ever visit in the browser — exploring the future of web experiences.',
-    labels: 'react',
+    description: 'We are moving from a navigation-based web, where you go to a site, to an intent-based web, where the result comes to you. If the user won\'t go to your URL, your app has to go to them. Learn about MCP-UI and MCP Apps, an open standard that allows developers to render fully interactive interfaces directly inside AI agents. Your React skills position you to build the mini apps of the agentic era.',
+    labels: 'react,ai',
     location: 'Hyatt Regency Miami',
-    name: 'The Last Website You\'ll Ever Visit',
+    name: 'The Last Website You\'ll Ever Visit (in the Browser)',
     slug: 'last-website',
     speaker: 'Rizel Scarlett',
     time: '10:05 AM',
   },
   {
     day: 'day-2',
-    description: 'React from another universe — exploring unconventional approaches and alternative paradigms in React.',
+    description: 'React introduced a generation of developers to functional programming. For me, it was the start of an obsession that sent me down the rabbit hole of learning a new paradigm, working with different languages, shipping a few compilers, implementing a type system, and eventually reimplementing React. I\'ll share insights that transformed me from someone who uses React to someone who understands why it works.',
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'React From Another Universe',
@@ -204,7 +200,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Solving your TypeScript performance problems — profiling, diagnosing, and fixing slow types.',
+    description: 'TypeScript performance problems are one of the most common and least understood sources of pain in large React codebases. These issues quietly slow you down, showing up as sluggish editors, long CI times, and confusing "type too complex" errors. You\'ll learn how to diagnose what\'s actually happening and fix it with tools like --generateTrace, Attest, and TypeSlayer.',
     labels: 'typescript,performance',
     location: 'Hyatt Regency Miami',
     name: 'Solving Your TypeScript Performance Problems',
@@ -214,7 +210,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Building autonomous AI workflows in React under real constraints — no magic, just practical patterns.',
+    description: 'Agentic AI promises program autonomy and "intelligent" workflows. But integrating agentic systems into React introduces real challenges: indefinite loops, stalled responses, unpredictable state updates, UI desynchronization, and missing guardrails. I\'ll share lessons from building agentic workflows and practical patterns for making agents observable, controllable, and user-safe in a React UI.',
     labels: 'ai,react',
     location: 'Hyatt Regency Miami',
     name: 'Agentic AI Without the Magic',
@@ -224,7 +220,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Fighting shiny object syndrome — staying focused and productive as a developer in 2026.',
+    description: 'A long-term, real-world case study of how a React monorepo actually evolves in production — beyond blog-post architectures and conference demos. Rather than celebrating every new framework or pattern, this talk focuses on what stayed, what broke, and what quietly paid off. Topics include dependency discipline, state management migrations, and how to evaluate "new" React ideas without destabilizing your system.',
     labels: 'career',
     location: 'Hyatt Regency Miami',
     name: 'The Anti-Shiny Object Syndrome',
@@ -234,7 +230,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Isograph: a compiler for your UI — building optimized, declarative UIs with compile-time analysis.',
+    description: 'Isograph is an opinionated, compiler-driven framework for building stable and performant data-driven apps. The compiler scans your codebase and generates files containing queries for all the data needed by a given screen. Want to dynamically load part of your page? One annotation. Want to load JavaScript only for rendered components? Also one annotation. Come find out more!',
     labels: 'react,tooling',
     location: 'Hyatt Regency Miami',
     name: 'Isograph: a compiler for your UI',
@@ -244,7 +240,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Robots can\'t taste — the irreplaceable role of human creativity and judgment in design and engineering.',
+    description: 'We spent years abstracting away the hardest parts of building software. Now, LLMs use tools like Payload to do the heavy lifting. But when anyone can spin up functioning software, implementation is no longer a superpower. AI is great at producing code, but it has no taste. No point of view. No opinion about what should exist. That part is still on you.',
     labels: 'design,ai',
     location: 'Hyatt Regency Miami',
     name: 'Robots Can\'t Taste',
@@ -254,7 +250,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'Shipping quality full stack TypeScript apps in the age of AI — practical patterns for production apps.',
+    description: 'How I fully rewrote my application over the course of 2 weeks to a new architecture using AI that unlocked being able to ship quality software faster. Covering setting up development environments for AI, EffectTS, best practices for debugging production, and a starter template you can use for your own applications.',
     labels: 'typescript,ai',
     location: 'Hyatt Regency Miami',
     name: 'Shipping quality full stack TypeScript apps in the age of AI',
@@ -264,7 +260,7 @@ const events = [
   },
   {
     day: 'day-2',
-    description: 'React-ing a backend framework — building backend tools and frameworks with React paradigms.',
+    description: 'This talk covers building a backend framework at the intersection of MCP, DX & UI. A major turning point was integrating React and introducing native support for rendering components inside tools, rethinking this backend-first framework. This takes tools to the next level and redefines how users interact with interfaces. We\'ll cover practical examples, implementation details, and lessons learned.',
     labels: 'react',
     location: 'Hyatt Regency Miami',
     name: 'React-ing a backend framework',
@@ -284,93 +280,6 @@ const events = [
   },
 ];
 
-const comments = [
-  // in-between-states — Aurora's talk, most activity
-  { content: 'Just grabbed a seat in the front row. Let\'s go!', createdAt: ago(47), eventSlug: 'in-between-states', likes: 3, userName: 'DevDan' },
-  { content: 'Aurora gave an amazing talk at React Day Berlin — this will be great.', createdAt: ago(42), eventSlug: 'in-between-states', likes: 7, userName: 'ReactFan42' },
-  { content: 'Hoping for some live coding demos!', createdAt: ago(38), eventSlug: 'in-between-states', likes: 2, userName: 'CodeMaria' },
-  { content: 'The Suspense streaming demo was so clean. No loading spinners!', createdAt: ago(25), eventSlug: 'in-between-states', likes: 5, userName: 'SuspenseSam' },
-  { content: 'useOptimistic is a game changer. Never going back to manual state.', createdAt: ago(18), eventSlug: 'in-between-states', likes: 4, userName: 'OptimisticOlivia' },
-  { content: 'Wait, so the form just... works? No loading state management?', createdAt: ago(12), eventSlug: 'in-between-states', likes: 1, userName: 'FormsFrank' },
-  { content: 'This is exactly what I needed for my project at work.', createdAt: ago(8), eventSlug: 'in-between-states', likes: 0, userName: 'WorkplaceWendy' },
-  { content: 'The ViewTransition slide-up on Suspense reveal looked incredible.', createdAt: ago(3), eventSlug: 'in-between-states', likes: 2, userName: 'AnimationAndy' },
-
-  // futuro-de-react — Midudev
-  { content: 'Midudev siempre delivers. Vamos!', createdAt: ago(50), eventSlug: 'futuro-de-react', likes: 8, userName: 'ReactFan42' },
-  { content: 'Love seeing a talk in Spanish at a US conference.', createdAt: ago(35), eventSlug: 'futuro-de-react', likes: 5, userName: 'DevDan' },
-  { content: 'The energy in this room is incredible.', createdAt: ago(20), eventSlug: 'futuro-de-react', likes: 3, userName: 'MiamiLocal' },
-
-  // react-compiler-rendering — Mark Erikson
-  { content: 'Mark always delivers the deep dives we need.', createdAt: ago(55), eventSlug: 'react-compiler-rendering', likes: 9, userName: 'ReduxLover' },
-  { content: 'The before/after rendering comparison was mind-blowing.', createdAt: ago(30), eventSlug: 'react-compiler-rendering', likes: 6, userName: 'BundleBerta' },
-  { content: 'So the compiler just... eliminates unnecessary re-renders?', createdAt: ago(15), eventSlug: 'react-compiler-rendering', likes: 2, userName: 'PerfPaula' },
-
-  // optimizing-base-ui
-  { content: 'Patterns you can steal — love that framing.', createdAt: ago(40), eventSlug: 'optimizing-base-ui', likes: 4, userName: 'DesignDevDina' },
-  { content: 'Base UI is seriously underrated.', createdAt: ago(22), eventSlug: 'optimizing-base-ui', likes: 3, userName: 'UIUma' },
-
-  // react-router-v8
-  { content: 'Finally a clear migration path from v6!', createdAt: ago(44), eventSlug: 'react-router-v8', likes: 5, userName: 'RoutingRick' },
-  { content: 'The new data loading patterns are so much cleaner.', createdAt: ago(28), eventSlug: 'react-router-v8', likes: 3, userName: 'FullStackFred' },
-
-  // tailwind-behind-scenes
-  { content: 'I use Tailwind every day but never thought about how it\'s built.', createdAt: ago(36), eventSlug: 'tailwind-behind-scenes', likes: 6, userName: 'CSSCarla' },
-  { content: 'The v4 architecture is so elegant.', createdAt: ago(14), eventSlug: 'tailwind-behind-scenes', likes: 4, userName: 'DesignDevDina' },
-
-  // ai-is-ok
-  { content: 'Ken Wheeler on stage is always an experience.', createdAt: ago(32), eventSlug: 'ai-is-ok', likes: 11, userName: 'HypedHarry' },
-  { content: 'Best talk title of the conference.', createdAt: ago(19), eventSlug: 'ai-is-ok', likes: 7, userName: 'PartyPete' },
-
-  // afterparty
-  { content: 'Who\'s coming to the afterparty? 🎉', createdAt: ago(60), eventSlug: 'afterparty', likes: 4, userName: 'PartyPete' },
-  { content: 'The Wynwood venue is going to be amazing!', createdAt: ago(52), eventSlug: 'afterparty', likes: 3, userName: 'MiamiLocal' },
-  { content: 'Last year the DJ was so good. Hoping for the same energy!', createdAt: ago(31), eventSlug: 'afterparty', likes: 2, userName: 'DJFan' },
-
-  // agentic-ai
-  { content: 'Finally a practical AI talk without the hype.', createdAt: ago(27), eventSlug: 'agentic-ai', likes: 5, userName: 'AIAlice' },
-  { content: 'The real constraints framing is so refreshing.', createdAt: ago(11), eventSlug: 'agentic-ai', likes: 3, userName: 'PragmaticPat' },
-
-  // code-but-cute
-  { content: 'Bree\'s energy is amazing. This talk is so fun.', createdAt: ago(33), eventSlug: 'code-but-cute', likes: 6, userName: 'DesignDevDina' },
-
-  // whimsy-driven-development
-  { content: 'Adding whimsy to my apps starting TODAY.', createdAt: ago(24), eventSlug: 'whimsy-driven-development', likes: 4, userName: 'AnimationAndy' },
-];
-
-const questions = [
-  // in-between-states — most questions
-  { content: 'How do you handle error boundaries with Suspense and optimistic updates?', createdAt: ago(40), eventSlug: 'in-between-states', userName: 'CuriousCoder', votes: 18 },
-  { content: 'Can you show the difference between useTransition and startTransition?', createdAt: ago(32), eventSlug: 'in-between-states', userName: 'TransitionTom', votes: 14 },
-  { content: 'What happens if two optimistic updates conflict? Does React reconcile them?', createdAt: ago(20), eventSlug: 'in-between-states', userName: 'ConflictCarl', votes: 9 },
-  { content: 'Is the action props pattern something you use in production or just for demos?', createdAt: ago(11), eventSlug: 'in-between-states', userName: 'ProdPriya', votes: 7 },
-  { content: 'How do ViewTransitions interact with Suspense boundaries?', createdAt: ago(4), eventSlug: 'in-between-states', userName: 'AnimationAndy', votes: 3 },
-
-  // react-compiler-rendering
-  { content: 'What\'s the performance impact on large codebases?', createdAt: ago(48), eventSlug: 'react-compiler-rendering', userName: 'PerfPaula', votes: 15 },
-  { content: 'Does the compiler work with class components or just function components?', createdAt: ago(24), eventSlug: 'react-compiler-rendering', userName: 'ClassicClaire', votes: 6 },
-
-  // react-router-v8
-  { content: 'How does this compare to TanStack Router?', createdAt: ago(36), eventSlug: 'react-router-v8', userName: 'RoutingRick', votes: 10 },
-
-  // typescript-performance
-  { content: 'Any tips for profiling type-check times in monorepos?', createdAt: ago(30), eventSlug: 'typescript-performance', userName: 'MonorepoMax', votes: 12 },
-
-  // agentic-ai
-  { content: 'What\'s the best way to review AI-generated code for security issues?', createdAt: ago(27), eventSlug: 'agentic-ai', userName: 'SecuritySue', votes: 8 },
-
-  // tailwind-behind-scenes
-  { content: 'How does Tailwind v4 handle CSS-in-JS migration?', createdAt: ago(22), eventSlug: 'tailwind-behind-scenes', userName: 'CSSCarla', votes: 7 },
-
-  // optimizing-base-ui
-  { content: 'Are these patterns applicable to other component libraries too?', createdAt: ago(34), eventSlug: 'optimizing-base-ui', userName: 'LibraryLiam', votes: 5 },
-
-  // ai-broke-hiring
-  { content: 'What skills should junior devs focus on in the AI era?', createdAt: ago(18), eventSlug: 'ai-broke-hiring', userName: 'JuniorJade', votes: 14 },
-
-  // futuro-de-react
-  { content: 'Will there be English subtitles or a translated version later?', createdAt: ago(45), eventSlug: 'futuro-de-react', userName: 'MonolingualMark', votes: 4 },
-];
-
 async function main() {
   console.log('Seeding database...');
 
@@ -379,80 +288,14 @@ async function main() {
   await prisma.comment.deleteMany();
   await prisma.question.deleteMany();
   await prisma.presence.deleteMany();
+  await prisma.favorite.deleteMany();
   await prisma.event.deleteMany();
 
   for (const event of events) {
     await prisma.event.create({ data: event });
   }
 
-  const likeUsers = ['DevDan', 'ReactFan42', 'CodeMaria', 'SuspenseSam', 'OptimisticOlivia',
-    'FullStackFred', 'ReduxLover', 'HypedHarry', 'AIAlice', 'PartyPete', 'DesignDevDina', 'MiamiLocal'];
-
-  for (const comment of comments) {
-    const created = await prisma.comment.create({
-      data: {
-        content: comment.content,
-        createdAt: comment.createdAt,
-        eventSlug: comment.eventSlug,
-        likes: comment.likes,
-        userName: comment.userName,
-      },
-    });
-
-    const likers = likeUsers
-      .filter(u => {return u !== comment.userName})
-      .slice(0, comment.likes);
-    for (const liker of likers) {
-      await prisma.commentLike.create({
-        data: { commentId: created.id, userName: liker },
-      });
-    }
-  }
-
-  const voteUsers = ['CuriousCoder', 'TransitionTom', 'ConflictCarl', 'ProdPriya', 'AnimationAndy',
-    'PerfPaula', 'ClassicClaire', 'RoutingRick', 'MonorepoMax', 'SecuritySue', 'CSSCarla',
-    'DevDan', 'ReactFan42', 'FullStackFred', 'ReduxLover', 'HypedHarry', 'AIAlice', 'BundleBerta'];
-
-  for (const question of questions) {
-    const created = await prisma.question.create({
-      data: {
-        content: question.content,
-        createdAt: question.createdAt,
-        eventSlug: question.eventSlug,
-        userName: question.userName,
-        votes: question.votes,
-      },
-    });
-
-    const voters = voteUsers
-      .filter(u => {return u !== question.userName})
-      .slice(0, question.votes);
-    for (const voter of voters) {
-      await prisma.questionVote.create({
-        data: { questionId: created.id, userName: voter },
-      });
-    }
-  }
-
-  const presenceData = [
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'DevDan' },
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'ReactFan42' },
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'CodeMaria' },
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'SuspenseSam' },
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'OptimisticOlivia' },
-    { eventSlug: 'in-between-states', lastSeen: ago(0), userName: 'AnimationAndy' },
-    { eventSlug: 'react-compiler-rendering', lastSeen: ago(0), userName: 'BundleBerta' },
-    { eventSlug: 'react-compiler-rendering', lastSeen: ago(0), userName: 'PerfPaula' },
-    { eventSlug: 'futuro-de-react', lastSeen: ago(0), userName: 'MiamiLocal' },
-    { eventSlug: 'afterparty', lastSeen: ago(0), userName: 'PartyPete' },
-    { eventSlug: 'afterparty', lastSeen: ago(0), userName: 'DJFan' },
-  ];
-
-  for (const presence of presenceData) {
-    await prisma.presence.create({ data: presence });
-  }
-
-  console.log(`Seeded ${events.length} events, ${comments.length} comments, ${questions.length} questions, ${presenceData.length} active users`);
+  console.log(`Seeded ${events.length} events`);
 }
 
 main()

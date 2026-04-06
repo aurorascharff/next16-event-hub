@@ -53,7 +53,7 @@ export default async function SessionLayout({ children, params }: LayoutProps<'/
           </div>
         </header>
 
-        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
           <Suspense fallback={<EventDetailsSkeleton />}>
             <EventDetails slug={slug} />
           </Suspense>
@@ -74,8 +74,8 @@ export default async function SessionLayout({ children, params }: LayoutProps<'/
 async function EventDetails({ slug }: { slug: string }) {
   const event = await getEventBySlug(slug);
   return (
-    <article className="mb-8">
-      <div className="text-muted-foreground mb-4 flex flex-wrap items-center gap-3 text-xs">
+    <article className="mb-6">
+      <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-2 text-xs sm:mb-4 sm:gap-3">
         <span className="font-medium uppercase tracking-wider">
           {getDayLabel(event.day)}
         </span>
@@ -91,12 +91,12 @@ async function EventDetails({ slug }: { slug: string }) {
         </span>
       </div>
       {parseLabels(event.labels).length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-1.5">
+        <div className="mb-2 flex flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
           {parseLabels(event.labels).map(label => {
             return (
               <span
                 key={label}
-                className="bg-muted text-muted-foreground rounded-full px-2.5 py-0.5 text-xs capitalize"
+                className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize sm:px-2.5"
               >
                 {label}
               </span>
@@ -104,16 +104,16 @@ async function EventDetails({ slug }: { slug: string }) {
           })}
         </div>
       )}
-      <h1 className="font-sans text-2xl font-bold tracking-tight sm:text-3xl">
+      <h1 className="font-sans text-lg font-bold tracking-tight sm:text-3xl">
         {event.name}
       </h1>
       {event.speaker && (
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-2 flex items-center gap-2 sm:mt-4 sm:gap-3">
           <Avatar name={event.speaker} variant="speaker" size="lg" />
           <span className="text-sm font-medium">{event.speaker}</span>
         </div>
       )}
-      <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
+      <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed sm:mt-4 sm:line-clamp-none sm:text-sm">
         {event.description}
       </p>
     </article>
@@ -122,19 +122,19 @@ async function EventDetails({ slug }: { slug: string }) {
 
 function EventDetailsSkeleton() {
   return (
-    <article className="mb-8">
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+    <article className="mb-6">
+      <div className="mb-2 flex flex-wrap items-center gap-2 sm:mb-4 sm:gap-3">
         <Skeleton className="h-3 w-10" />
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-3 w-24" />
       </div>
-      <Skeleton className="mb-4 h-8 w-4/5" />
-      <div className="flex items-center gap-3">
+      <Skeleton className="mb-2 h-6 w-4/5 sm:mb-4 sm:h-8" />
+      <div className="flex items-center gap-2 sm:gap-3">
         <Skeleton className="size-8 rounded-full" />
         <Skeleton className="h-4 w-32" />
       </div>
-      <Skeleton className="mt-4 h-3 w-full" />
-      <Skeleton className="mt-2 h-3 w-3/4" />
+      <Skeleton className="mt-2 h-3 w-full sm:mt-4" />
+      <Skeleton className="mt-1 h-3 w-3/4 sm:mt-2" />
     </article>
   );
 }

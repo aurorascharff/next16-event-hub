@@ -1,8 +1,17 @@
 /* eslint-disable no-console */
-import { PrismaLibSql } from '@prisma/adapter-libsql';
+// --- SQLite (local dev) ---
+// import { PrismaLibSql } from '@prisma/adapter-libsql';
+// import { PrismaClient } from '../generated/prisma/client';
+// const adapter = new PrismaLibSql({ url: 'file:./dev.db' });
+// const prisma = new PrismaClient({ adapter });
+
+// --- PostgreSQL (Vercel) ---
+import dotenv from 'dotenv';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client';
 
-const adapter = new PrismaLibSql({ url: 'file:./dev.db' });
+dotenv.config({ path: '.env.local' });
+const adapter = new PrismaPg({ connectionString: process.env.POSTGRES_URL_NON_POOLING });
 const prisma = new PrismaClient({ adapter });
 
 function ago(minutes: number) {

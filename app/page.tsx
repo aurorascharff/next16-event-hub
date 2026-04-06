@@ -1,4 +1,4 @@
-import { Github } from 'lucide-react';
+import { Github, Presentation } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid } from '@/components/EventGrid';
@@ -27,6 +27,12 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             <div className="mb-3 flex items-center justify-between">
               <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
               <div className="flex items-center gap-2">
+                <Link
+                  href="/slides/2"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Presentation className="size-4" />
+                </Link>
                 <Link
                   href="https://github.com/aurorascharff/next16-event-hub"
                   target="_blank"

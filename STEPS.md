@@ -2,25 +2,26 @@
 
 GitHub: https://github.com/aurorascharff/next16-event-hub
 
+## Slides: Title (Slide 1)
+
+- (Open `/slides`) Intro slide — Designing the In-Between States with Async React.
+
 ## Opening
 
-- So many fun things happening at this conference — how do we keep track of them all? I built an app for that. Let me show you.
-- (Show the app) What do you see? What sucks about it? (Listen to audience) Flickering, delays, layout shifts, lack of feedback — the in-between states.
-- Let's fix it with Async React.
+- (Exit slides, show the app) I'm the first speaker — so we need a conference app to keep track of everything happening here. Good news, I built one. Let me show you.
+- ...but wait, this thing is terrible. What's wrong with it? What do you see? (Listen to audience) Flickering, delays, layout shifts, lack of feedback.
+- These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
+- Let's make it worse. Show the `useEffect` + `useState` pattern — the heart button managing favorite state locally. Tap a few hearts quickly, then switch to the Favorites tab. Watch the flickering — the heart fills, reverts, fills again. Stale data, re-render cascades.
 
-## The Async React Render Cycle
+## Slides: The Async React Render Cycle (Slides 2–6)
 
-- Every interaction follows the same cycle: **Event → Update → Render → Commit**. In Async React, this entire cycle happens inside a **transition** — a concurrent, interruptible render that React can coordinate.
-- The in-between states live in the gaps of this cycle. Between the event and the commit, the user is waiting. Async React gives us primitives to design what happens during that wait:
-  - **`useOptimistic()`** — Show the result before it's real. Fires instantly at the Update phase, rolls back automatically if the server disagrees.
-  - **`<Suspense>`** — Show a placeholder while async data loads during Render. The shell renders immediately, dynamic content streams in.
-  - **`<ViewTransition>`** — Animate the Commit. When React swaps old DOM for new, ViewTransition captures the before/after and animates the change.
-- These three primitives map directly to the render cycle. Together they cover every in-between state: instant feedback, loading boundaries, and animated commits.
-
-## The Problem: useEffect Flickering
-
-- Before we start fixing, let's make it worse. Show the classic `useEffect` + `useState` + `isLoading` pattern — fetch in the client, set state, render. Watch the flickering, the layout jumps, the waterfall.
-- This is what React 19 replaces. Remove the `useEffect` approach, bring back Server Components and Suspense. Now let's design the proper in-between states.
+- (Open `/slides/2`) Let's look at the React render cycle to understand where Async React fits in.
+- **Slide 2**: Basic cycle — Event → Update → Render → Commit. A user click triggers an update, causes a re-render, which is committed to DOM.
+- **Slide 3**: Now bring async into this. The user clicked something, which triggered an async update — a "busy" state. After the Update, there's another async call to load data — a "loading" state. After Render, a "done" state before Commit.
+- **Slide 4**: The key to Async React is transitions. A transition coordinates the async work and ensures the render and commit cycle happens smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
+- **Slide 5**: We can decide what primitive is most suitable for each phase. `useOptimistic()` for the busy/update phase. `<Suspense>` for the loading/render phase. `<ViewTransition>` for the done/commit phase.
+- **Slide 6**: The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. That's the goal.
+- (Exit slides, back to the app) Remove the `useEffect` approach, bring back Server Components and the transition system. Now let's fix the app.
 
 ## Setup and Starting Point
 
@@ -127,7 +128,8 @@ Sometimes in-between states are not desirable — and you can eliminate them ent
 
 ## Live Q&A
 
-- Let's try it out! The questions page has a QR code button in the header — tap it to open a scannable QR code linking directly to this session's Q&A. Scan with your phone to join.
-- As you submit questions and upvote, watch how everything stays in sync — optimistic updates, background polling, and ViewTransition list animations all coordinating through the same transition system we built.
+- Now let's use what we built. Open the QR code — scan it to join this session's Q&A. Submit your questions and upvote the ones you want answered.
+- Watch how everything stays in sync — optimistic updates, background polling, and ViewTransition list animations all coordinating through the same transition system we built.
+- (Read top-voted questions from the app, answer them live if time allows)
 - The app's home page has a link to the GitHub repo — check it out for the full source code.
 - If you want to try adding View Transitions to your own app with AI assistance, install the [View Transitions agent skill](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) — it teaches your coding agent the patterns, CSS recipes, and Next.js integration from this talk.

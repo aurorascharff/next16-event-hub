@@ -43,6 +43,15 @@ export const getUserFavorites = cache(async (userName: string) => {
   return new Set(favorites.map(f => f.eventSlug));
 });
 
+export const getAdjacentEvents = cache(async (slug: string) => {
+  const allEvents = await getEvents();
+  const index = allEvents.findIndex(e => e.slug === slug);
+  return {
+    prev: index > 0 ? allEvents[index - 1] : null,
+    next: index < allEvents.length - 1 ? allEvents[index + 1] : null,
+  };
+});
+
 export const getEventBySlug = cache(async (slug: string) => {
   await slow();
   const event = await prisma.event.findUnique({

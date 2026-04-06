@@ -28,41 +28,39 @@ export async function generateStaticParams() {
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <ViewTransition>
-      <div className="flex flex-col gap-6">
-        <div className="min-h-56 sm:min-h-72">
-          <ViewTransition>
-            <Suspense fallback={<EventDetailsSkeleton />}>
-              <ViewTransition name={`event-${slug}`} share="morph" default="none">
-                <EventDetails slug={slug} />
-              </ViewTransition>
-            </Suspense>
-          </ViewTransition>
-          <Suspense
-            fallback={
-              <div className="mt-4 min-h-9">
-                <CommentFormSkeleton />
-              </div>
-            }
-          >
-            <div className="mt-4 min-h-9">
-              <CommentForm />
-            </div>
+    <div className="flex flex-col gap-6">
+      <div className="min-h-56 sm:min-h-72">
+        <ViewTransition>
+          <Suspense fallback={<EventDetailsSkeleton />}>
+            <ViewTransition name={`event-${slug}`} share="morph" default="none">
+              <EventDetails slug={slug} />
+            </ViewTransition>
           </Suspense>
-        </div>
+        </ViewTransition>
         <Suspense
           fallback={
-            <ViewTransition exit="slide-down">
-              <CommentListSkeleton />
-            </ViewTransition>
+            <div className="mt-4 min-h-9">
+              <CommentFormSkeleton />
+            </div>
           }
         >
-          <ViewTransition enter="slide-up" default="none">
-            <CommentList slug={slug} />
-          </ViewTransition>
+          <div className="mt-4 min-h-9">
+            <CommentForm />
+          </div>
         </Suspense>
       </div>
-    </ViewTransition>
+      <Suspense
+        fallback={
+          <ViewTransition exit="slide-down">
+            <CommentListSkeleton />
+          </ViewTransition>
+        }
+      >
+        <ViewTransition enter="slide-up" default="none">
+          <CommentList slug={slug} />
+        </ViewTransition>
+      </Suspense>
+    </div>
   );
 }
 

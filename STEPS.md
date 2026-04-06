@@ -98,23 +98,19 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 ### Shared Element Morph
 
-- Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="auto"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="auto"`. The card morphs into the detail view on click — and reverses when going back.
-- The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards morph to their new grid positions when switching label filters. ChipGroup adds `addTransitionType('filter')` on category changes.
-
-### Directional Navigation (Next/Previous Talk)
-
-- Add next/previous talk navigation to the session detail page. Fetch adjacent events (ordered by day + time) and render prev/next links in EventDetails — plain `<Link>` elements (no `transitionTypes` on this branch; those belong on the full demo where directional view transitions are wired end-to-end).
-- Wrap the session page content in a ViewTransition that handles both directions — `enter` maps `nav-forward` to `slide-from-right` and `nav-back` to `slide-from-left`, `exit` maps `nav-forward` to `slide-to-left` and `nav-back` to `slide-to-right`. The same ViewTransition goes on both the comments page and the questions page. On the full demo, prev/next links use `transitionTypes={['nav-back']}` and `transitionTypes={['nav-forward']}` so clicks line up with those types; clicking next slides the content left, clicking previous slides it right.
+- Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}` and `share="morph"`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name and `share="morph"`. The card morphs into the detail view on click — and reverses when going back.
+- The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards animate to their new grid positions when switching label filters.
 
 ### Tab Switch Crossfade
 
-- BottomNav wraps children in `<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default="none">`, which crossfades the entire content area on tab switches. BottomNav adds `addTransitionType('tab-switch')` on every tab click.
+- BottomNav does not inject transition types in this branch.
+- Crossfade wrappers live outside BottomNav at the call sites (for example, wrapping `children` in `HomeTabs`/`SessionTabs`) so animation scope stays explicit.
 
 ### List Animations
 
 - List animations are visible when sorting questions, when new items arrive via `router.refresh()` polling, and when items are added or deleted via mutations.
 - Wrap each QuestionCard in ViewTransition with a unique key and `default="none"`. The unique key lets React track each item across sort changes — cards animate to their new positions when switching between "Top" and "Newest". `default="none"` prevents unwanted animations during other transitions like navigation.
-- Each comment is wrapped in ViewTransition with a unique key, `name={`comment-${comment.id}`}`, and `enter="slide-up"`. New comments slide in on add, and the `name` enables the exit animation when a comment is deleted. `default="none"` keeps other transitions clean.
+- Comments and questions use keyed `ViewTransition` enter animations (`enter="slide-up"`) for add/reveal without named shared-element transitions.
 
 ## Eliminating In-Between States
 

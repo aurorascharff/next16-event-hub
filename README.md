@@ -45,8 +45,6 @@ Every route folder should contain everything it needs. Components and functions 
 
 **Async React:** Replace manual `isLoading`/`isError` state with React 19's coordination primitives — `useTransition` for tracking async work, `useOptimistic` for instant feedback, `Suspense` for loading boundaries, and `use()` for reading promises during render.
 
-**Live Data Sync:** Questions poll via `startTransition(() => router.refresh())` — updates flow through React's transition system, coordinating with `useOptimistic` and ViewTransition.
-
 ## Development Flow
 
 - **Fetching data** — Queries in `data/queries/`, wrapped with `cache()`. Await in Server Components directly.

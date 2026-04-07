@@ -19,7 +19,7 @@ type Props<V extends string> = {
 
 export function ChipGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   function handleSelect(itemValue: V) {
     if (action) {
@@ -35,7 +35,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
 
   if (variant === 'toggle') {
     return (
-      <div className={cn('bg-muted flex rounded-full p-0.5', className)}>
+      <div data-pending={isPending ? '' : undefined} className={cn('bg-muted flex rounded-full p-0.5', className)}>
         {items.map(item => {
           return (
             <button
@@ -59,7 +59,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   }
 
   return (
-    <div className={cn('scrollbar-none flex gap-1.5 overflow-x-auto', className)}>
+    <div data-pending={isPending ? '' : undefined} className={cn('scrollbar-none flex gap-1.5 overflow-x-auto', className)}>
       {items.map(item => {
         return (
           <button

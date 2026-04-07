@@ -4,6 +4,7 @@ import { Suspense, ViewTransition } from 'react';
 import { EventGrid, EventGridSkeleton } from '@/components/EventGrid';
 import { LabelFilter, LabelFilterSkeleton } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { UserMenu } from '@/components/common/UserMenu';
 import { BottomNavSkeleton } from '@/components/design/BottomNav';
 import { GithubIcon } from '@/components/ui/icons/GithubIcon';
 import { HomeTabs } from './_components/HomeTabs';
@@ -41,7 +42,12 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
                 </Link>
               </div>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <Suspense>
+                <UserMenu />
+              </Suspense>
+              <ThemeToggle />
+            </div>
           </div>
           <Suspense fallback={<LabelFilterSkeleton />}>
             <LabelFilter />

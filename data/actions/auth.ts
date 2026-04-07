@@ -21,3 +21,9 @@ export async function setUserName(formData: FormData) {
 
   refresh();
 }
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_NAME);
+  refresh();
+}

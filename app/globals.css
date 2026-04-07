@@ -127,9 +127,9 @@
 }
 
 @theme {
-  --duration-exit: 160ms;
-  --duration-enter: 220ms;
-  --duration-move: 320ms;
+  --duration-exit: 200ms;
+  --duration-enter: 280ms;
+  --duration-move: 380ms;
   --ease-motion: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -156,7 +156,7 @@
 
 @keyframes slide-y {
   from {
-    transform: translateY(var(--slide-y-offset, 10px));
+    transform: translateY(var(--slide-y-offset, 20px));
   }
   to {
     transform: translateY(0);

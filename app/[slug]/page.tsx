@@ -1,12 +1,13 @@
 import { Suspense, ViewTransition } from 'react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug, getEvents } from '@/data/queries/event';
+import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
@@ -30,12 +31,12 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
-        <ViewTransition>
-          <Suspense fallback={<EventDetailsSkeleton />}>
-            <ViewTransition name={`event-${slug}`} share="morph" default="none">
-              <EventDetails slug={slug} />
-            </ViewTransition>
-          </Suspense>
+        <ViewTransition name={`event-${slug}`} share="morph" default="none">
+          <EventDetails slug={slug}>
+            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+              <FavoriteStatus slug={slug} />
+            </Suspense>
+          </EventDetails>
         </ViewTransition>
         <Suspense
           fallback={
@@ -98,6 +99,12 @@ function CommentListSkeleton() {
       })}
     </div>
   );
+}
+
+async function FavoriteStatus({ slug }: { slug: string }) {
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  return <FavoriteButton eventSlug={slug} hasFavorited={favorites.has(slug)} />;
 }
 
 function CommentFormSkeleton() {

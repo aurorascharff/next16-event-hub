@@ -11,6 +11,11 @@ import type { Question, SortValue } from '@/types';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
 
+const sortOptions: { label: string; value: SortValue }[] = [
+  { label: 'Top', value: 'top' },
+  { label: 'Newest', value: 'newest' },
+];
+
 type Props = {
   initialQuestions: Question[];
   eventSlug: string;
@@ -77,11 +82,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     }
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
-
-  const sortOptions: { label: string; value: SortValue }[] = [
-    { label: 'Top', value: 'top' },
-    { label: 'Newest', value: 'newest' },
-  ];
 
   return (
     <div className="space-y-3">

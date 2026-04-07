@@ -1,15 +1,15 @@
 import { Clock, MapPin } from 'lucide-react';
-import { FavoriteButton } from '@/components/FavoriteButton';
+import { cacheTag } from 'next/cache';
+import type { ReactNode } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getCurrentUser } from '@/data/queries/auth';
-import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
+import { getEventBySlug } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
-export async function EventDetails({ slug }: { slug: string }) {
-  const [event, currentUser] = await Promise.all([getEventBySlug(slug), getCurrentUser()]);
-  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  const hasFavorited = favorites.has(slug);
+export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
+  'use cache';
+  cacheTag(`event-${slug}`);
+  const event = await getEventBySlug(slug);
   return (
     <article>
       <SessionMetaStrip dayLabel={getDayLabel(event.day)} location={event.location} time={event.time} />
@@ -19,7 +19,7 @@ export async function EventDetails({ slug }: { slug: string }) {
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
             {event.name}
           </h1>
-          <FavoriteButton eventSlug={slug} hasFavorited={hasFavorited} />
+          {children}
         </div>
         {event.speaker && (
           <div className="flex items-center gap-2 sm:gap-3">

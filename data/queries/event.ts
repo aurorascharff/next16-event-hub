@@ -52,9 +52,6 @@ export const getUserFavorites = cache(async (userName: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  'use cache';
-  cacheTag(`event-${slug}`);
-
   const event = await prisma.event.findUnique({
     where: { slug },
   });

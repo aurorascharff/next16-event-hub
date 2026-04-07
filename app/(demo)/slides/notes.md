@@ -2,7 +2,7 @@
 
 ---
 
-Hi everyone! I'm Aurora Scharff, a DX Engineer at Vercel. I'm really excited to be here at React Miami — let's get into it.
+Hi everyone! I'm Aurora Scharff, a DX Engineer at Vercel working on Next.js developer experience. I'm also the React Certification Lead at certificates.dev. I'm originally from Norway. I build demo apps, write deep-dive blog posts, and deliver workshops on React and Next.js patterns. Really excited to be here at React Miami — let's get into it.
 
 ---
 
@@ -10,11 +10,11 @@ Let's look at the React render cycle to understand where Async React fits into t
 
 ---
 
-Now, bring async functions into this. The user clicked something, which triggered an async update — a "busy" state. Then, after the Update, there's another async call to load some more data, causing a "loading" state. After Render, a "done" state before Commit. These in-between states are what make the app feel broken.
+Now, bring async functions into this. The user clicked something, which triggered an async update — a "busy" state. Then, after the Update, there's another async call to load some more data, causing a "loading" state. After Render, a "done" state before Commit. These in-between states are what make the app feel broken. And this isn't a performance problem — it's a coordination problem. Every async operation forces you to orchestrate the coordination manually.
 
 ---
 
-The key to Async React is transitions. A transition coordinates the async work, and will ensure the render and commit cycle happens smoothly. It batches all of the updates together as an "Action", and commits them when they are all done, avoiding weird flickers in the UI.
+The key to Async React is transitions. A transition coordinates the async work, and will ensure the render and commit cycle happens smoothly. It batches all of the updates together as an "Action" — React calls any function invoked in a transition an Action — and commits them when they are all done, avoiding weird flickers in the UI.
 
 ---
 

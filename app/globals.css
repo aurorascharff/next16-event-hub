@@ -228,19 +228,6 @@
   }
 }
 
-/* --- Text morph (avoids raster scaling artifacts) --- */
-
-::view-transition-group(.text-morph) {
-  animation-duration: var(--duration-move);
-}
-::view-transition-old(.text-morph) {
-  display: none;
-}
-::view-transition-new(.text-morph) {
-  animation: none;
-  object-fit: none;
-  object-position: left top;
-}
 
 /* --- Vertical slide (Suspense) --- */
 

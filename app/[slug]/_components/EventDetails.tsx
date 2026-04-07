@@ -1,6 +1,6 @@
 import { Clock, MapPin } from 'lucide-react';
 import { cacheTag } from 'next/cache';
-import { type ReactNode, ViewTransition } from 'react';
+import type { ReactNode } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEventBySlug } from '@/data/queries/event';
@@ -16,11 +16,9 @@ export async function EventDetails({ slug, children }: { slug: string; children?
       <SessionLabelChips labels={parseLabels(event.labels)} />
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
-          <ViewTransition name={`title-${slug}`} share="text-morph">
-            <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
-              {event.name}
-            </h1>
-          </ViewTransition>
+          <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
+            {event.name}
+          </h1>
           {children}
         </div>
         {event.speaker && (

@@ -111,7 +111,6 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 - Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name. When both share the same name, the browser automatically morphs between them — the card morphs into the detail view on click and reverses when going back.
 - The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards animate to their new grid positions when switching label filters.
-- (Optional) Notice the title looks blurry during the morph — that's because the browser takes a screenshot of the small card title and scales it up to the detail title size. We can fix this by pulling the title into its own ViewTransition with a `text-morph` class that skips the old screenshot and just shows the new text directly.
 
 ### Tab Content Crossfade
 

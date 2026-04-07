@@ -111,6 +111,7 @@ The final phase — the commit. Without animations, Suspense reveals pop in, nav
 
 - Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name. When both share the same name, the browser automatically morphs between them — the card morphs into the detail view on click and reverses when going back.
 - The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards animate to their new grid positions when switching label filters.
+- (Optional) Notice the title looks blurry during the morph — that's because the browser takes a screenshot of the small card title and scales it up to the detail title size. We can fix this by pulling the title into its own ViewTransition with a `text-morph` class that skips the old screenshot and just shows the new text directly.
 
 ### Tab Content Crossfade
 
@@ -129,7 +130,6 @@ Sometimes in-between states are not desirable — and you can eliminate them ent
 - Start with EventDetails. Right now it fetches the event and the user's favorite status together — the user-specific cookie dependency forces the whole component to be dynamic. But the event data doesn't change per user. Refactor: move the favorite status out and pass it as `children`. Now EventDetails only calls `getEventBySlug`, which has no dynamic API dependency.
 - Add `'use cache'` with `cacheTag` to the EventDetails component. The entire rendered output — title, speaker, labels, description — is cached per slug. The `children` (FavoriteButton) are passed through without affecting the cache entry. This is composable caching — the donut pattern, but for caching. The cached shell renders instantly; only the small FavoriteButton streams in via its own Suspense.
 - But we still see a Cache Components error on the session page — `params` is dynamic, and there's no cache or Suspense above the page component reading it. Either add a `loading.tsx`, or tell Next.js which params exist ahead of time. Add `generateStaticParams` to the session page. Now all slugs are known at build time, params resolves during the build, and the cached EventDetails output becomes part of the static shell via Partial Prerendering. The router prefetches this shell — navigation feels instant. Suspense skeletons only show for truly dynamic data like comments, questions, and favorite status.
-- Add `'use cache'` with `cacheTag('events')` to the `getEvents` query on the home page. The first visit fills the cache; every subsequent visit with the same day/label skips the database entirely. Navigate away and come back — the skeleton resolves almost instantly because `slow()` is never called on a cache hit.
 - Optimistic updates also eliminate in-between states — the FavoriteButton, LikeButton, and UpvoteButton all update instantly because `useOptimistic` skips the wait entirely.
 
 ## Review

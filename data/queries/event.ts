@@ -7,9 +7,6 @@ import { prisma } from '@/db';
 import { parseTime, slow } from '@/lib/utils';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
-  'use cache';
-  cacheTag('events');
-
   await slow();
   const where: Record<string, unknown> = {};
   if (day) {

@@ -16,25 +16,26 @@ export function SessionTabs({ children }: Props) {
   const questionsHref = `${sessionHref}/questions`;
 
   return (
-    <BottomNav
-      tabs={[
-        { href: '/', icon: <ArrowLeft className="size-5" />, label: 'Back' },
-        {
-          href: sessionHref as Route,
-          icon: <CalendarDays className="size-5" />,
-          label: 'Session',
-        },
-        {
-          href: questionsHref as Route,
-          icon: <HelpCircle className="size-5" />,
-          label: 'Questions',
-        },
-      ]}
-      action={href => {
-        return router.push(href);
-      }}
-    >
+    <>
       {children}
-    </BottomNav>
+      <BottomNav
+        tabs={[
+          { href: '/', icon: <ArrowLeft className="size-5" />, label: 'Back' },
+          {
+            href: sessionHref as Route,
+            icon: <CalendarDays className="size-5" />,
+            label: 'Session',
+          },
+          {
+            href: questionsHref as Route,
+            icon: <HelpCircle className="size-5" />,
+            label: 'Questions',
+          },
+        ]}
+        action={href => {
+          return router.push(href);
+        }}
+      />
+    </>
   );
 }

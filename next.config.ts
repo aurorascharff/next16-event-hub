@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     partialFallbacks: true,
     authInterrupts: true,
+    partialFallbacks: true,
     staleTimes: {
       dynamic: 30,
     },

@@ -89,23 +89,3 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
 
   return nav;
 }
-
-export function BottomNavSkeleton({ count }: { count: number }) {
-  return (
-    <nav
-      className="bg-background fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
-      style={{ viewTransitionName: 'bottom-nav' }}
-    >
-      <div className="mx-auto flex max-w-4xl">
-        {Array.from({ length: count }).map((_, i) => {
-          return (
-            <div key={i} className="flex flex-1 flex-col items-center gap-0.5 py-2.5">
-              <div className="size-4" />
-              <span className="text-xs opacity-0">Tab</span>
-            </div>
-          );
-        })}
-      </div>
-    </nav>
-  );
-}

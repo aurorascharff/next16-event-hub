@@ -77,7 +77,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                 })}
               </div>
             )}
-            <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
+            <h3 className="text-primary text-sm leading-snug font-semibold sm:text-[15px]">
               {event.name}
             </h3>
             {event.speaker && (

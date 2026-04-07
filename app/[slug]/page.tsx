@@ -7,7 +7,7 @@ import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export const unstable_instant = {

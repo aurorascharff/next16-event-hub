@@ -135,27 +135,36 @@ export const slides = [
         transition
       </p>
       <div
-        className="bg-primary/5 border-primary/30 flex items-center gap-5 rounded-2xl border-2 border-dashed px-8 py-6"
-        style={{ viewTransitionName: 'transition-border' }}
+        className="inline-grid items-center gap-x-5 gap-y-6"
+        style={{ gridTemplateColumns: 'repeat(13, auto)' }}
       >
-        <CycleBox name="box-event">Event</CycleBox>
-        <CycleArrow name="arrow-1" />
-        <CycleLabel name="label-busy">busy</CycleLabel>
-        <CycleArrow name="arrow-2" />
-        <CycleBox name="box-update">Update</CycleBox>
-        <CycleArrow name="arrow-3" />
-        <CycleLabel name="label-loading">loading</CycleLabel>
-        <CycleArrow name="arrow-4" />
-        <CycleBox name="box-render">Render</CycleBox>
-        <CycleArrow name="arrow-5" />
-        <CycleLabel name="label-done">done</CycleLabel>
-        <CycleArrow name="arrow-6" />
-        <CycleBox name="box-commit">Commit</CycleBox>
-      </div>
-      <div className="flex items-start justify-center gap-16" style={{ viewTransitionName: 'primitives-row' }}>
-        <Primitive name="prim-optimistic">useOptimistic()</Primitive>
-        <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
-        <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
+        <div
+          className="bg-primary/5 border-primary/30 col-span-full grid grid-cols-subgrid items-center rounded-2xl border-2 border-dashed px-8 py-6"
+          style={{ viewTransitionName: 'transition-border' }}
+        >
+          <CycleBox name="box-event">Event</CycleBox>
+          <CycleArrow name="arrow-1" />
+          <CycleLabel name="label-busy">busy</CycleLabel>
+          <CycleArrow name="arrow-2" />
+          <CycleBox name="box-update">Update</CycleBox>
+          <CycleArrow name="arrow-3" />
+          <CycleLabel name="label-loading">loading</CycleLabel>
+          <CycleArrow name="arrow-4" />
+          <CycleBox name="box-render">Render</CycleBox>
+          <CycleArrow name="arrow-5" />
+          <CycleLabel name="label-done">done</CycleLabel>
+          <CycleArrow name="arrow-6" />
+          <CycleBox name="box-commit">Commit</CycleBox>
+        </div>
+        <div style={{ gridColumn: '1 / 6', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-optimistic">useOptimistic()</Primitive>
+        </div>
+        <div style={{ gridColumn: '5 / 10', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
+        </div>
+        <div style={{ gridColumn: '9 / 14', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
+        </div>
       </div>
     </div>
   </Slide>,
@@ -173,21 +182,30 @@ export const slides = [
         transition
       </p>
       <div
-        className="bg-primary/5 border-primary/30 flex items-center gap-5 rounded-2xl border-2 border-dashed px-8 py-6"
-        style={{ viewTransitionName: 'transition-border' }}
+        className="inline-grid items-center gap-x-5 gap-y-6"
+        style={{ gridTemplateColumns: 'repeat(7, auto)' }}
       >
-        <CycleBox name="box-event">Event</CycleBox>
-        <CycleArrow name="arrow-1" />
-        <CycleBox name="box-update">Update</CycleBox>
-        <CycleArrow name="arrow-2" />
-        <CycleBox name="box-render">Render</CycleBox>
-        <CycleArrow name="arrow-3" />
-        <CycleBox name="box-commit">Commit</CycleBox>
-      </div>
-      <div className="flex items-start justify-center gap-16" style={{ viewTransitionName: 'primitives-row' }}>
-        <Primitive name="prim-optimistic">useOptimistic()</Primitive>
-        <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
-        <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
+        <div
+          className="bg-primary/5 border-primary/30 col-span-full grid grid-cols-subgrid items-center rounded-2xl border-2 border-dashed px-8 py-6"
+          style={{ viewTransitionName: 'transition-border' }}
+        >
+          <CycleBox name="box-event">Event</CycleBox>
+          <CycleArrow name="arrow-1" />
+          <CycleBox name="box-update">Update</CycleBox>
+          <CycleArrow name="arrow-2" />
+          <CycleBox name="box-render">Render</CycleBox>
+          <CycleArrow name="arrow-3" />
+          <CycleBox name="box-commit">Commit</CycleBox>
+        </div>
+        <div style={{ gridColumn: '1 / 4', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-optimistic">useOptimistic()</Primitive>
+        </div>
+        <div style={{ gridColumn: '3 / 6', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-suspense">&lt;Suspense&gt;</Primitive>
+        </div>
+        <div style={{ gridColumn: '5 / 8', gridRow: '2', justifySelf: 'center' }}>
+          <Primitive name="prim-vt">&lt;ViewTransition&gt;</Primitive>
+        </div>
       </div>
       <NetworkNote name="network-note">
         &lt; 150ms — feels synchronous · &gt; 150ms — in-between states appear

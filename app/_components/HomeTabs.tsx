@@ -2,7 +2,6 @@
 
 import { Calendar, Heart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ViewTransition } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
 
 const homeTabs = [
@@ -42,7 +41,7 @@ export function HomeTabs({ children }: Props) {
         return router.push(href);
       }}
     >
-      <ViewTransition>{children}</ViewTransition>
+      {children}
     </BottomNav>
   );
 }

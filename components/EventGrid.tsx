@@ -1,6 +1,5 @@
 import { Clock, Heart, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -46,16 +45,11 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
       {events.map(event => {
         const labels = parseLabels(event.labels);
         return (
-          <ViewTransition
+          <Link
             key={event.slug}
-            update={{ default: 'none', filter: 'auto' }}
-            default="none"
+            href={`/${event.slug}`}
+            className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
           >
-            <Link
-              href={`/${event.slug}`}
-              transitionTypes={['nav-forward']}
-              className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
-            >
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
@@ -99,8 +93,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   {event.location}
                 </span>
               </div>
-            </Link>
-          </ViewTransition>
+          </Link>
         );
       })}
     </div>

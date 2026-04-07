@@ -1,7 +1,7 @@
 'use client';
 
 import { Heart } from 'lucide-react';
-import { useOptimistic } from 'react';
+import { useEffect, useState } from 'react';
 import { toggleFavorite } from '@/data/actions/favorite';
 import { cn } from '@/lib/utils';
 
@@ -11,30 +11,29 @@ type Props = {
 };
 
 export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
-  const [optimisticHasFavorited, setOptimisticHasFavorited] = useOptimistic(hasFavorited, current => {
-    return !current;
-  });
+  const [isFavorited, setIsFavorited] = useState(hasFavorited);
+
+  useEffect(() => {
+    setIsFavorited(hasFavorited);
+  }, [hasFavorited]);
+
+  async function handleClick(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFavorited(!isFavorited);
+    await toggleFavorite(eventSlug);
+  }
 
   return (
-    <form
-      action={async () => {
-        setOptimisticHasFavorited(null);
-        await toggleFavorite(eventSlug);
-      }}
-      onClick={e => {
-        e.stopPropagation();
-      }}
+    <button
+      onClick={handleClick}
+      className={cn(
+        'cursor-pointer rounded p-1 transition-colors',
+        isFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',
+      )}
+      aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <button
-        type="submit"
-        className={cn(
-          'cursor-pointer rounded p-1 transition-colors',
-          optimisticHasFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',
-        )}
-        aria-label={optimisticHasFavorited ? 'Remove from favorites' : 'Add to favorites'}
-      >
-        <Heart className={cn('size-4', optimisticHasFavorited && 'fill-current')} />
-      </button>
-    </form>
+      <Heart className={cn('size-4', isFavorited && 'fill-current')} />
+    </button>
   );
 }

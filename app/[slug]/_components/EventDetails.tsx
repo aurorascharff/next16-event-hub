@@ -1,14 +1,12 @@
 import { Clock, MapPin } from 'lucide-react';
-import { cacheTag } from 'next/cache';
-import type { ReactNode } from 'react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getEventBySlug } from '@/data/queries/event';
+import { getCurrentUser } from '@/data/queries/auth';
+import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
-export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
-  'use cache';
-  cacheTag(`event-${slug}`);
+export async function EventDetails({ slug }: { slug: string }) {
   const event = await getEventBySlug(slug);
   return (
     <article>
@@ -19,7 +17,7 @@ export async function EventDetails({ slug, children }: { slug: string; children?
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-lg font-bold tracking-tight sm:text-3xl">
             {event.name}
           </h1>
-          {children}
+          <FavoriteStatus slug={slug} />
         </div>
         {event.speaker && (
           <div className="flex items-center gap-2 sm:gap-3">
@@ -33,6 +31,12 @@ export async function EventDetails({ slug, children }: { slug: string; children?
       </div>
     </article>
   );
+}
+
+async function FavoriteStatus({ slug }: { slug: string }) {
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  return <FavoriteButton eventSlug={slug} hasFavorited={favorites.has(slug)} />;
 }
 
 export function EventDetailsSkeleton() {

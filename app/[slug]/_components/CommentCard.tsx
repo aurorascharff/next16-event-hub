@@ -13,7 +13,7 @@ export function CommentCard({ comment, currentUser }: Props) {
   const isOwner = currentUser === comment.userName;
 
   return (
-    <div className="group flex items-start gap-3 rounded-lg border p-3 transition-opacity has-data-pending:opacity-50">
+    <div className="group flex items-start gap-3 rounded-lg border p-3">
       <Avatar name={comment.userName} size="md" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">

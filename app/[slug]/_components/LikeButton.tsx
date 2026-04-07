@@ -1,7 +1,6 @@
 'use client';
 
 import { Heart } from 'lucide-react';
-import { useOptimistic } from 'react';
 import { toggleLike } from '@/data/actions/comment';
 import { cn } from '@/lib/utils';
 
@@ -13,30 +12,18 @@ type Props = {
 };
 
 export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
-  const [optimisticLike, setOptimisticLike] = useOptimistic({ hasLiked, likes }, current => {
-    return {
-      hasLiked: !current.hasLiked,
-      likes: current.likes + (current.hasLiked ? -1 : 1),
-    };
-  });
-
   return (
-    <form
-      action={async () => {
-        setOptimisticLike(null);
-        await toggleLike(commentId, eventSlug);
-      }}
-    >
+    <form onSubmit={async e => { e.preventDefault(); await toggleLike(commentId, eventSlug); }}>
       <button
         type="submit"
         className={cn(
           'flex items-center gap-1 rounded px-1.5 py-0.5 text-xs transition-colors',
-          optimisticLike.hasLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary',
+          hasLiked ? 'text-primary' : 'text-muted-foreground hover:text-primary',
         )}
-        aria-label={`Like (${optimisticLike.likes})`}
+        aria-label={`Like (${likes})`}
       >
-        <Heart className={cn('size-3.5', optimisticLike.hasLiked && 'fill-current')} />
-        {optimisticLike.likes > 0 && <span>{optimisticLike.likes}</span>}
+        <Heart className={cn('size-3.5', hasLiked && 'fill-current')} />
+        {likes > 0 && <span>{likes}</span>}
       </button>
     </form>
   );

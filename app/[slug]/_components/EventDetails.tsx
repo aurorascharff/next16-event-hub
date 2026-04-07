@@ -4,7 +4,7 @@ import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
-import { cn, getDayLabel, parseLabels } from '@/lib/utils';
+import { cn, getDayLabel, parseLabels, slow } from '@/lib/utils';
 
 export async function EventDetails({ slug }: { slug: string }) {
   const event = await getEventBySlug(slug);

@@ -18,10 +18,9 @@ type Props<T extends string> = {
   action?: (href: Route<T>) => void | Promise<void>;
   onChange?: (href: Route<T>) => void;
   className?: string;
-  children?: React.ReactNode;
 };
 
-export function BottomNav<T extends string>({ tabs, activeIndex, action, onChange, className, children }: Props<T>) {
+export function BottomNav<T extends string>({ tabs, activeIndex, action, onChange, className }: Props<T>) {
   const pathname = usePathname();
   const resolvedActive =
     activeIndex ??
@@ -35,7 +34,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
   const [isPending, startTransition] = useTransition();
 
-  const nav = (
+  return (
     <nav
       className={cn(
         'bg-background fixed inset-x-0 bottom-0 z-40 border-t',
@@ -77,15 +76,4 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
       </div>
     </nav>
   );
-
-  if (children) {
-    return (
-      <>
-        <div>{children}</div>
-        {nav}
-      </>
-    );
-  }
-
-  return nav;
 }

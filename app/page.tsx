@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
     <div className="group min-h-screen pb-16">
-      <header className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b">
+        <header className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b" style={{ viewTransitionName: 'site-header' }}>
         <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex min-w-0 items-center gap-2">

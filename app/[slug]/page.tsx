@@ -34,11 +34,10 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 }
 
 export async function generateStaticParams() {
-  return [{ slug: 'opening-party' }];
-  // const events = await getEvents();
-  // return events.map(event => {
-  //   return { slug: event.slug };
-  // });
+  const events = await getEvents();
+  return events.map(event => {
+    return { slug: event.slug };
+  });
 }
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {

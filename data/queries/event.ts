@@ -37,6 +37,7 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 });
 
 export const getUserFavorites = cache(async (userName: string) => {
+  await slow(500);
   const favorites = await prisma.favorite.findMany({
     select: { eventSlug: true },
     where: { userName },
@@ -49,6 +50,7 @@ export const getUserFavorites = cache(async (userName: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
+  await slow();
   const event = await prisma.event.findUnique({
     where: { slug },
   });

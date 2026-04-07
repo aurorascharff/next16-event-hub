@@ -16,7 +16,7 @@ export function AuthGate({ userPromise }: Props) {
 
   return (
     <Dialog open modal>
-      <DialogContent showCloseButton={false}>
+      <DialogContent showCloseButton={false} style={{ viewTransitionName: 'auth-gate' }}>
         <DialogHeader>
           <DialogTitle className="font-sans text-lg font-bold">Welcome to Event Hub</DialogTitle>
           <DialogDescription>Pick a display name to join the conversation.</DialogDescription>

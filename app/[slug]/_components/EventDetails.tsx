@@ -7,8 +7,6 @@ import { getEventBySlug } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 
 export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
-  'use cache';
-  cacheTag(`event-${slug}`);
   const event = await getEventBySlug(slug);
   return (
     <article>

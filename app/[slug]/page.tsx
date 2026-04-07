@@ -34,10 +34,11 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 }
 
 export async function generateStaticParams() {
-  const events = await getEvents();
-  return events.map(event => {
-    return { slug: event.slug };
-  });
+  return [{ slug: 'opening-party' }];
+  // const events = await getEvents();
+  // return events.map(event => {
+  //   return { slug: event.slug };
+  // });
 }
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
@@ -45,11 +46,13 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
-        <EventDetails slug={slug}>
-          <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-            <FavoriteStatus slug={slug} />
-          </Suspense>
-        </EventDetails>
+        <Suspense fallback={<EventDetailsSkeleton />}>
+          <EventDetails slug={slug}>
+            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+              <FavoriteStatus slug={slug} />
+            </Suspense>
+          </EventDetails>
+        </Suspense>
         <Suspense
           fallback={
             <div className="mt-4 min-h-9">

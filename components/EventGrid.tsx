@@ -84,9 +84,11 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                   })}
                 </div>
               )}
-              <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
-                {event.name}
-              </h3>
+              <ViewTransition name={`title-${event.slug}`} share="text-morph">
+                <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
+                  {event.name}
+                </h3>
+              </ViewTransition>
               {event.speaker && (
                 <div className="mt-2 flex items-center gap-2">
                   <Avatar name={event.speaker} variant="speaker" />

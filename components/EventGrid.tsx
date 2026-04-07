@@ -48,13 +48,12 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
         return (
           <ViewTransition
             key={event.slug}
-            name={`event-${event.slug}`}
-            share="morph"
             update={{ default: 'none', filter: 'auto' }}
             default="none"
           >
             <Link
               href={`/${event.slug}`}
+              transitionTypes={['nav-forward']}
               className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
             >
               <div className="mb-3 flex items-center justify-between">

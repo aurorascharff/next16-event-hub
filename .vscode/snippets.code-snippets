@@ -1,7 +1,25 @@
 {
-  "suspenseRevealWithAnimation": {
-    "prefix": "suspenseRevealWithAnimation",
-    "description": "Suspense with ViewTransition slide-up/slide-down reveal",
+  "brokenFavorite": {
+    "prefix": "brokenFavorite",
+    "description": "Opening: broken useState + useEffect FavoriteButton (flicker demo)",
+    "body": [
+      "const [isFavorited, setIsFavorited] = useState(hasFavorited);",
+      "",
+      "useEffect(() => {",
+      "  setIsFavorited(hasFavorited);",
+      "}, [hasFavorited]);",
+      "",
+      "async function handleClick(e: React.MouseEvent) {",
+      "  e.preventDefault();",
+      "  e.stopPropagation();",
+      "  setIsFavorited(!isFavorited);",
+      "  await toggleFavorite(eventSlug);",
+      "}"
+    ]
+  },
+  "suspenseReveal": {
+    "prefix": "suspenseReveal",
+    "description": "Animations: Suspense with ViewTransition slide-up/slide-down reveal",
     "body": [
       "<Suspense",
       "  fallback={",
@@ -13,80 +31,60 @@
       "  <ViewTransition enter=\"slide-up\" default=\"none\">",
       "    ${0}",
       "  </ViewTransition>",
-      "</Suspense>",
-    ],
+      "</Suspense>"
+    ]
   },
-  "sameRouteDirectionalShare": {
-    "prefix": "sameRouteDirectionalShare",
-    "description": "Same dynamic segment: key+name+share (prev/next talk). Pair with globals.css .nav-forward/.nav-back (full demo adds Link transitionTypes)",
+  "directionalVTHome": {
+    "prefix": "directionalVTHome",
+    "description": "Animations: directional VT for home page (exits left on nav-forward, enters from left on nav-back)",
     "body": [
       "<ViewTransition",
-      "  key={${1:slug}}",
-      "  name=\"${2:session-content}\"",
-      "  share={{",
-      "    'nav-forward': 'nav-forward',",
-      "    'nav-back': 'nav-back',",
-      "    default: 'auto',",
-      "  }}",
+      "  enter={{ 'nav-back': 'slide-from-left', default: 'none' }}",
+      "  exit={{ 'nav-forward': 'slide-to-left', default: 'none' }}",
       "  default=\"none\"",
       ">",
       "  ${0}",
-      "</ViewTransition>",
-    ],
+      "</ViewTransition>"
+    ]
   },
-  "directionalNavigation": {
-    "prefix": "directionalNavigation",
-    "description": "Alias: same-route directional slides (use sameRouteDirectionalShare)",
+  "directionalVTSession": {
+    "prefix": "directionalVTSession",
+    "description": "Animations: directional VT for session layout (enters from right on nav-forward, exits right on nav-back)",
     "body": [
       "<ViewTransition",
-      "  key={${1:slug}}",
-      "  name=\"${2:session-content}\"",
-      "  share={{",
-      "    'nav-forward': 'nav-forward',",
-      "    'nav-back': 'nav-back',",
-      "    default: 'auto',",
-      "  }}",
+      "  enter={{ 'nav-forward': 'slide-from-right', default: 'none' }}",
+      "  exit={{ 'nav-back': 'slide-to-right', default: 'none' }}",
       "  default=\"none\"",
       ">",
       "  ${0}",
-      "</ViewTransition>",
-    ],
+      "</ViewTransition>"
+    ]
   },
-  "tabSwitchCrossfade": {
-    "prefix": "tabSwitchCrossfade",
-    "description": "ViewTransition crossfade for tab switches",
+  "filterCardVT": {
+    "prefix": "filterCardVT",
+    "description": "Animations: per-card VT for filter position animation",
     "body": [
-      "<ViewTransition update={{ 'tab-switch': 'auto', default: 'none' }} default=\"none\">",
+      "<ViewTransition",
+      "  key={${1:event}.${2:slug}}",
+      "  update={{ default: 'none', filter: 'auto' }}",
+      "  default=\"none\"",
+      ">",
       "  ${0}",
-      "</ViewTransition>",
-    ],
+      "</ViewTransition>"
+    ]
   },
-  "eventCardMorph": {
-    "prefix": "eventCardMorph",
-    "description": "ViewTransition shared element morph for event cards (filter + navigation)",
+  "listVT": {
+    "prefix": "listVT",
+    "description": "Animations: keyed VT for list reorder/enter/exit",
     "body": [
-      "<ViewTransition name={`${1:event}-\\${${2:item}.${3:slug}}`} share=\"auto\" update={{ filter: 'auto', default: 'none' }} default=\"none\">",
+      "<ViewTransition key={${1:item}.id}>",
       "  ${0}",
-      "</ViewTransition>",
-    ],
-  },
-  "sharedElementTarget": {
-    "prefix": "sharedElementTarget",
-    "description": "ViewTransition shared element target on detail page",
-    "body": ["<ViewTransition name={`${1:event}-\\${${2:slug}}`} share=\"auto\">", "  ${0}", "</ViewTransition>"],
-  },
-  "listAnimationItem": {
-    "prefix": "listAnimationItem",
-    "description": "ViewTransition list item with unique name for sorting/refresh animations",
-    "body": [
-      "<ViewTransition key={${1:item}.id} name={`${2:comment}-\\${${1:item}.id}`} enter=\"slide-up\" default=\"none\">",
-      "  ${0}",
-      "</ViewTransition>",
-    ],
+      "</ViewTransition>"
+    ]
   },
   "optimisticCreate": {
     "prefix": "optimisticCreate",
-    "description": "Optimistic create with shared UUID for stable React key",
+    "description": "Mutations: optimistic create with shared UUID for stable React key",
     "body": [
       "async function postAction(content: string) {",
       "  const id = crypto.randomUUID();",
@@ -104,7 +102,48 @@
       "  if (!result.success) {",
       "    toast.error(result.error);",
       "  }",
-      "}",
-    ],
+      "}"
+    ]
   },
+  "formActionOptimistic": {
+    "prefix": "formActionOptimistic",
+    "description": "Mutations: form action with useOptimistic (FavoriteButton/LikeButton pattern)",
+    "body": [
+      "const [${1:optimisticValue}, ${2:setOptimistic}] = useOptimistic(${3:serverValue}, (current) => {",
+      "  return ${4:!current};",
+      "});",
+      "",
+      "return (",
+      "  <form",
+      "    action={async () => {",
+      "      ${2:setOptimistic}(null);",
+      "      await ${5:serverAction}(${6:id});",
+      "    }}",
+      "  >",
+      "    <button type=\"submit\">",
+      "      ${0}",
+      "    </button>",
+      "  </form>",
+      ");"
+    ]
+  },
+  "deleteButtonPending": {
+    "prefix": "deleteButtonPending",
+    "description": "Mutations: useTransition with data-pending for pessimistic delete",
+    "body": [
+      "const [isPending, startTransition] = useTransition();",
+      "",
+      "function handleDelete() {",
+      "  startTransition(async () => {",
+      "    await ${1:deleteComment}(${2:commentId}, ${3:eventSlug});",
+      "  });",
+      "}",
+      "",
+      "// On the button:",
+      "// disabled={isPending}",
+      "// data-pending={isPending ? '' : undefined}",
+      "// On the parent row:",
+      "// has-data-pending:opacity-50"
+    ]
+  }
 }

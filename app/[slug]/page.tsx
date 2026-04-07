@@ -31,13 +31,11 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
-        <ViewTransition name={`event-${slug}`} share="morph" default="none">
-          <EventDetails slug={slug}>
-            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-              <FavoriteStatus slug={slug} />
-            </Suspense>
-          </EventDetails>
-        </ViewTransition>
+        <EventDetails slug={slug}>
+          <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+            <FavoriteStatus slug={slug} />
+          </Suspense>
+        </EventDetails>
         <Suspense
           fallback={
             <div className="mt-4 min-h-9">

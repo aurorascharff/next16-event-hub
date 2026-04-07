@@ -2,7 +2,7 @@
 
 import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { ViewTransition } from 'react';
+import { addTransitionType, ViewTransition } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
 import type { Route } from 'next';
 
@@ -32,6 +32,9 @@ export function SessionTabs({ children }: Props) {
         },
       ]}
       action={href => {
+        if (href === '/') {
+          addTransitionType('nav-back');
+        }
         return router.push(href);
       }}
     >

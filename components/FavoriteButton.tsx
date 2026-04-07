@@ -17,7 +17,6 @@ export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
 
   return (
     <form
-      style={{ viewTransitionName: `favorite-${eventSlug}` }}
       action={async () => {
         setOptimisticHasFavorited(null);
         await toggleFavorite(eventSlug);

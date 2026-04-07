@@ -101,23 +101,24 @@ Form submissions and interactions — the user does something and expects instan
 The final phase — the commit. Without animations, Suspense reveals pop in, navigations jump, and list reorders snap. `<ViewTransition>` makes these in-between states feel intentional.
 
 - How do ViewTransitions trigger? They activate when DOM changes happen inside a React transition — `startTransition`, `useOptimistic`, or `Suspense` resolving. We've already set all of that up. So as long as you're using Async React, you get all this for free — just wrap elements in `<ViewTransition>` and the browser animates the changes. By default it cross-fades, but we can customize with CSS classes and props.
+- For the patterns and CSS recipes we're about to use, I'm using an agent skill — a knowledge file that teaches your coding agent how to implement View Transitions. (Show the `.agents/skills/vercel-react-view-transitions` folder.) You can install it from [skills.sh](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) and it works in Cursor, Codex, Claude Code, and other agents.
 
 ### Suspense Reveal Motion
 
 - Add ViewTransition to the Suspense reveals. Wrap the skeleton fallback with `exit="slide-down"` and the loaded content with `enter="slide-up"`. The skeleton slides away and content slides in — making the loading feel intentional rather than jarring.
 - Demo on the EventGrid Suspense boundary — then mention the same pattern applies to comments and questions. Every streaming section can get a coordinated reveal animation.
 
-### Shared Element Morph
+### Directional Navigation
 
-- Clicking an event card should morph into the detail view. Each event card in EventGrid gets a ViewTransition with `name={`event-${slug}`}`. On the detail page, the EventDetails wrapper gets a matching ViewTransition with the same name. When both share the same name, the browser automatically morphs between them — the card morphs into the detail view on click and reverses when going back.
-- The same per-card ViewTransition also handles filter changes — `update={{ filter: 'auto', default: 'none' }}` makes cards animate to their new grid positions when switching label filters.
+- Navigation from the home page to a session slides in from the right, and going back slides from the left. Add `transitionTypes={['nav-forward']}` to the event card `<Link>` in EventGrid. Wrap the home page content in a `<ViewTransition>` that exits with `slide-to-left` on `nav-forward` and enters with `slide-from-left` on `nav-back`. Wrap the session layout in a matching `<ViewTransition>` that enters with `slide-from-right` on `nav-forward` and exits with `slide-to-right` on `nav-back`. In SessionTabs, add `addTransitionType('nav-back')` before navigating back to home.
 
 ### Tab Content Crossfade
 
 - Add `<ViewTransition>` wrappers around the `children` in `HomeTabs` and `SessionTabs` — this gives tab content a crossfade when switching between tabs. The wrapper lives at the call site, not inside `BottomNav`, so animation scope stays explicit.
 
-### List Motion
+### List Animation
 
+- Wrap each event card in EventGrid with `<ViewTransition key={event.slug} update={{ filter: 'auto', default: 'none' }}>`. Cards animate to their new grid positions when switching label filters instead of snapping.
 - Wrap each QuestionCard in `<ViewTransition key={item.id}>`. The unique key lets React track each item — cards automatically animate to their new positions when sorting between "Top" and "Newest", when upvotes change the order, or when new items arrive from polling. Also visible when items are added or deleted via mutations.
 - New items (optimistic adds, background poll arrivals) and removed items (deletions) also animate via the same keyed ViewTransition — enter and exit are handled by the browser's default cross-fade. The nested VT limitation prevents these from firing unwanted animations during page navigation.
 - Same pattern works for comments — wrap each CommentCard in `<ViewTransition key={comment.id}>` for enter/exit animations on add and delete.
@@ -146,4 +147,3 @@ Sometimes in-between states are not desirable — and you can eliminate them ent
 - (Read top-voted questions from the app, answer them live if time allows)
 - The app's home page has a link to the GitHub repo — check it out for the full source code.
 - You can also install Event Hub as a PWA (progressive web app): use the browser install prompt, **Add to Home Screen** on mobile, or **Install app** in the menu so the conference companion stays on their home screen like a native app.
-- If you want to try adding View Transitions to your own app with AI assistance, install the [View Transitions agent skill](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) — it teaches your coding agent the patterns, CSS recipes, and Next.js integration from this talk.

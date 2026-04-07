@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, ViewTransition } from 'react';
 import { getEventBySlug } from '@/data/queries/event';
 import { SessionTabs } from './_components/SessionTabs';
 import type { Metadata } from 'next';
@@ -14,12 +14,18 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 
 export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
   return (
-    <div className="min-h-screen pb-16">
-      <Suspense>
-        <SessionTabs>
-          <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
-        </SessionTabs>
-      </Suspense>
-    </div>
+    <ViewTransition
+      enter={{ 'nav-forward': 'slide-from-right', default: 'none' }}
+      exit={{ 'nav-back': 'slide-to-right', default: 'none' }}
+      default="none"
+    >
+      <div className="min-h-screen pb-16">
+        <Suspense>
+          <SessionTabs>
+            <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
+          </SessionTabs>
+        </Suspense>
+      </div>
+    </ViewTransition>
   );
 }

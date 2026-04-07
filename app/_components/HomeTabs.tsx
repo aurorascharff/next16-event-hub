@@ -37,8 +37,8 @@ export function HomeTabs({ children }: Props) {
     <BottomNav
       tabs={homeTabs}
       activeIndex={activeIndex}
-      action={href => {
-        return router.push(href);
+      onChange={href => {
+        router.push(href);
       }}
     >
       {children}

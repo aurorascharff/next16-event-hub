@@ -46,11 +46,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
       {events.map(event => {
         const labels = parseLabels(event.labels);
         return (
-          <ViewTransition
-            key={event.slug}
-            update={{ default: 'none', filter: 'auto' }}
-            default="none"
-          >
+          <ViewTransition key={event.slug} update={{ default: 'none', filter: 'auto' }} default="none">
             <Link
               href={`/${event.slug}`}
               transitionTypes={['nav-forward']}

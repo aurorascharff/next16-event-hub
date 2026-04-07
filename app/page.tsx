@@ -13,12 +13,12 @@ export const unstable_instant = {
   prefetch: 'runtime',
   samples: [
     {
-      searchParams: { day: 'day-1', label: null },
       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+      searchParams: { day: 'day-1', label: null },
     },
     {
-      searchParams: { day: 'day-1', label: null },
       cookies: [{ name: 'event-hub-user', value: null }],
+      searchParams: { day: 'day-1', label: null },
     },
   ],
 };
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
     <ViewTransition
-      enter={{ 'nav-back': 'slide-from-left', default: 'none' }}
-      exit={{ 'nav-forward': 'slide-to-left', default: 'none' }}
+      enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
+      exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
       default="none"
     >
       <div className="group min-h-screen pb-16">

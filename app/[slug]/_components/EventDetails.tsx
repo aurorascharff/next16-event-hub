@@ -1,10 +1,10 @@
 import { Clock, MapPin } from 'lucide-react';
-import { cacheTag } from 'next/cache';
-import type { ReactNode } from 'react';
+
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEventBySlug } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
+import type { ReactNode } from 'react';
 
 export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
   const event = await getEventBySlug(slug);

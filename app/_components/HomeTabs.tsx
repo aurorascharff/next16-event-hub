@@ -35,7 +35,11 @@ export function HomeTabs({ children }: Props) {
     <>
       <ViewTransition>{children}</ViewTransition>
       <Suspense>
-        <HomeTabsNav action={href => router.push(href)} />
+        <HomeTabsNav
+          action={href => {
+            return router.push(href);
+          }}
+        />
       </Suspense>
     </>
   );

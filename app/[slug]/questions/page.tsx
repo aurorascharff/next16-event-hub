@@ -12,14 +12,14 @@ export const unstable_instant = {
   prefetch: 'runtime',
   samples: [
     {
+      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
       params: { slug: 'opening-party' },
       searchParams: { sort: null },
-      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
     },
     {
+      cookies: [{ name: 'event-hub-user', value: null }],
       params: { slug: 'opening-party' },
       searchParams: { sort: null },
-      cookies: [{ name: 'event-hub-user', value: null }],
     },
   ],
 };

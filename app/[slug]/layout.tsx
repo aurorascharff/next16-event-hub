@@ -7,12 +7,12 @@ export const unstable_instant = {
   prefetch: 'runtime',
   samples: [
     {
-      params: { slug: 'opening-party' },
       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+      params: { slug: 'opening-party' },
     },
     {
-      params: { slug: 'opening-party' },
       cookies: [{ name: 'event-hub-user', value: null }],
+      params: { slug: 'opening-party' },
     },
   ],
 };
@@ -29,8 +29,8 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
   return (
     <ViewTransition
-      enter={{ 'nav-forward': 'slide-from-right', default: 'none' }}
-      exit={{ 'nav-back': 'slide-to-right', default: 'none' }}
+      enter={{ default: 'none', 'nav-forward': 'slide-from-right' }}
+      exit={{ default: 'none', 'nav-back': 'slide-to-right' }}
       default="none"
     >
       <div className="min-h-screen pb-16">

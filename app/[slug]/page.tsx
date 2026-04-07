@@ -4,7 +4,7 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
+import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
@@ -14,12 +14,12 @@ export const unstable_instant = {
   prefetch: 'runtime',
   samples: [
     {
-      params: { slug: 'opening-party' },
       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+      params: { slug: 'opening-party' },
     },
     {
-      params: { slug: 'opening-party' },
       cookies: [{ name: 'event-hub-user', value: null }],
+      params: { slug: 'opening-party' },
     },
   ],
 };

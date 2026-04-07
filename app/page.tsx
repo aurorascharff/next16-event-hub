@@ -59,23 +59,21 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
           </div>
         </header>
 
-        <Suspense>
-          <HomeTabs>
-            <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-              <Suspense
-                fallback={
-                  <ViewTransition exit="slide-down">
-                    <EventGridSkeleton />
-                  </ViewTransition>
-                }
-              >
-                <ViewTransition enter="slide-up" default="none">
-                  <EventGrid searchParams={searchParams} />
+        <HomeTabs>
+          <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+            <Suspense
+              fallback={
+                <ViewTransition exit="slide-down">
+                  <EventGridSkeleton />
                 </ViewTransition>
-              </Suspense>
-            </div>
-          </HomeTabs>
-        </Suspense>
+              }
+            >
+              <ViewTransition enter="slide-up" default="none">
+                <EventGrid searchParams={searchParams} />
+              </ViewTransition>
+            </Suspense>
+          </div>
+        </HomeTabs>
       </div>
     </ViewTransition>
   );

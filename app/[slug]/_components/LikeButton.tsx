@@ -13,7 +13,12 @@ type Props = {
 
 export function LikeButton({ commentId, eventSlug, likes, hasLiked }: Props) {
   return (
-    <form onSubmit={async e => { e.preventDefault(); await toggleLike(commentId, eventSlug); }}>
+    <form
+      onSubmit={async e => {
+        e.preventDefault();
+        await toggleLike(commentId, eventSlug);
+      }}
+    >
       <button
         type="submit"
         className={cn(

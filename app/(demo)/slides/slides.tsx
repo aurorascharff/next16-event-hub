@@ -134,10 +134,7 @@ export const slides = [
       >
         transition
       </p>
-      <div
-        className="inline-grid items-center gap-x-5 gap-y-6"
-        style={{ gridTemplateColumns: 'repeat(13, auto)' }}
-      >
+      <div className="inline-grid items-center gap-x-5 gap-y-6" style={{ gridTemplateColumns: 'repeat(13, auto)' }}>
         <div
           className="bg-primary/5 border-primary/30 col-span-full grid grid-cols-subgrid items-center rounded-2xl border-2 border-dashed px-8 py-6"
           style={{ viewTransitionName: 'transition-border' }}
@@ -181,10 +178,7 @@ export const slides = [
       >
         transition
       </p>
-      <div
-        className="inline-grid items-center gap-x-5 gap-y-6"
-        style={{ gridTemplateColumns: 'repeat(7, auto)' }}
-      >
+      <div className="inline-grid items-center gap-x-5 gap-y-6" style={{ gridTemplateColumns: 'repeat(7, auto)' }}>
         <div
           className="bg-primary/5 border-primary/30 col-span-full grid grid-cols-subgrid items-center rounded-2xl border-2 border-dashed px-8 py-6"
           style={{ viewTransitionName: 'transition-border' }}

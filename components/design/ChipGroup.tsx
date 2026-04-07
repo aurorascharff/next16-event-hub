@@ -59,7 +59,10 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   }
 
   return (
-    <div data-pending={isPending ? '' : undefined} className={cn('scrollbar-none flex gap-1.5 overflow-x-auto', className)}>
+    <div
+      data-pending={isPending ? '' : undefined}
+      className={cn('scrollbar-none flex gap-1.5 overflow-x-auto', className)}
+    >
       {items.map(item => {
         return (
           <button

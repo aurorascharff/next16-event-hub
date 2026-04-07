@@ -50,49 +50,49 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
             href={`/${event.slug}`}
             className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
           >
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                    {getDayLabel(event.day)}
-                  </span>
-                  <span className="text-border">·</span>
-                  <span className="text-muted-foreground flex items-center gap-1 text-xs">
-                    <Clock className="size-3" />
-                    {event.time}
-                  </span>
-                </div>
-                <FavoriteButton eventSlug={event.slug} hasFavorited={event.hasFavorited} />
-              </div>
-              {labels.length > 0 && (
-                <div className="mb-2 flex flex-wrap gap-1">
-                  {labels.map(label => {
-                    return (
-                      <span
-                        key={label}
-                        className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize"
-                      >
-                        {label}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-              <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
-                {event.name}
-              </h3>
-              {event.speaker && (
-                <div className="mt-2 flex items-center gap-2">
-                  <Avatar name={event.speaker} variant="speaker" />
-                  <span className="text-muted-foreground text-xs font-medium">{event.speaker}</span>
-                </div>
-              )}
-              <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
-              <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1">
-                  <MapPin className="size-3" />
-                  {event.location}
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                  {getDayLabel(event.day)}
+                </span>
+                <span className="text-border">·</span>
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
+                  <Clock className="size-3" />
+                  {event.time}
                 </span>
               </div>
+              <FavoriteButton eventSlug={event.slug} hasFavorited={event.hasFavorited} />
+            </div>
+            {labels.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-1">
+                {labels.map(label => {
+                  return (
+                    <span
+                      key={label}
+                      className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize"
+                    >
+                      {label}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+            <h3 className="group-hover:text-primary text-sm leading-snug font-semibold transition-colors sm:text-[15px]">
+              {event.name}
+            </h3>
+            {event.speaker && (
+              <div className="mt-2 flex items-center gap-2">
+                <Avatar name={event.speaker} variant="speaker" />
+                <span className="text-muted-foreground text-xs font-medium">{event.speaker}</span>
+              </div>
+            )}
+            <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
+            <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
+              <span className="flex items-center gap-1">
+                <MapPin className="size-3" />
+                {event.location}
+              </span>
+            </div>
           </Link>
         );
       })}

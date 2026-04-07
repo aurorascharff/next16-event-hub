@@ -15,7 +15,7 @@ type Tab<T extends string> = {
 type Props<T extends string> = {
   tabs: readonly Tab<T>[];
   activeIndex?: number;
-  action: (href: Route<T>) => void | Promise<void>;
+  action?: (href: Route<T>) => void | Promise<void>;
   onChange?: (href: Route<T>) => void;
   className?: string;
   children?: React.ReactNode;
@@ -47,23 +47,26 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
     >
       <div className="mx-auto flex max-w-4xl">
         {tabs.map((tab, i) => {
-          const isActive = i === optimisticActive;
+          const isActive = i === (action ? optimisticActive : resolvedActive);
           return (
             <Link
               key={tab.href}
               href={tab.href}
               onClick={e => {
                 e.preventDefault();
-                onChange?.(tab.href);
-                startTransition(async () => {
-                  setOptimisticActive(i);
-                  await action(tab.href);
-                });
+                if (action) {
+                  startTransition(async () => {
+                    setOptimisticActive(i);
+                    await action(tab.href);
+                  });
+                } else {
+                  onChange?.(tab.href);
+                }
               }}
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 border-t-2 border-transparent py-2.5 text-xs font-medium transition-[color,opacity,border-color]',
                 isActive ? 'border-primary text-primary' : 'text-muted-foreground hover:text-foreground',
-                isPending && !isActive && 'opacity-40',
+                action && isPending && !isActive && 'opacity-40',
               )}
             >
               {tab.icon}

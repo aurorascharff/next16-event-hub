@@ -127,6 +127,18 @@
       ");"
     ]
   },
+  "generateStaticParams": {
+    "prefix": "generateStaticParams",
+    "description": "Eliminating: generateStaticParams to pre-render all session slugs at build time",
+    "body": [
+      "export async function generateStaticParams() {",
+      "  const events = await getEvents();",
+      "  return events.map(event => {",
+      "    return { slug: event.slug };",
+      "  });",
+      "}"
+    ]
+  },
   "deleteButtonPending": {
     "prefix": "deleteButtonPending",
     "description": "Mutations: useTransition with data-pending for pessimistic delete",

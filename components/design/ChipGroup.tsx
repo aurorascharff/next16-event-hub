@@ -11,7 +11,7 @@ type ChipItem<V extends string> = {
 type Props<V extends string> = {
   items: ChipItem<V>[];
   value: V;
-  action: (value: V) => void;
+  action?: (value: V) => void | Promise<void>;
   onChange?: (value: V) => void;
   variant?: 'pill' | 'toggle';
   className?: string;
@@ -22,12 +22,15 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
   const [, startTransition] = useTransition();
 
   function handleSelect(itemValue: V) {
-    onChange?.(itemValue);
-    startTransition(() => {
-      addTransitionType('filter');
-      setOptimisticValue(itemValue);
-      action(itemValue);
-    });
+    if (action) {
+      startTransition(async () => {
+        addTransitionType('filter');
+        setOptimisticValue(itemValue);
+        await action(itemValue);
+      });
+    } else {
+      onChange?.(itemValue);
+    }
   }
 
   if (variant === 'toggle') {

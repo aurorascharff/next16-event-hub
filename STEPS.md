@@ -14,7 +14,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. It covers all the in-between states: page loads, navigations, filtering, mutations, and background updates.
 - ...but wait, this thing is terrible. What's wrong with it? What do you see? (Listen to audience) Flickering, delays, layout shifts, lack of feedback.
 - These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
-- How would we normally try to fix this? Show the `useEffect` + `useState` pattern — the heart button managing favorite state locally. Tap a few hearts quickly, then switch to the Favorites tab. Watch the flickering — the heart fills, reverts, fills again. Stale data, re-render cascades. The traditional approach makes it worse, not better. Leave it broken — we'll come back and fix it properly later.
+- How would we normally try to fix this? Open `FavoriteButton` — it's already using `useState` + `useEffect` to manage local favorite state. Tap a few hearts quickly, then switch to the Favorites tab. Watch the flickering — the heart fills, reverts, fills again. Stale data, re-render cascades. The traditional approach makes it worse, not better. Leave it broken — we'll come back and fix it properly later.
 - So how does Async React solve this? Let's look at where it fits in the render cycle.
 
 ## Slide 2: Async React Render Cycle — Basic
@@ -66,6 +66,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Let's turn `onChange` into an `action` prop. This is the **action props pattern**: a design component exposes a prop like `action`, `changeAction`, or `submitAction` — the naming signals it will run inside a transition. Inside, the component uses `useOptimistic` and `useTransition` to handle pending states and instant feedback. The consumer just passes data and a callback; the component does the rest.
 - Now the day tabs switch instantly while content loads in the background. The old content stays visible and interactive. The parent just passes an array of routes, no async React code needed.
 - The label filter pills use ChipGroup — same idea. Clicking "React" or "Performance" instantly highlights the pill while the filtered grid loads. Just pass an action, the component does the rest. When the Favorites tab is active, the label filter hides — no conflicting state.
+- Note: the sort toggle in QuestionList already uses `action` — it's an internal detail, not something we change in the demo. It needs to be in a transition so list animations fire correctly later.
 - This is the key insight: most devs shouldn't need to use `startTransition` themselves if they're using a transition-based router and UI components with action props. As the Async React Working Group standardizes these patterns across routers, data libraries, and design systems, you can integrate them without building the coordination from scratch.
 - Let's look at how ChipGroup works inside — `useOptimistic` for instant feedback, `useTransition` to keep old content visible. This is what design components abstract away from you.
 
@@ -85,10 +86,10 @@ Form submissions and interactions — the user does something and expects instan
 
 #### Optimistic Mutations
 
-- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Remove the local state approach, wrap it in a `<form action>` so React handles the transition automatically, then add `useOptimistic` with a boolean reducer to toggle the heart immediately.
+- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Remove the local state approach and replace the `onClick` with a `<form action>`. Here's the key insight: a form's `action` prop is just like the `action` prop on BottomNav or ChipGroup — React wraps it in a transition automatically. So we get `useOptimistic` for free. Add `useOptimistic` with a boolean reducer to toggle the heart immediately — and the transition system handles the rest.
 - **Mutation + Navigation**: Tap a few favorites, then switch to the Favorites tab. No flickering, no stale data. This works because mutations and navigation both go through the transition system — `useOptimistic` handles the instant heart fill, and when you switch tabs, React coordinates the tab transition and the fresh server data in a single render pass. Optimistic updates settle naturally when the server responds with `refresh()`.
-- **LikeButton**: Same pattern for comment likes — `<form action>` with `useOptimistic`. The reducer manages both `hasLiked` and `likes` in a single state object, calculating from the current optimistic state so toggling works correctly in both directions.
-- **UpvoteButton**: Same pattern for question upvotes. Upvoting is one-way (no un-vote), so the reducer just increments the count and disables the button.
+- **LikeButton**: Currently uses `onSubmit` — change to `action` to get into a transition, then add `useOptimistic`. The reducer manages both `hasLiked` and `likes` in a single state object, calculating from the current optimistic state so toggling works correctly in both directions.
+- **UpvoteButton**: Same — change `onSubmit` to `action`, add `useOptimistic`. Upvoting is one-way (no un-vote), so the reducer just increments the count and disables the button.
 - `useOptimistic` automatically rolls back if the action fails — just add a toast on error. On the server side, every action calls `refresh()` to invalidate the client router so all server components re-render with fresh data.
 
 #### Optimistic Create (Questions)

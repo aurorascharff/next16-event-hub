@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/data/actions/auth';
 import { getCurrentUser } from '@/data/queries/auth';
@@ -17,10 +17,10 @@ export async function UserMenu() {
           type="submit"
           variant="ghost"
           size="icon"
-          className="text-muted-foreground hover:text-foreground size-auto rounded p-1"
-          aria-label="Log out"
+          className="text-muted-foreground hover:text-foreground size-auto rounded p-0.5"
+          aria-label="Clear name"
         >
-          <LogOut className="size-3" />
+          <X className="size-3" />
         </Button>
       </form>
     </div>

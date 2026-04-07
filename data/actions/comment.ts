@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
@@ -34,7 +34,7 @@ export async function addComment(eventSlug: string, formData: FormData): Promise
     },
   });
 
-  refresh();
+  updateTag(`comments-${eventSlug}`);
   return { success: true };
 }
 
@@ -51,7 +51,7 @@ export async function deleteComment(commentId: string, eventSlug: string) {
     where: { id: commentId },
   });
 
-  refresh();
+  updateTag(`comments-${eventSlug}`);
 }
 
 export async function toggleLike(commentId: string, eventSlug: string) {
@@ -78,5 +78,5 @@ export async function toggleLike(commentId: string, eventSlug: string) {
     });
   }
 
-  refresh();
+  updateTag(`comments-${eventSlug}`);
 }

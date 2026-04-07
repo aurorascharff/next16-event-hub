@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 const COOKIE_NAME = 'event-hub-user';
@@ -19,11 +19,11 @@ export async function setUserName(formData: FormData) {
     sameSite: 'lax',
   });
 
-  refresh();
+  updateTag('favorites');
 }
 
 export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
-  refresh();
+  updateTag('favorites');
 }

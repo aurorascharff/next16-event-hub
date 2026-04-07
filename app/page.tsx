@@ -9,6 +9,20 @@ import { GithubIcon } from '@/components/ui/icons/GithubIcon';
 import { HomeTabs } from './_components/HomeTabs';
 import type { Metadata } from 'next';
 
+export const unstable_instant = {
+  prefetch: 'runtime',
+  samples: [
+    {
+      searchParams: { day: 'day-1', label: null },
+      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+    },
+    {
+      searchParams: { day: 'day-1', label: null },
+      cookies: [{ name: 'event-hub-user', value: null }],
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',
   title: 'Event Hub',

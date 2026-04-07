@@ -176,6 +176,17 @@
   animation: none;
 }
 
+::view-transition-group(auth-gate) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(auth-gate) {
+  display: none;
+}
+::view-transition-new(auth-gate) {
+  animation: none;
+}
+
 /* --- Directional navigation --- */
 
 ::view-transition-new(.slide-from-right) {

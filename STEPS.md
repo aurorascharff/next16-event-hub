@@ -83,6 +83,7 @@ Form submissions and interactions — the user does something and expects instan
 #### Pessimistic Mutations
 
 - **DeleteButton**: Right now deleting a comment has no feedback — the card just disappears after a delay. Extract a `DeleteButton` that uses `useTransition` and sets `data-pending` on itself when deleting. On the parent `CommentCard` row, use `has-data-pending:opacity-50` — CSS `:has()` lets the whole card fade when any child is pending, without the card needing to be a client component.
+- **Label filter pending**: The same `:has()` pattern works for the label filter. `ChipGroup` already sets `data-pending` on its root when a transition is in flight. The home page wraps the filter and grid in a `group` container, and the grid wrapper uses `group-has-data-pending:opacity-50` — so the event grid fades while new filtered data loads. No extra client component needed; the CSS bubbles up from ChipGroup through the server-rendered layout.
 
 #### Optimistic Mutations
 

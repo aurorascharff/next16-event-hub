@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
-    <div className="min-h-screen pb-16">
+    <div className="group min-h-screen pb-16">
       <header className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b">
         <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
           <div className="mb-3 flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       </header>
 
       <HomeTabs>
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+        <div className="mx-auto max-w-4xl px-4 py-6 transition-opacity group-has-data-pending:opacity-50 sm:px-6">
           <EventGrid searchParams={searchParams} />
         </div>
       </HomeTabs>

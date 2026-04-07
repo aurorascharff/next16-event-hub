@@ -5,7 +5,6 @@ import { EventGrid, EventGridSkeleton } from '@/components/EventGrid';
 import { LabelFilter, LabelFilterSkeleton } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { UserMenu } from '@/components/common/UserMenu';
-import { BottomNavSkeleton } from '@/components/design/BottomNav';
 import { GithubIcon } from '@/components/ui/icons/GithubIcon';
 import { HomeTabs } from './_components/HomeTabs';
 import type { Metadata } from 'next';
@@ -60,23 +59,21 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
           </div>
         </header>
 
-        <Suspense fallback={<BottomNavSkeleton count={3} />}>
-          <HomeTabs>
-            <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-              <Suspense
-                fallback={
-                  <ViewTransition exit="slide-down">
-                    <EventGridSkeleton />
-                  </ViewTransition>
-                }
-              >
-                <ViewTransition enter="slide-up" default="none">
-                  <EventGrid searchParams={searchParams} />
+        <HomeTabs>
+          <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+            <Suspense
+              fallback={
+                <ViewTransition exit="slide-down">
+                  <EventGridSkeleton />
                 </ViewTransition>
-              </Suspense>
-            </div>
-          </HomeTabs>
-        </Suspense>
+              }
+            >
+              <ViewTransition enter="slide-up" default="none">
+                <EventGrid searchParams={searchParams} />
+              </ViewTransition>
+            </Suspense>
+          </div>
+        </HomeTabs>
       </div>
     </ViewTransition>
   );

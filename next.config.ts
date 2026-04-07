@@ -3,7 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
-    partialFallbacks: true,
+    // partialFallbacks: true,
     authInterrupts: true,
     staleTimes: {
       dynamic: 30,

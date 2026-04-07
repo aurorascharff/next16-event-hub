@@ -18,9 +18,8 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
 
   return (
     <form
-      action={async () => {
-        setOptimisticVotes(votes + 1);
-        setOptimisticHasVoted(true);
+      onSubmit={async e => {
+        e.preventDefault();
         await upvoteQuestion(questionId, eventSlug);
       }}
     >
@@ -29,9 +28,7 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
         disabled={optimisticHasVoted}
         className={cn(
           'flex flex-col items-center gap-0.5 rounded-md px-2 py-1 text-xs font-bold transition-all',
-          optimisticHasVoted
-            ? 'text-primary'
-            : 'text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer',
+          hasVoted ? 'text-primary' : 'text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer',
         )}
         aria-label={`Upvote (${optimisticVotes})`}
       >

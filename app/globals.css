@@ -209,6 +209,17 @@
   animation: none;
 }
 
+::view-transition-group(theme-toggle) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(theme-toggle) {
+  display: none;
+}
+::view-transition-new(theme-toggle) {
+  animation: none;
+}
+
 /* --- Directional navigation --- */
 
 ::view-transition-new(.slide-from-right) {

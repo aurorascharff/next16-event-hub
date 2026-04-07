@@ -165,6 +165,28 @@
 
 /* --- Persistent element isolation (prevent header/nav from animating) --- */
 
+::view-transition-group(safe-area-top) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(safe-area-top) {
+  display: none;
+}
+::view-transition-new(safe-area-top) {
+  animation: none;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
 ::view-transition-group(bottom-nav) {
   animation: none;
   z-index: 100;

@@ -54,7 +54,7 @@ export default function RootLayout({
           <Suspense>
             <AuthGate userPromise={getCurrentUser()} />
           </Suspense>
-          <div className="bg-background fixed inset-x-0 top-0 z-50 h-[env(safe-area-inset-top)]" />
+          <div className="bg-background fixed inset-x-0 top-0 z-50 h-[env(safe-area-inset-top)]" style={{ viewTransitionName: 'safe-area-top' }} />
           <main className="pt-[env(safe-area-inset-top)]">{children}</main>
           <Toaster />
         </ThemeProvider>

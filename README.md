@@ -1,6 +1,6 @@
 # Next 16 Event Hub
 
-An interactive, live event companion app exploring Async React patterns with optimistic UI and View Transitions. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions.
+A real-time conference companion app exploring Async React patterns with Cache Components and streaming. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. Fork and deploy it for your own conference.
 
 Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
 
@@ -61,6 +61,10 @@ pnpm run prisma.push     # Push schema to DB
 pnpm run prisma.seed     # Seed with session data
 pnpm run prisma.studio   # Open Prisma Studio
 ```
+
+## Development Tools
+
+Uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) with format-on-save in VS Code. Configuration in `eslint.config.mjs` and `.prettierrc`.
 
 ## Deployment
 

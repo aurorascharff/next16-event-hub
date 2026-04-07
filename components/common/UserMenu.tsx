@@ -1,5 +1,4 @@
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { logout } from '@/data/actions/auth';
 import { getCurrentUser } from '@/data/queries/auth';
 import { Avatar } from './Avatar';
@@ -9,20 +8,16 @@ export async function UserMenu() {
   if (!user) return null;
 
   return (
-    <div className="flex items-center gap-1.5">
-      <Avatar name={user} size="xs" />
-      <span className="text-muted-foreground max-w-20 truncate text-xs">{user}</span>
-      <form action={logout}>
-        <Button
-          type="submit"
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground size-auto rounded p-0.5"
-          aria-label="Clear name"
-        >
-          <X className="size-3" />
-        </Button>
-      </form>
-    </div>
+    <form action={logout}>
+      <button
+        type="submit"
+        className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5 transition-colors"
+        aria-label="Clear name"
+      >
+        <Avatar name={user} size="xs" />
+        <span className="max-w-20 truncate text-xs">{user}</span>
+        <X className="size-3" />
+      </button>
+    </form>
   );
 }

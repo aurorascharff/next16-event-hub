@@ -4,25 +4,25 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
+import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
-// export const unstable_instant = {
-//   prefetch: 'runtime',
-//   samples: [
-//     {
-//       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
-//       params: { slug: 'opening-party' },
-//     },
-//     {
-//       cookies: [{ name: 'event-hub-user', value: null }],
-//       params: { slug: 'opening-party' },
-//     },
-//   ],
-// };
+export const unstable_instant = {
+  prefetch: 'runtime',
+  samples: [
+    {
+      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+      params: { slug: 'opening-party' },
+    },
+    {
+      cookies: [{ name: 'event-hub-user', value: null }],
+      params: { slug: 'opening-party' },
+    },
+  ],
+};
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
@@ -34,11 +34,10 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 }
 
 export async function generateStaticParams() {
-  return [{ slug: 'opening-party' }];
-  // const events = await getEvents();
-  // return events.map(event => {
-  //   return { slug: event.slug };
-  // });
+  const events = await getEvents();
+  return events.map(event => {
+    return { slug: event.slug };
+  });
 }
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
@@ -46,13 +45,11 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
-        <Suspense fallback={<EventDetailsSkeleton />}>
-          <EventDetails slug={slug}>
-            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-              <FavoriteStatus slug={slug} />
-            </Suspense>
-          </EventDetails>
-        </Suspense>
+        <EventDetails slug={slug}>
+          <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+            <FavoriteStatus slug={slug} />
+          </Suspense>
+        </EventDetails>
         <Suspense
           fallback={
             <div className="mt-4 min-h-9">

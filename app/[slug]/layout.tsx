@@ -3,19 +3,19 @@ import { getEventBySlug } from '@/data/queries/event';
 import { SessionTabs } from './_components/SessionTabs';
 import type { Metadata } from 'next';
 
-// export const unstable_instant = {
-//   prefetch: 'runtime',
-//   samples: [
-//     {
-//       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
-//       params: { slug: 'opening-party' },
-//     },
-//     {
-//       cookies: [{ name: 'event-hub-user', value: null }],
-//       params: { slug: 'opening-party' },
-//     },
-//   ],
-// };
+export const unstable_instant = {
+  prefetch: 'runtime',
+  samples: [
+    {
+      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+      params: { slug: 'opening-party' },
+    },
+    {
+      cookies: [{ name: 'event-hub-user', value: null }],
+      params: { slug: 'opening-party' },
+    },
+  ],
+};
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;

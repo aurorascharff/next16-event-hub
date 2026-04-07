@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
     authInterrupts: true,
-    // partialFallbacks: true,
     staleTimes: {
       dynamic: 30,
     },

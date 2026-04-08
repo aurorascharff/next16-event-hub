@@ -16,10 +16,6 @@ export const unstable_instant = {
       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
       searchParams: { day: 'day-1', label: null },
     },
-    {
-      cookies: [{ name: 'event-hub-user', value: null }],
-      searchParams: { day: 'day-1', label: null },
-    },
   ],
 };
 

@@ -16,11 +16,6 @@ export const unstable_instant = {
       params: { slug: 'opening-party' },
       searchParams: { sort: null },
     },
-    {
-      cookies: [{ name: 'event-hub-user', value: null }],
-      params: { slug: 'opening-party' },
-      searchParams: { sort: null },
-    },
   ],
 };
 

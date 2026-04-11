@@ -1,3 +1,4 @@
+import { connection } from 'next/dist/server/web/exports';
 import { Suspense, ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -76,6 +77,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
 }
 
 async function CommentList({ slug }: { slug: string }) {
+  await connection();
   const currentUser = await getCurrentUser();
   const comments = await getCommentsByEvent(slug, currentUser);
 

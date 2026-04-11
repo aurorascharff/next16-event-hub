@@ -4,7 +4,6 @@ import { updateTag } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
-import { slow } from '@/lib/utils';
 
 const commentSchema = z.object({
   content: z.string().min(1, 'Comment is required').max(500),
@@ -25,7 +24,6 @@ export async function addComment(eventSlug: string, formData: FormData): Promise
     return { error: result.error.issues[0].message, success: false };
   }
 
-  await slow();
   await prisma.comment.create({
     data: {
       content: result.data.content,
@@ -46,7 +44,6 @@ export async function deleteComment(commentId: string, eventSlug: string) {
   if (!userName) return;
   if (!comment || comment.userName !== userName) return;
 
-  await slow(400);
   await prisma.comment.delete({
     where: { id: commentId },
   });
@@ -57,8 +54,6 @@ export async function deleteComment(commentId: string, eventSlug: string) {
 export async function toggleLike(commentId: string, eventSlug: string) {
   const userName = await getCurrentUser();
   if (!userName) return;
-
-  await slow(300);
 
   const existing = await prisma.commentLike.findUnique({
     where: { userName_commentId: { commentId, userName } },

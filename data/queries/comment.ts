@@ -3,12 +3,10 @@ import 'server-only';
 import { cacheTag } from 'next/cache';
 import { cache } from 'react';
 import { prisma } from '@/db';
-import { slow } from '@/lib/utils';
 
 export const getCommentsByEvent = cache(async (eventSlug: string, currentUserName?: string | null) => {
   'use cache';
   cacheTag(`comments-${eventSlug}`);
-  await slow(1500);
 
   const comments = await prisma.comment.findMany({
     orderBy: { createdAt: 'desc' },
@@ -38,7 +36,6 @@ export const getCommentsByEvent = cache(async (eventSlug: string, currentUserNam
 });
 
 export const getCommentCount = cache(async (eventSlug: string) => {
-  await slow(300);
   return prisma.comment.count({ where: { eventSlug } });
 });
 

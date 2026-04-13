@@ -56,20 +56,21 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### 1) Page Load
 
-- Right now the whole app has a single global `<Suspense>` with a centered spinner in the root layout wrapping `{children}`. Every page blocks on all data behind that one spinner — the user sees nothing until everything is ready. We want to render the static shell first, stream in dynamic data, and complete progressively.
+- Right now the whole app has a single global `<Suspense>` with a centered spinner in the root layout wrapping `{children}`. Every page blocks on all data behind that one spinner — the user sees nothing until everything is ready. Instead of loading all code and data and then rendering, we want to render the static shell first, stream in dynamic data, and complete progressively.
 - Step 1: Remove the global Suspense from the root layout. On page load, we now see an error. This is Cache Components (`cacheComponents: true` in `next.config.ts`) — the Next.js 16 rendering model. There are no longer static OR dynamic pages; every route is a mix. Cache Components requires us to be explicit about async work: either cache it with `'use cache'` or stream it with `<Suspense>`. Right now async components have neither, so the framework is telling us the entire route is blocking on this data — a built-in signal that we have a potential performance problem.
 - Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. Better FCP, better LCP.
 - Navigate to the session detail page. It already has Suspense, but with two centered spinners as fallbacks. The data loads and the spinners disappear — notice the CLS when the event details push the comment section down. Fix: first replace the spinners with proper skeleton fallbacks that reserve the right amount of space. Each skeleton should match the shape of the content. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
-- APIs: `Suspense`, streaming Server Components.
+- The in-between state here is loading — and the primitive is `<Suspense>`. Suspense is declarative — you place loading boundaries where you want them, and they compose naturally. Each async server component can define its own fallback independently. This is what makes "render the static shell first, stream the rest" possible. Push dynamic data access deep in the component tree, wrap it in Suspense, and the framework handles the rest.
 
 ### 2) Route Navigation
 
-- When navigating to a new page, the browser loads all code and data before rendering — a blank gap. With Suspense, we can stream in minimal code first and progressively fill in the rest.
+- When navigating to a new page, without Suspense the browser loads all code and data before rendering — a blank gap. With Suspense, we can show destination skeletons immediately and stream in data progressively. Navigation in the App Router already runs inside a transition — the old page stays visible and interactive while the new page loads.
 - Navigate to the questions page — it has no Suspense boundaries at all, so the whole page blocks. Wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks. Now the header and question feed stream in progressively instead of blocking. We'll add animations to navigations later.
+- Same in-between state as page load — loading — and the same primitive: `<Suspense>`. But here the router also plays a role. It wraps every navigation in a `startTransition` automatically, so the old page stays interactive while each Suspense boundary on the destination page resolves independently.
 
 ### 3) Query Param Navigation
 
-- Filtering is technically a navigation, but conceptually you're on the same page. Without transitions, the UI freezes while new data loads. With optimistic updates, we can update the filter immediately and stream in the new data behind the scenes. Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
+- Filtering is technically a navigation, but conceptually you're on the same page. Right now, clicking a filter freezes the UI while new data loads and then renders. We want the filter to update instantly — optimistic feedback — while fresh data loads in the background. Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
 - What if these components could handle their own async coordination? Look at BottomNav — right now it takes an `onChange` callback. When you click a tab, it calls `onChange` and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes.
 - Let's turn `onChange` into an `action` prop. This is the **action props pattern**: a design component exposes a prop like `action`, `changeAction`, or `submitAction` — the naming signals it will run inside a transition. Inside, the component uses `useOptimistic` and `useTransition` to handle pending states and instant feedback. The consumer just passes data and a callback; the component does the rest.
 - Now the day tabs switch instantly while content loads in the background. The old content stays visible and interactive. The parent just passes an array of routes, no async React code needed.
@@ -77,16 +78,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Note: the sort toggle in QuestionList already uses `action` — it's an internal detail, not something we change in the demo. It needs to be in a transition so list animations fire correctly later.
 - This is the key insight: most devs shouldn't need to use `startTransition` themselves if they're using a transition-based router and UI components with action props. As the Async React Working Group standardizes these patterns across routers, data libraries, and design systems, you can integrate them without building the coordination from scratch.
 - Let's look at how ChipGroup works inside — `useOptimistic` for instant feedback, `useTransition` to keep old content visible. This is what design components abstract away from you.
+- The in-between state here is busy — the user did something and is waiting. The primitives are `useOptimistic` and `useTransition`, and the action props pattern abstracts them away so consumers don't need to think about it.
 
 ### 4) Background Update
 
-- Sometimes the page needs to update without any user action — background updates where fresh data arrives from the server. Without transitions, new data would flash in and disrupt whatever the user is doing. Right now the questions page is static — you have to refresh the browser to see new questions or upvotes from other attendees.
+- Sometimes the page needs to update without any user action — background updates where fresh data arrives from the server. Right now the questions page is static — you have to refresh the browser to see new questions or upvotes from other attendees. Without transitions, new data would flash in and disrupt whatever the user is doing. We want to poll in a transition, reconcile fresh data with any in-flight optimistic state, and update seamlessly.
 - Add a `usePolling` hook that calls `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — in-flight optimistic values stay stable while fresh data arrives. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
+- The in-between state here is ideally invisible — there's no user action to respond to, so the best outcome is that fresh data just appears. The primitive is `startTransition` — it coordinates background polls with in-flight optimistic values so nothing flashes or fights.
 
 ### 5) Mutations
 
-Form submissions and interactions — the user does something and expects instant feedback. Right now the UI either freezes or waits for the server round-trip before showing any change. Not everything has a design component with an action prop — sometimes you need custom async coordination with `useOptimistic` and `useTransition` directly. That's fine too. Let's fix each one.
+Form submissions and interactions — the user does something and expects instant feedback. Right now the flow is: submit, wait for the server, then render — the UI freezes. We want to flip that: submit, show an optimistic update immediately, then reconcile when the server confirms. Not everything has a design component with an action prop — sometimes you need custom async coordination with `useOptimistic` and `useTransition` directly. That's fine too. Let's fix each one.
 
 #### Pessimistic Mutations
 
@@ -105,12 +108,13 @@ Form submissions and interactions — the user does something and expects instan
 
 - Right now submitting a question waits for the server before it appears in the list. Add `useOptimistic` with a reducer in QuestionList so the question appears immediately. Use the `optimisticCreate` snippet — it generates a client-side UUID (`crypto.randomUUID()`) and passes it to the server action so the optimistic and real question share the same ID and the React key stays stable. No duplicate flash on settle.
 - Add a safety check in the reducer — if the real question already exists in the base data (from a background refresh), deduplicate by matching the ID.
+- The in-between state for all mutations is busy — and the primitives are `useOptimistic` and `action` (whether that's a form action or an action prop). Actions are async functions wrapped in transitions — React tracks pending state automatically, errors bubble to error boundaries, and optimistic values settle when the server responds with `refresh()`. This is the same transition system as navigation and background updates — everything coordinates through a single pipeline.
 
 ## Animations (Commit Polish)
 
-The final phase — the commit. Without animations, Suspense reveals pop in, navigations jump, and list reorders snap. `<ViewTransition>` makes these in-between states feel intentional.
+The final phase — the commit. The in-between state is done — the new UI is ready but not yet visible on screen. Without animations, Suspense reveals pop in, navigations jump, and list reorders snap. `<ViewTransition>` makes these moments feel intentional.
 
-- How do ViewTransitions trigger? They activate when DOM changes happen inside a React transition — `startTransition`, `useOptimistic`, or `Suspense` resolving. We've already set all of that up. So as long as you're using Async React, you get all this for free — just wrap elements in `<ViewTransition>` and the browser animates the changes. By default it cross-fades, but we can customize with CSS classes and props.
+- How do ViewTransitions trigger? They activate when DOM changes happen inside a React transition — `startTransition`, `useOptimistic`, or `Suspense` resolving. We've already set all of that up. So as long as you're using Async React, you get all of this for free — just wrap elements in `<ViewTransition>` and the browser animates the changes. By default it cross-fades, but we can customize with CSS classes and props.
 - For the patterns and CSS recipes we're about to use, I'm using an agent skill — a knowledge file that teaches your coding agent how to implement View Transitions. (Show the `.agents/skills/vercel-react-view-transitions` folder.) You can install it from [skills.sh](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) and it works in Cursor, Codex, Claude Code, and other agents.
 
 ### Suspense Reveal Motion

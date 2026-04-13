@@ -32,7 +32,7 @@ export function SessionTabs({ children }: Props) {
             label: 'Questions',
           },
         ]}
-        action={href => {
+        onChange={href => {
           return router.push(href);
         }}
       />

@@ -7,15 +7,20 @@ import { cn } from '@/lib/utils';
 
 type Props = {
   eventSlug: string;
-  hasFavorited: boolean;
 };
 
-export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
-  const [isFavorited, setIsFavorited] = useState(hasFavorited);
+export function FavoriteButton({ eventSlug }: Props) {
+  const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
-    setIsFavorited(hasFavorited);
-  }, [hasFavorited]);
+    fetch(`/api/favorites/${eventSlug}`)
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        return setIsFavorited(data.hasFavorited);
+      });
+  }, [eventSlug]);
 
   async function handleClick(e: React.MouseEvent) {
     e.preventDefault();

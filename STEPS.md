@@ -11,10 +11,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Opening
 
 - (Exit slides, show the app) I'm the first speaker — so we need a conference app to keep track of everything happening here. Good news, I built one. Let me show you.
-- The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions.
+- The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. Demo all features.
 - ...but wait, this thing is terrible. What's wrong with it? What do you see? (Listen to audience) Flickering, delays, layout shifts, lack of feedback.
 - These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
-- How would we normally try to fix this? Open `FavoriteButton` — it's already using `useState` + `useEffect` to manage local favorite state. Tap a few hearts quickly, then switch to the Favorites tab. Watch the flickering — the heart fills, reverts, fills again. Stale data, re-render cascades. The traditional approach makes it worse, not better. Leave it broken — we'll come back and fix it properly later.
+- Let's look at specific problems:
+  - **Global spinner**: The whole app is behind a single spinner in the root layout — the user sees a blank page with a spinner until all data loads. No static shell, no progressive rendering.
+  - **Layout shift on session page**: Navigate to a session — two centered spinners as placeholders. When content loads, the event details push the comment section down. No space reserved.
+  - **No feedback**: Delete a comment — the card just disappears after a delay with no indication. Like, upvote, switch tabs — the UI freezes until the server responds. No pending states anywhere.
+  - **Frozen navigation**: Switch day tabs or label filters — the UI locks up while new data loads. No optimistic feedback.
+- How would we normally try to fix this? Open `FavoriteButton` — it's fetching favorite status client-side via `useEffect` from an API endpoint, then managing local state with `useState`. But this creates new problems:
+  - **Initial state mismatch**: Navigate to the Favorites tab — hearts start unfilled and pop to filled after a moment. The server knows the user favorited these, but the client has to fetch that state separately.
+  - **Mutation + navigation conflict**: Unfavorite a couple of sessions in the Favorites tab, then switch to Day 1 — the unfavorited items briefly flash with filled hearts because mutations and navigations don't coordinate.
+- The traditional approach makes it worse, not better. Leave it broken — we'll come back and fix it properly later.
 - So how does Async React solve this? Let's look at where it fits in the render cycle.
 
 ## Slide 2: Async React Render Cycle — Basic
@@ -24,7 +32,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 3: Async React Render Cycle — In-Between States
 
-- Now bring async into this. The user clicked something, which triggered an async update — a "busy" state. After the Update, there's another async call to load data — a "loading" state. After Render, a "done" state before Commit. These in-between states are what make the app feel broken.
+- Now bring async into this. Between Event and Update there's a "busy" state — the user did something and is waiting. Between Update and Render there's a "loading" state — data is being fetched. Between Render and Commit there's a "done" state — the new UI is ready but not yet visible. These in-between states are what make the app feel broken.
 
 ## Slide 4: Async React Render Cycle — Transitions
 
@@ -32,12 +40,12 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 5: Async React Render Cycle — Primitives
 
-- We can decide what primitive is most suitable for each phase. `useOptimistic()` for the busy/update phase — instant feedback. `<Suspense>` for the loading/render phase — placeholder while data loads. `<ViewTransition>` for the done/commit phase — animate the change.
+- Each primitive spans across phases. `useOptimistic()` covers Event through Update — instant feedback during the busy phase. `<Suspense>` covers Update through Render — placeholder while data loads. `<ViewTransition>` covers Render through Commit — animate the final change into the DOM.
 
 ## Slide 6: Async React Render Cycle — Clean
 
 - The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. Under 150ms feels synchronous; above 150ms the in-between states appear. That's the goal. (Credit: Async React talk at React Conf)
-- (Exit slides, back to the app) Remove the `useEffect` approach, bring back Server Components and the transition system. Now let's fix the app.
+- (Exit slides, back to the app) Remove the `useEffect` + API fetch approach — delete the `/api/favorites/[slug]` route handler entirely. Bring back Server Components and the transition system. Now let's fix the app.
 
 ## Setup and Starting Point
 
@@ -48,8 +56,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### 1) Page Load
 
-- Right now the page blocks on all code and data, then renders everything at once. We want to render the static shell first, stream in dynamic data, and complete progressively. We want: load the static shell first, stream in dynamic data, then complete. The home page blocks — EventGrid is an async server component with no Suspense boundary, so the entire route waits for data before rendering anything.
-- On page load, we see an error. This is Cache Components (`cacheComponents: true` in `next.config.ts`) — the Next.js 16 rendering model. There are no longer static OR dynamic pages; every route is a mix. Cache Components requires us to be explicit about async work: either cache it with `'use cache'` or stream it with `<Suspense>`. Right now this async component has neither, so the framework is telling us the entire route is blocking on this data — a built-in signal that we have a potential performance problem.
+- Right now the whole app has a single global `<Suspense>` with a centered spinner in the root layout wrapping `{children}`. Every page blocks on all data behind that one spinner — the user sees nothing until everything is ready. We want to render the static shell first, stream in dynamic data, and complete progressively.
+- Step 1: Remove the global Suspense from the root layout. On page load, we now see an error. This is Cache Components (`cacheComponents: true` in `next.config.ts`) — the Next.js 16 rendering model. There are no longer static OR dynamic pages; every route is a mix. Cache Components requires us to be explicit about async work: either cache it with `'use cache'` or stream it with `<Suspense>`. Right now async components have neither, so the framework is telling us the entire route is blocking on this data — a built-in signal that we have a potential performance problem.
 - Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. Better FCP, better LCP.
 - Navigate to the session detail page. It already has Suspense, but with two centered spinners as fallbacks. The data loads and the spinners disappear — notice the CLS when the event details push the comment section down. Fix: first replace the spinners with proper skeleton fallbacks that reserve the right amount of space. Each skeleton should match the shape of the content. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
 - APIs: `Suspense`, streaming Server Components.
@@ -87,8 +95,8 @@ Form submissions and interactions — the user does something and expects instan
 
 #### Optimistic Mutations
 
-- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Remove the local state approach and replace the `onClick` with a `<form action>`. Here's the key insight: a form's `action` prop is just like the `action` prop on BottomNav or ChipGroup — React wraps it in a transition automatically. So we get `useOptimistic` for free. Add `useOptimistic` with a boolean reducer to toggle the heart immediately — and the transition system handles the rest.
-- **Mutation + Navigation**: Tap a few favorites, then switch to the Favorites tab. No flickering, no stale data. This works because mutations and navigation both go through the transition system — `useOptimistic` handles the instant heart fill, and when you switch tabs, React coordinates the tab transition and the fresh server data in a single render pass. Optimistic updates settle naturally when the server responds with `refresh()`.
+- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Delete the API endpoint (`app/api/favorites/[slug]/route.ts`), remove the `useEffect` fetch and local state, add back the `hasFavorited` prop from the server, and replace the `onClick` with a `<form action>`. Here's the key insight: a form's `action` prop is just like the `action` prop on BottomNav or ChipGroup — React wraps it in a transition automatically. So we get `useOptimistic` for free. Add `useOptimistic` with a boolean reducer to toggle the heart immediately — and the transition system handles the rest.
+- **Mutation + Navigation**: Tap a few favorites, then switch to the Favorites tab. No flickering, no stale data — compare this to the broken version from the opening. This works because mutations and navigation both go through the transition system — `useOptimistic` handles the instant heart fill, and when you switch tabs, React coordinates the tab transition and the fresh server data in a single render pass. Optimistic updates settle naturally when the server responds with `refresh()`.
 - **LikeButton**: Currently uses `onSubmit` — change to `action` to get into a transition, then add `useOptimistic`. The reducer manages both `hasLiked` and `likes` in a single state object, calculating from the current optimistic state so toggling works correctly in both directions.
 - **UpvoteButton**: Same — change `onSubmit` to `action`, add `useOptimistic`. Upvoting is one-way (no un-vote), so the reducer just increments the count and disables the button.
 - `useOptimistic` automatically rolls back if the action fails — just add a toast on error. On the server side, every action calls `refresh()` to invalidate the client router so all server components re-render with fresh data.

@@ -77,9 +77,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                 })}
               </div>
             )}
-            <h3 className="text-primary text-sm leading-snug font-semibold sm:text-[15px]">
-              {event.name}
-            </h3>
+            <h3 className="text-primary text-sm leading-snug font-semibold sm:text-[15px]">{event.name}</h3>
             {event.speaker && (
               <div className="mt-2 flex items-center gap-2">
                 <Avatar name={event.speaker} variant="speaker" />

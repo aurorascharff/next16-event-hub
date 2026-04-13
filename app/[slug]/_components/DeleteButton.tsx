@@ -14,7 +14,9 @@ export function DeleteButton({ commentId, eventSlug }: Props) {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => deleteComment(commentId, eventSlug)}
+      onClick={() => {
+        return deleteComment(commentId, eventSlug);
+      }}
       className="text-muted-foreground hover:text-destructive size-auto rounded p-1 sm:opacity-0 sm:group-hover:opacity-100"
       aria-label="Delete comment"
     >

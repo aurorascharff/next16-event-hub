@@ -35,7 +35,11 @@ export function HomeTabs({ children }: Props) {
     <>
       {children}
       <Suspense>
-        <HomeTabsNav onChange={href => router.push(href)} />
+        <HomeTabsNav
+          onChange={href => {
+            return router.push(href);
+          }}
+        />
       </Suspense>
     </>
   );

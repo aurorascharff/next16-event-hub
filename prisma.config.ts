@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import { defineConfig } from 'prisma/config';
 
 // --- PostgreSQL (Vercel) ---

@@ -22,12 +22,14 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
     <div className="flex flex-col gap-6">
-      <div className="min-h-56 sm:min-h-72">
-        <Suspense fallback={<CenteredSpinner />}>
+      <div>
+        <Suspense>
           <EventDetails slug={slug} />
         </Suspense>
         <div className="mt-4 min-h-9">
-          <CommentForm />
+          <Suspense fallback={<CenteredSpinner />}>
+            <CommentForm />
+          </Suspense>
         </div>
       </div>
       <Suspense fallback={<CenteredSpinner />}>

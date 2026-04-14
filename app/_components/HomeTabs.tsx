@@ -22,7 +22,7 @@ const homeTabs = [
   },
 ] as const;
 
-export default function HomeTabsNav() {
+export default function HomeTabs() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const label = searchParams.get('label');

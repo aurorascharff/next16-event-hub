@@ -3,11 +3,11 @@ import { Suspense } from 'react';
 import { AuthGate } from '@/components/common/AuthGate';
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
+import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
-import { CenteredSpinner } from '@/components/ui/spinner';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],

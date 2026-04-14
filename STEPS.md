@@ -82,7 +82,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Mutations
 
-Now mutations. The user taps a heart, upvotes a question, deletes a comment. Right now the flow is: click, wait for the server, then render. We want to flip that — show the change immediately, then reconcile when the server confirms. Not everything has a design component with an action prop — sometimes you use `useOptimistic` and `useTransition` directly. Let's look at a few examples.
+Now mutations. There are two kinds of work here. Some things are actively broken — like the FavoriteButton with its `useEffect` + `useState` that doesn't coordinate with navigation. That's a legacy pattern we need to fix. Other things just need coordination added — the delete button works, the upvote works, they just have no feedback. Let's look at both.
 
 ### Session Page
 
@@ -106,7 +106,6 @@ Now mutations. The user taps a heart, upvotes a question, deletes a comment. Rig
 The final phase — animations. The in-between state is "done" — the new UI is ready but hasn't appeared on screen yet. Without animations, Suspense reveals pop in, navigations jump, and list reorders snap. `<ViewTransition>` makes these moments feel intentional.
 
 - How do ViewTransitions trigger? They activate when DOM changes happen inside a React transition — `startTransition`, `useOptimistic`, or `Suspense` resolving. We've already set all of that up, so we get this for free. Just wrap elements in `<ViewTransition>` and the browser animates the changes. Default is a cross-fade, but we can customize with CSS.
-- For the CSS recipes, I'm using an agent skill — it's a knowledge file that teaches your coding agent how to implement View Transitions. (Show the `.agents/skills/vercel-react-view-transitions` folder.) You can grab it from [skills.sh](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) — works in Cursor, Codex, Claude Code, and others.
 
 ### Suspense Reveal Motion — Home Page
 
@@ -138,6 +137,11 @@ Sometimes the best loading state is no loading state at all. You can just skip i
 - Remember how the app looked at the start? (Switch to the `start` branch / stash changes to show the broken version.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
 - Now let me show you the after. This app is deployed and live right now — with all the changes we just made.
 - The important thing to remember — the actual interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
+- Now — it's great to learn all of this, but realistically you're not going to be hand-coding every `useOptimistic` reducer and `data-pending` pattern from scratch. So we've created two agent skills for this — knowledge files that teach your coding agent how to implement these patterns correctly. (Show the `.agents/skills/` folder.)
+  - **async-react** — handles everything we just did: Suspense boundaries, optimistic updates, action props, pending states. It covers both migration paths — fixing legacy `useState` + `useEffect` patterns, and adding coordination to a non-interactive app.
+  - **vercel-react-view-transitions** — handles all the animations: Suspense reveals, directional navigation, list reorder, shared elements. Includes ready-to-use CSS recipes.
+  - Both work in Cursor, Codex, Claude Code, and other agent environments. You can grab them from [skills.sh](https://skills.sh).
+  - <!-- TODO: Add link / QR to published skills -->
 
 ## Live Q&A
 

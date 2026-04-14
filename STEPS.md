@@ -11,7 +11,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Opening
 
 - (Exit slides, show the app) I'm the first speaker — so we need a conference app to keep track of everything happening here. Good news, I built one. Let me show you.
-- The app is Event Hub — a live session companion for this conference. We can browse sessions, post comments, ask and upvote questions, and favorite sessions. Demo all features.
+- The app is Event Hub — a live session companion for this conference. We can browse sessions, post comments, ask and upvote questions, and favorite sessions. I've already seeded some test comments and questions on my session so we have something to look at. Demo all features — navigate to the "In-Between States" session, show the comments with likes, the questions with upvotes, and the favorited session.
 - ...but wait, this thing is terrible. What's wrong with it? What do you see? (Listen to audience) Flickering, delays, layout shifts, lack of feedback.
 - These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
 - Let's look at specific problems:

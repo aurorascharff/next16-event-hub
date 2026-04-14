@@ -49,6 +49,7 @@ async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'pa
   return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
 }
 
+// eslint-disable-next-line autofix/no-unused-vars
 function EventHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
@@ -61,6 +62,7 @@ function EventHeaderSkeleton() {
   );
 }
 
+// eslint-disable-next-line autofix/no-unused-vars
 function QuestionFeedSkeleton() {
   return (
     <div className="space-y-3">

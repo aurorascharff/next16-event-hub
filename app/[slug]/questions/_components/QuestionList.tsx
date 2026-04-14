@@ -56,13 +56,9 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
     <div className="space-y-3">
       <QuestionForm postAction={postAction} />
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-          {initialQuestions.length} question{initialQuestions.length !== 1 ? 's' : ''}
-        </span>
+        <QuestionCount count={initialQuestions.length} />
         <ChipGroup items={sortOptions} value={sort} action={sortChange} variant="toggle" />
       </div>
-
       <div className="space-y-2">
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
@@ -70,5 +66,14 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
     </div>
+  );
+}
+
+function QuestionCount({ count }: { count: number }) {
+  return (
+    <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+      <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
+      {count} question{count !== 1 ? 's' : ''}
+    </span>
   );
 }

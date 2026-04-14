@@ -11,8 +11,8 @@ type Props = {
 };
 
 export function SessionTabs({ children }: Props) {
-  const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
   const sessionHref = `/${slug}`;
   const questionsHref = `${sessionHref}/questions`;
 

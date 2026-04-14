@@ -40,24 +40,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             <div className="mb-3 flex items-center justify-between">
               <div className="flex min-w-0 items-center gap-2">
                 <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <Link
-                    href="/slides/2"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Open slides"
-                  >
-                    <Presentation className="size-4" />
-                  </Link>
-                  <Link
-                    href="https://github.com/aurorascharff/next16-event-hub"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="View source on GitHub"
-                  >
-                    <GithubIcon className="size-4" />
-                  </Link>
-                </div>
+                <HeaderLinks />
               </div>
               <div className="flex items-center gap-2">
                 <Suspense>
@@ -88,5 +71,28 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
         </HomeTabs>
       </div>
     </ViewTransition>
+  );
+}
+
+function HeaderLinks() {
+  return (
+    <div className="flex shrink-0 items-center gap-1.5">
+      <Link
+        href="/slides/2"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Open slides"
+      >
+        <Presentation className="size-4" />
+      </Link>
+      <Link
+        href="https://github.com/aurorascharff/next16-event-hub"
+        target="_blank"
+        rel="noreferrer"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="View source on GitHub"
+      >
+        <GithubIcon className="size-4" />
+      </Link>
+    </div>
   );
 }

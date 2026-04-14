@@ -93,7 +93,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
         </span>
         <ChipGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />
       </div>
-
       <div className="space-y-2">
         {sorted.map(question => {
           return (

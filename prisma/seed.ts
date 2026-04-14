@@ -354,7 +354,44 @@ async function main() {
     await prisma.event.create({ data: event });
   }
 
-  console.log(`Seeded ${events.length} events`);
+  // Test data from Aurora for the demo — gives us something to show on screen
+  const demoSlug = 'in-between-states';
+
+  await prisma.comment.createMany({
+    data: [
+      {
+        content: 'Testing comments before the talk — making sure everything works!',
+        eventSlug: demoSlug,
+        userName: 'Aurora',
+      },
+      { content: 'The skeleton fallbacks look great on the projector.', eventSlug: demoSlug, userName: 'Aurora' },
+      { content: 'This is a test comment to verify the delete flow.', eventSlug: demoSlug, userName: 'Aurora' },
+    ],
+  });
+
+  await prisma.question.createMany({
+    data: [
+      {
+        content: 'How does useOptimistic handle rollback on error?',
+        eventSlug: demoSlug,
+        userName: 'Aurora',
+        votes: 3,
+      },
+      { content: 'Can ViewTransition work with CSS modules?', eventSlug: demoSlug, userName: 'Aurora', votes: 1 },
+      {
+        content: 'What happens when two transitions run at the same time?',
+        eventSlug: demoSlug,
+        userName: 'Aurora',
+        votes: 0,
+      },
+    ],
+  });
+
+  await prisma.favorite.create({
+    data: { eventSlug: demoSlug, userName: 'Aurora' },
+  });
+
+  console.log(`Seeded ${events.length} events + demo comments/questions/favorite from Aurora`);
 }
 
 main()

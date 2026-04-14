@@ -9,15 +9,15 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Opening
 
-- (Exit slides, show the app) So I'm the first speaker today — which means we need a conference app to keep track of everything that's happening here. Good news, I built one!
+- (Exit slides, show the app) We have two days of great talks and we need a way to keep track of everything. So I built a conference app!
 - This is Event Hub — a live session companion for React Miami. You can browse all the sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've already added some test comments and questions on my session so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
-- Alright, looks pretty good right? ...but actually, play around with it for a second. What do you notice? (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing.
-- These are the in-between states — the moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
+- Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing.
+- So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. We can call these the in-between states. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
 - Let me show you some specific ones:
   - **Global spinner**: The whole app sits behind one big spinner. You see nothing until everything loads. Not great.
   - **Layout shift**: Go to a session — you get two little spinners. When the content loads, everything jumps down. Ouch.
-  - **No feedback**: Delete a comment — nothing happens for a sec, then it just vanishes. Like a comment, upvote a question, switch tabs — the UI just... freezes. No indication that anything is happening.
-  - **Frozen navigation**: Switch between Day 1 and Day 2 — the whole thing locks up while it loads.
+  - **Frozen navigation**: Switch between Day 1 and Day 2 — the whole thing locks up while it loads. No feedback at all.
+  - **No feedback on mutations**: Delete a comment — nothing happens for a sec, then it just vanishes. Upvote a question — the UI just freezes until the server responds. No indication that anything is happening.
 - So how would we normally fix this? Let's look at `FavoriteButton` — it's doing the classic thing: `useEffect` to fetch favorite status from an API endpoint, then local `useState` to manage it. Sound familiar? But watch what happens:
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
   - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
@@ -76,12 +76,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Query Param Navigation — Home Page + Session Page
 
 - Now navigation. Filtering is technically a navigation, but you're still on the same page. Try switching between Day 1 and Day 2 — the UI freezes while new data loads. We want the tab to switch instantly while fresh data loads behind the scenes.
-- Look at BottomNav — it's a design component, meaning it handles async coordination internally so consumers don't have to. Right now it takes an `onChange` callback. You click a tab, it calls `onChange`, and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes. What if the component itself could handle this for us?
-- Let's just change `onChange` to `action`. That's all we change on the consumer side — one prop name. Try it now — the day tabs switch instantly. The old content stays visible while new data loads in the background. Same thing for the session tabs.
-- The label filter pills use ChipGroup — same idea, also navigating via query params with `router.push`. Change `onChange` to `action`, and now clicking "React" or "Performance" highlights the pill right away while the filtered grid loads. Notice the grid also fades — `ChipGroup` sets `data-pending` on its root when a transition is running, and the home page uses `group-has-data-pending:opacity-50` on the grid. No extra client component needed; the pending state bubbles up through CSS.
-- So what's happening inside? Let's look at BottomNav. When the prop is called `action`, the component wraps the callback in `startTransition` and uses `useOptimistic` to update the active tab immediately. Same inside ChipGroup — `useOptimistic` for instant feedback, `useTransition` to keep old content visible. This is the **action props pattern** — a core part of the Async React model.
-- The key insight: most developers shouldn't need to use `startTransition` themselves. If your router wraps navigation in transitions and your UI components expose action props, you just plug things together. As these patterns get adopted across routers, data libraries, and design systems, it gets even easier.
-- The in-between state here is busy — and the action props pattern handles it so consumers don't need to think about async coordination.
+- Look at BottomNav — it's a design component. In our app that's a custom component, but you can imagine this being part of a component library. The idea is that the design layer has built-in support for async coordination. Right now it takes an `onChange` callback. You click a tab, it calls `onChange`, and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes. What if we could just opt into that support?
+- Let's just change `onChange` to `action`. That's all we change on the consumer side — one prop name. Do the same for the label filter (ChipGroup). Try it now — tabs switch instantly, filters highlight right away, and the grid fades while new data loads. Notice the fade — `ChipGroup` sets `data-pending` on its root when a transition is running, and the home page uses `group-has-data-pending:opacity-50` on the grid. Pending state bubbles up through CSS, no extra client component needed.
+- So what's happening inside? Let's look at BottomNav. When the prop is called `action`, the component wraps the callback in `startTransition` and uses `useOptimistic` to update the active tab immediately. This is the **action props pattern** — a core part of the Async React model. Most developers shouldn't need to use `startTransition` themselves. If your router and UI components expose action props, you just plug things together.
 
 ## Mutations
 
@@ -90,22 +87,19 @@ Now mutations. The user taps a heart, upvotes a question, deletes a comment. Rig
 ### Session Page
 
 - **DeleteButton**: Not everything needs an optimistic update — sometimes you just need feedback. Right now deleting a comment has zero feedback — it just disappears after a delay. Let's use `useTransition` directly to add pending state. Extract a `DeleteButton` that wraps the delete in `startTransition` and sets `data-pending` on itself while it's running. On the parent `CommentCard`, we add `has-data-pending:opacity-50` — same `data-pending` pattern we saw on the label filter, but with CSS `:has()`. The whole card fades when any child is pending, without the card needing to be a client component. Simple feedback, no optimistic state needed.
-- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Delete the API endpoint (`app/api/favorites/[slug]/route.ts`), remove the `useEffect` fetch and local state, add back the `hasFavorited` prop from the server, and replace the `onClick` with a `<form action>`. A form's `action` prop works just like the `action` prop on BottomNav or ChipGroup — React wraps it in a transition automatically. So we add `useOptimistic` with a boolean reducer to toggle the heart immediately, and the transition system handles the rest. Now tap a few favorites, then switch to the Favorites tab — no flickering, no stale data. Compare this to the broken version from the opening. Mutations and navigation both go through the transition system, so `useOptimistic` handles the instant heart fill and when you switch tabs, React coordinates everything in a single render pass. Optimistic updates settle naturally when the server responds with `refresh()`.
+- **FavoriteButton**: Remember the broken `useEffect` heart from the opening? Let's fix it properly. Delete the API endpoint (`app/api/favorites/[slug]/route.ts`), remove the `useEffect` fetch and local state, add back the `hasFavorited` prop from the server, and replace the `onClick` with a `<form action>`. A form's `action` prop works just like the `action` prop on BottomNav or ChipGroup — React wraps it in a transition automatically. So we add `useOptimistic` with a boolean reducer to toggle the heart immediately, and the transition system handles the rest. Now tap a few favorites, then switch to the Favorites tab — no flickering, no stale data. Compare this to the broken version from the opening — mutations and navigation now coordinate through the same transition system. Optimistic updates settle naturally when the server responds with `refresh()`.
 
 ### Questions Page
 
 - **UpvoteButton**: Same pattern — use the `upvoteOptimistic` snippet. It replaces `onSubmit` with `action`, adds `useOptimistic` with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Right now submitting a question waits for the server before it shows up. Let's add `useOptimistic` in QuestionList so the question appears immediately. The trick: generate a UUID on the client with `crypto.randomUUID()` and pass it to the server action — so the optimistic item and the real one share the same ID. No duplicate flash when the server responds.
-- Also add a safety check in the reducer — if the question already exists in the base data (maybe from a background poll), deduplicate by ID.
-- `useOptimistic` automatically rolls back if the action fails — just add a toast on error. On the server side, every action calls `refresh()` to invalidate the client router so all server components re-render with fresh data.
+- **Optimistic Create**: Right now submitting a question waits for the server before it shows up. Let's add `useOptimistic` in QuestionList so the question appears immediately. The trick: generate a UUID on the client with `crypto.randomUUID()` and pass it to the server action — so the optimistic item and the real one share the same ID. No duplicate flash. Add a dedup check in the reducer for background polls, and a toast on error — `useOptimistic` rolls back automatically if the action fails.
 
 ### Background Update — Questions Page
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
 - Let's add a `usePolling` hook that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — if you're in the middle of upvoting a question, your optimistic state stays stable while fresh data arrives. Upvotes, sort changes, and background polls all go through the same pipeline — there's no competing data layer that updates outside of transitions.
-- The in-between state here is ideally invisible — there's no user action to respond to, so the best outcome is that fresh data just appears without disrupting anything.
-- All of these mutations use the same in-between state — busy — and the same primitives: `useOptimistic` and `action`. Whether it's a form action or an action prop, React tracks pending state, errors go to error boundaries, and optimistic values settle when the server confirms. Same pipeline as navigation and background updates — everything coordinates together.
+- The in-between state here is ideally invisible — fresh data just appears without disrupting anything. And because it shares the same transition pipeline as user mutations, everything coordinates naturally.
 
 ## Animations (Commit Polish)
 
@@ -117,7 +111,6 @@ The final phase — animations. The in-between state is "done" — the new UI is
 ### Suspense Reveal Motion — Home Page
 
 - Let's add ViewTransition to the Suspense reveals. Wrap the skeleton with `exit="slide-down"` and the content with `enter="slide-up"`. Now the skeleton slides away and content slides in — feels intentional instead of jarring.
-- (Demo on EventGrid) Same pattern works for comments, questions — any streaming section can get this.
 
 ### Directional Navigation — Home Page + Session Layout
 
@@ -129,9 +122,7 @@ The final phase — animations. The in-between state is "done" — the new UI is
 
 ### List Animation — Home Page + Questions Page + Session Page
 
-- Wrap each event card in EventGrid with `<ViewTransition key={event.slug} update={{ filter: 'auto', default: 'none' }}>`. Now cards animate to their new positions when you switch filters instead of snapping around.
-- Same for QuestionCard — `<ViewTransition key={item.id}>`. The unique key lets React track each item, so cards animate when sorting, when upvotes change the order, or when new questions arrive from polling. New items fade in, deleted ones fade out. (The sort toggle in QuestionList already uses `action` — that's why the sort change runs in a transition and the list animation fires correctly.)
-- Same pattern works for comments — wrap each CommentCard in `<ViewTransition key={comment.id}>` for enter/exit animations on add and delete.
+- Wrap each item in a `<ViewTransition key={uniqueId}>` — the key lets React track individual items across renders. Do this for event cards in EventGrid (`key={event.slug}` with `update={{ filter: 'auto', default: 'none' }}`), QuestionCards (`key={item.id}`), and CommentCards (`key={comment.id}`). Now cards animate to new positions on filter/sort, new items fade in, deleted ones fade out, and upvotes reorder smoothly. (The sort toggle in QuestionList already uses `action`, so sort changes run in a transition and list animations fire correctly.)
 
 ## Eliminating In-Between States — Session Page
 

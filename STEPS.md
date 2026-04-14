@@ -11,7 +11,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Opening
 
 - (Exit slides, show the app) I'm the first speaker — so we need a conference app to keep track of everything happening here. Good news, I built one. Let me show you.
-- The app is Event Hub — a live session companion for this conference. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. Demo all features.
+- The app is Event Hub — a live session companion for this conference. We can browse sessions, post comments, ask and upvote questions, and favorite sessions. Demo all features.
 - ...but wait, this thing is terrible. What's wrong with it? What do you see? (Listen to audience) Flickering, delays, layout shifts, lack of feedback.
 - These are the in-between states — the moments between a user action and the final UI. And here's the thing: these aren't DX problems. They're UX problems. That's why we often forget about them — they don't show up as bugs, they don't break tests. But they're what make an app feel broken to your users.
 - Let's look at specific problems:
@@ -23,20 +23,20 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
   - **Initial state mismatch**: Navigate to the Favorites tab — hearts start unfilled and pop to filled after a moment. The server knows the user favorited these, but the client has to fetch that state separately.
   - **Mutation + navigation conflict**: Unfavorite a couple of sessions in the Favorites tab, then switch to Day 1 — the unfavorited items briefly flash with filled hearts because mutations and navigations don't coordinate.
 - The traditional approach makes it worse, not better. Leave it broken — we'll come back and fix it properly later.
-- So how does Async React solve this? Let's look at where it fits in the render cycle.
+- This isn't a performance problem — it's a coordination problem. Mutations, navigation, and loading states all run in separate pipelines that don't talk to each other. What if React itself could coordinate all of that? To understand where the gaps are, let's look at the react render cycle.
 
-## Slide 2: Async React Render Cycle — Basic
+## Slide 2: React Render Cycle
 
 - (Open `/slides/2`) The React render cycle.
 - Basic cycle — Event → Update → Render → Commit. A user click triggers an update, causes a re-render, which is committed to DOM.
 
-## Slide 3: Async React Render Cycle — In-Between States
+## Slide 3: React Render Cycle — In-Between States
 
-- Now bring async into this. Between Event and Update there's a "busy" state — the user did something and is waiting. Between Update and Render there's a "loading" state — data is being fetched. Between Render and Commit there's a "done" state — the new UI is ready but not yet visible. These in-between states are what make the app feel broken.
+- Now bring async into this. Between Event and Update there's a "busy" state — the user did something and is waiting. Between Update and Render there's a "loading" state — data is being fetched. Between Render and Commit there's a "done" state — the new UI is ready but not yet visible. These are the in-between states — and managing them manually is the coordination problem we just saw.
 
 ## Slide 4: Async React Render Cycle — Transitions
 
-- The key to Async React is transitions. A transition coordinates the async work and ensures the render and commit cycle happens smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
+- (Open `/slides/4`) This is what the React team calls Async React — the combination of concurrent rendering and coordination primitives. The key is transitions. A transition wraps the entire render cycle, coordinates the async work, and ensures updates happen smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
 
 ## Slide 5: Async React Render Cycle — Primitives
 
@@ -45,14 +45,22 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Slide 6: Async React Render Cycle — Clean
 
 - The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. Under 150ms feels synchronous; above 150ms the in-between states appear. That's the goal. (Credit: Async React talk at React Conf)
-- (Exit slides, back to the app) Remove the `useEffect` + API fetch approach — delete the `/api/favorites/[slug]` route handler entirely. Bring back Server Components and the transition system. Now let's fix the app.
+
+## Slide 7: Where the Gaps Are
+
+- (Open `/slides/7`) Think about what happens in our app. There are three places where async creates gaps in the UI.
+- **Data loading** — the page fetches sessions, comments, questions from the server. That's where we get blank screens, spinners, and layout shifts.
+- **Mutations** — the user submits a comment, toggles a favorite, upvotes a question. That's where we get frozen buttons, no feedback, and stale state.
+- **Navigation** — the user switches tabs, filters by label, navigates to a session. That's where the UI locks up and content flashes.
+- We've been managing each of these manually — and they don't coordinate. Now we have the primitives to handle all three declaratively. Let's go fix the app.
+- (Exit slides, back to the app)
 
 ## Setup and Starting Point
 
 - The setup is the Next.js 16 App Router, Prisma ORM, Tailwind CSS. Using React Server Components as the data fetching layer.
-- Demo app: Data fetching has been slowed down to simulate worse network conditions. You can see the bad UX — blank screens, frozen buttons, no feedback. Let's fix it by designing the appropriate in-between states.
+- Data fetching has been slowed down to simulate worse network conditions. Let's start with data loading, then tackle navigation, then mutations.
 
-## In-Between States by Interaction
+## Data Loading
 
 ### 1) Page Load
 
@@ -64,13 +72,15 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### 2) Route Navigation
 
-- When navigating to a new page, without Suspense the browser loads all code and data before rendering — a blank gap. With Suspense, we can show destination skeletons immediately and stream in data progressively. Navigation in the App Router already runs inside a transition — the old page stays visible and interactive while the new page loads.
+- Still data loading — but now during navigation. When navigating to a new page, without Suspense the browser loads all code and data before rendering — a blank gap. With Suspense, we can show destination skeletons immediately and stream in data progressively. Navigation in the App Router already runs inside a transition — the old page stays visible and interactive while the new page loads.
 - Navigate to the questions page — it has no Suspense boundaries at all, so the whole page blocks. Wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks. Now the header and question feed stream in progressively instead of blocking. We'll add animations to navigations later.
 - Same in-between state as page load — loading — and the same primitive: `<Suspense>`. But here the router also plays a role. It wraps every navigation in a `startTransition` automatically, so the old page stays interactive while each Suspense boundary on the destination page resolves independently.
 
+## Navigation
+
 ### 3) Query Param Navigation
 
-- Filtering is technically a navigation, but conceptually you're on the same page. Right now, clicking a filter freezes the UI while new data loads and then renders. We want the filter to update instantly — optimistic feedback — while fresh data loads in the background. Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
+- Now let's tackle navigation — the second pillar. Filtering is technically a navigation, but conceptually you're on the same page. Right now, clicking a filter freezes the UI while new data loads and then renders. We want the filter to update instantly — optimistic feedback — while fresh data loads in the background. Switching between Day 1 and Day 2 refetches the session grid from the server. Right now there's no feedback — the UI freezes.
 - What if these components could handle their own async coordination? Look at BottomNav — right now it takes an `onChange` callback. When you click a tab, it calls `onChange` and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes.
 - Let's turn `onChange` into an `action` prop. This is the **action props pattern**: a design component exposes a prop like `action`, `changeAction`, or `submitAction` — the naming signals it will run inside a transition. Inside, the component uses `useOptimistic` and `useTransition` to handle pending states and instant feedback. The consumer just passes data and a callback; the component does the rest.
 - Now the day tabs switch instantly while content loads in the background. The old content stays visible and interactive. The parent just passes an array of routes, no async React code needed.
@@ -80,16 +90,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Let's look at how ChipGroup works inside — `useOptimistic` for instant feedback, `useTransition` to keep old content visible. This is what design components abstract away from you.
 - The in-between state here is busy — the user did something and is waiting. The primitives are `useOptimistic` and `useTransition`, and the action props pattern abstracts them away so consumers don't need to think about it.
 
+## Mutations
+
 ### 4) Background Update
 
-- Sometimes the page needs to update without any user action — background updates where fresh data arrives from the server. Right now the questions page is static — you have to refresh the browser to see new questions or upvotes from other attendees. Without transitions, new data would flash in and disrupt whatever the user is doing. We want to poll in a transition, reconcile fresh data with any in-flight optimistic state, and update seamlessly.
+- Before we get to user-driven mutations, let's handle the other direction — data coming in from the server. Sometimes the page needs to update without any user action — background updates where fresh data arrives from the server. Right now the questions page is static — you have to refresh the browser to see new questions or upvotes from other attendees. Without transitions, new data would flash in and disrupt whatever the user is doing. We want to poll in a transition, reconcile fresh data with any in-flight optimistic state, and update seamlessly.
 - Add a `usePolling` hook that calls `startTransition(() => router.refresh())` every 5 seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — in-flight optimistic values stay stable while fresh data arrives. There's no competing data layer that updates outside of transitions. Upvotes, sort switches, and background polls all go through the same pipeline.
 - The in-between state here is ideally invisible — there's no user action to respond to, so the best outcome is that fresh data just appears. The primitive is `startTransition` — it coordinates background polls with in-flight optimistic values so nothing flashes or fights.
 
-### 5) Mutations
+### 5) User Mutations
 
-Form submissions and interactions — the user does something and expects instant feedback. Right now the flow is: submit, wait for the server, then render — the UI freezes. We want to flip that: submit, show an optimistic update immediately, then reconcile when the server confirms. Not everything has a design component with an action prop — sometimes you need custom async coordination with `useOptimistic` and `useTransition` directly. That's fine too. Let's fix each one.
+Now the third pillar — user-driven mutations. Form submissions and interactions — the user does something and expects instant feedback. Right now the flow is: submit, wait for the server, then render — the UI freezes. We want to flip that: submit, show an optimistic update immediately, then reconcile when the server confirms. Not everything has a design component with an action prop — sometimes you need custom async coordination with `useOptimistic` and `useTransition` directly. That's fine too. Let's fix each one.
 
 #### Pessimistic Mutations
 

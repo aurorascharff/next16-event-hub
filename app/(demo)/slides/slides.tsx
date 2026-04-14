@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Download, MousePointerClick, Route } from 'lucide-react';
 import { Slide, SlideTitle, SlideBadge, SlideSpeaker } from 'nextjs-slides';
 
 function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
@@ -54,7 +54,7 @@ export const slides = [
   // 2. Basic render cycle — Event → Update → Render → Commit
   <Slide key="cycle-basic">
     <div style={{ viewTransitionName: 'cycle-title' }}>
-      <SlideTitle>Async React Render Cycle</SlideTitle>
+      <SlideTitle>React Render Cycle</SlideTitle>
     </div>
     <div className="mt-16 flex items-center justify-center gap-5">
       <CycleBox name="box-event">Event</CycleBox>
@@ -70,7 +70,7 @@ export const slides = [
   // 3. With in-between states — busy, loading, done
   <Slide key="cycle-states">
     <div style={{ viewTransitionName: 'cycle-title' }}>
-      <SlideTitle>Async React Render Cycle</SlideTitle>
+      <SlideTitle>React Render Cycle</SlideTitle>
     </div>
     <div className="mt-16 flex items-center justify-center gap-5">
       <CycleBox name="box-event">Event</CycleBox>
@@ -204,6 +204,25 @@ export const slides = [
       <NetworkNote name="network-note">
         &lt; 150ms — feels synchronous · &gt; 150ms — in-between states appear
       </NetworkNote>
+    </div>
+  </Slide>,
+
+  // 7. Three pillars — every interaction is async
+  <Slide key="async-pillars">
+    <SlideTitle>Where the gaps are</SlideTitle>
+    <div className="mt-16 flex items-center justify-center gap-12">
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+        <Download className="text-primary size-8" />
+        <span className="text-xl font-semibold">Data Loading</span>
+      </div>
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+        <MousePointerClick className="text-primary size-8" />
+        <span className="text-xl font-semibold">Mutations</span>
+      </div>
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+        <Route className="text-primary size-8" />
+        <span className="text-xl font-semibold">Navigation</span>
+      </div>
     </div>
   </Slide>,
 ];

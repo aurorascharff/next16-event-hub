@@ -7,18 +7,18 @@ import { cn } from '@/lib/utils';
 
 type Props = {
   eventSlug: string;
-  hasFavorited: boolean;
+  favorited?: boolean;
 };
 
-export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
-  const [optimisticHasFavorited, setOptimisticHasFavorited] = useOptimistic(hasFavorited, current => {
+export function FavoriteButton({ eventSlug, favorited }: Props) {
+  const [optimisticFavorited, setOptimisticFavorited] = useOptimistic(favorited, current => {
     return !current;
   });
 
   return (
     <form
       action={async () => {
-        setOptimisticHasFavorited(null);
+        setOptimisticFavorited(null);
         await toggleFavorite(eventSlug);
       }}
       onClick={e => {
@@ -29,11 +29,11 @@ export function FavoriteButton({ eventSlug, hasFavorited }: Props) {
         type="submit"
         className={cn(
           'cursor-pointer rounded p-1 transition-colors',
-          optimisticHasFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',
+          optimisticFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',
         )}
-        aria-label={optimisticHasFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        aria-label={optimisticFavorited ? 'Remove from favorites' : 'Add to favorites'}
       >
-        <Heart className={cn('size-4', optimisticHasFavorited && 'fill-current')} />
+        <Heart className={cn('size-4', optimisticFavorited && 'fill-current')} />
       </button>
     </form>
   );

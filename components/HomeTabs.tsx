@@ -2,9 +2,7 @@
 
 import { Calendar, Heart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, ViewTransition } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
-import type { Route } from 'next';
 
 const homeTabs = [
   {
@@ -24,32 +22,20 @@ const homeTabs = [
   },
 ] as const;
 
-type Props = {
-  children: React.ReactNode;
-};
-
-export function HomeTabs({ children }: Props) {
+export default function HomeTabs() {
   const router = useRouter();
-
-  return (
-    <>
-      <ViewTransition>{children}</ViewTransition>
-      <Suspense>
-        <HomeTabsNav
-          action={href => {
-            return router.push(href);
-          }}
-        />
-      </Suspense>
-    </>
-  );
-}
-
-function HomeTabsNav({ action }: { action: (href: Route) => void }) {
   const searchParams = useSearchParams();
   const label = searchParams.get('label');
   const day = searchParams.get('day') || 'day-1';
   const activeIndex = label === 'favorites' ? 2 : day === 'day-2' ? 1 : 0;
 
-  return <BottomNav tabs={homeTabs} activeIndex={activeIndex} action={action} />;
+  return (
+    <BottomNav
+      tabs={homeTabs}
+      activeIndex={activeIndex}
+      action={href => {
+        return router.push(href);
+      }}
+    />
+  );
 }

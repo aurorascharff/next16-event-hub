@@ -108,5 +108,5 @@ function CommentListSkeleton() {
 async function FavoriteStatus({ slug }: { slug: string }) {
   const currentUser = await getCurrentUser();
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  return <FavoriteButton eventSlug={slug} hasFavorited={favorites.has(slug)} />;
+  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }

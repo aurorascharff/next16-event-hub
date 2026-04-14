@@ -1,6 +1,6 @@
 import { Suspense, ViewTransition } from 'react';
 import { getEventBySlug } from '@/data/queries/event';
-import { SessionTabs } from './_components/SessionTabs';
+import SessionTabs from './_components/SessionTabs';
 import type { Metadata } from 'next';
 
 export const unstable_instant = {
@@ -30,10 +30,11 @@ export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
       default="none"
     >
       <div className="min-h-screen pb-16">
+        <ViewTransition>
+          <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
+        </ViewTransition>
         <Suspense>
-          <SessionTabs>
-            <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
-          </SessionTabs>
+          <SessionTabs />
         </Suspense>
       </div>
     </ViewTransition>

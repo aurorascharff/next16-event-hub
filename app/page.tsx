@@ -2,11 +2,11 @@ import { Presentation } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid, EventGridSkeleton } from '@/components/EventGrid';
+import HomeTabs from '@/components/HomeTabs';
 import { LabelFilter, LabelFilterSkeleton } from '@/components/LabelFilter';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { UserMenu } from '@/components/common/UserMenu';
 import { GithubIcon } from '@/components/ui/icons/GithubIcon';
-import { HomeTabs } from './_components/HomeTabs';
 import type { Metadata } from 'next';
 
 export const unstable_instant = {
@@ -54,7 +54,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             </Suspense>
           </div>
         </header>
-        <HomeTabs>
+        <ViewTransition>
           <div className="mx-auto max-w-4xl px-4 py-6 transition-opacity group-has-data-pending:opacity-50 sm:px-6">
             <Suspense
               fallback={
@@ -68,7 +68,10 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
               </ViewTransition>
             </Suspense>
           </div>
-        </HomeTabs>
+        </ViewTransition>
+        <Suspense>
+          <HomeTabs />
+        </Suspense>
       </div>
     </ViewTransition>
   );

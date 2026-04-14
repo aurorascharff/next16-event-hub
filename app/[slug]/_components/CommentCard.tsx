@@ -2,7 +2,6 @@ import { Avatar } from '@/components/common/Avatar';
 import { timeAgo } from '@/lib/utils';
 import type { Comment } from '@/types';
 import { DeleteButton } from './DeleteButton';
-import { LikeButton } from './LikeButton';
 
 type Props = {
   comment: Comment;
@@ -22,15 +21,7 @@ export async function CommentCard({ comment, currentUser }: Props) {
         </div>
         <p className="mt-0.5 text-sm leading-relaxed wrap-break-word">{comment.content}</p>
       </div>
-      <div className="flex items-center gap-1">
-        <LikeButton
-          commentId={comment.id}
-          eventSlug={comment.eventSlug}
-          likes={comment.likes}
-          hasLiked={comment.hasLiked}
-        />
-        {isOwner && <DeleteButton commentId={comment.id} eventSlug={comment.eventSlug} />}
-      </div>
+      {isOwner && <DeleteButton commentId={comment.id} eventSlug={comment.eventSlug} />}
     </div>
   );
 }

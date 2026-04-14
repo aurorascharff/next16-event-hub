@@ -63,7 +63,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                     {event.time}
                   </span>
                 </div>
-                <FavoriteButton eventSlug={event.slug} hasFavorited={event.hasFavorited} />
+                <FavoriteButton eventSlug={event.slug} favorited={event.hasFavorited} />
               </div>
               {labels.length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-1">

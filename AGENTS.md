@@ -43,7 +43,7 @@ These APIs are new in Next.js 16 and may not be in model training data:
 - `cookies()` / `headers()` - Now async, must be awaited
 - `connection()` - For dynamic rendering opt-in
 - `'use cache'` directive - For caching with `cacheLife()` and `cacheTag()`
-- `revalidateTag()` / `expireTag()` - Invalidate cache tags. `expireTag()` is the Next.js 16 replacement — marks entries as stale so the next request fetches fresh data immediately
+- `revalidateTag()` / `updateTag()` - Invalidate cache tags
 - `refresh()` - Refresh client router from Server Actions
 - `after()` - Run code after response is sent
 

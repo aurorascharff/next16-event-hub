@@ -49,17 +49,9 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
             </Suspense>
           </EventDetails>
         </Suspense>
-        <Suspense
-          fallback={
-            <div className="mt-4 min-h-9">
-              <CommentFormSkeleton />
-            </div>
-          }
-        >
-          <div className="mt-4 min-h-9">
-            <CommentForm />
-          </div>
-        </Suspense>
+        <div className="mt-4 min-h-9">
+          <CommentForm />
+        </div>
       </div>
       <Suspense
         fallback={
@@ -117,13 +109,4 @@ async function FavoriteStatus({ slug }: { slug: string }) {
   const currentUser = await getCurrentUser();
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   return <FavoriteButton eventSlug={slug} hasFavorited={favorites.has(slug)} />;
-}
-
-function CommentFormSkeleton() {
-  return (
-    <div className="flex min-h-9 gap-2">
-      <Skeleton className="h-9 flex-1 rounded-md" />
-      <Skeleton className="h-9 w-14 shrink-0 rounded-md" />
-    </div>
-  );
 }

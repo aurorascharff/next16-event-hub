@@ -35,10 +35,8 @@ export async function EventDetails({ slug }: { slug: string }) {
 
 async function FavoriteStatus({ slug }: { slug: string }) {
   const currentUser = await getCurrentUser();
-  // TODO: use server state passed down instead of local useEffect client fetching
-  // eslint-disable-next-line autofix/no-unused-vars
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  return <FavoriteButton eventSlug={slug} />;
+  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }
 
 export function EventDetailsSkeleton() {

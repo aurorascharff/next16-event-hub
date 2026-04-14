@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 
 type Props = {
   eventSlug: string;
+  favorited?: boolean;
 };
 
 export function FavoriteButton({ eventSlug }: Props) {

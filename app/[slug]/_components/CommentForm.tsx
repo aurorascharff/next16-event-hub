@@ -12,7 +12,6 @@ export function CommentForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   async function submitAction(formData: FormData) {
-    formRef.current?.reset();
     const result = await addComment(slug, formData);
     if (!result.success) {
       toast.error(result.error);

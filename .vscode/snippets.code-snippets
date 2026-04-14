@@ -167,6 +167,20 @@
       ");"
     ],
   },
+  "questionsSuspense": {
+    "prefix": "questionsSuspense",
+    "description": "Data Loading: wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks",
+    "body": [
+      "<Suspense fallback={<EventHeaderSkeleton />}>",
+      "  <EventHeader params={params} />",
+      "</Suspense>",
+      "<div className=\"mt-3\">",
+      "  <Suspense fallback={<QuestionFeedSkeleton />}>",
+      "    <QuestionFeed params={params} />",
+      "  </Suspense>",
+      "</div>"
+    ],
+  },
   "deleteButtonPending": {
     "prefix": "deleteButtonPending",
     "description": "Mutations: useTransition with data-pending for pessimistic delete",

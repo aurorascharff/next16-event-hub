@@ -2,32 +2,11 @@
 
 import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { Suspense } from 'react';
 import { BottomNav } from '@/components/design/BottomNav';
 import type { Route } from 'next';
 
-type Props = {
-  children: React.ReactNode;
-};
-
-export function SessionTabs({ children }: Props) {
+export default function SessionTabs() {
   const router = useRouter();
-
-  return (
-    <>
-      {children}
-      <Suspense>
-        <SessionTabsNav
-          onChange={href => {
-            return router.push(href);
-          }}
-        />
-      </Suspense>
-    </>
-  );
-}
-
-function SessionTabsNav({ onChange }: { onChange: (href: Route) => void }) {
   const { slug } = useParams<{ slug: string }>();
 
   const tabs = [
@@ -36,5 +15,12 @@ function SessionTabsNav({ onChange }: { onChange: (href: Route) => void }) {
     { href: `/${slug}/questions` as Route, icon: <HelpCircle className="size-5" />, label: 'Questions' },
   ];
 
-  return <BottomNav tabs={tabs} onChange={onChange} />;
+  return (
+    <BottomNav
+      tabs={tabs}
+      onChange={href => {
+        return router.push(href);
+      }}
+    />
+  );
 }

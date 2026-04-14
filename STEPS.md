@@ -60,28 +60,24 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Data Loading
 
-### 1) Page Load
+### Suspense Boundaries
 
 - Right now the whole app has one big `<Suspense>` in the root layout wrapping everything. So you see nothing until all the data is ready — just a spinner. What we want instead is to show a static shell right away and stream in the dynamic parts as they load.
 - So let's remove that global Suspense from the root layout. And... we get an error. This is Cache Components (`cacheComponents: true` in `next.config.ts`) — the Next.js 16 rendering model. Basically, it's the framework saying "hey, you have async components blocking this route — you need to be explicit about how to handle them." Either cache them with `'use cache'` or stream them with `<Suspense>`. It's actually really helpful — it points you right to the spots that need attention.
 - So this is where `<Suspense>` comes in — the first primitive from the render cycle. Suspense is declarative: you place a boundary around any async component, give it a fallback, and it handles the data fetching for you. You decide where loading states go and what they look like. Each boundary works independently — they compose naturally without knowing about each other.
 - Let's wrap EventGrid in `<Suspense>` with a skeleton fallback that matches the card grid. Now the shell — header, day tabs, label pills — shows up immediately, and only the session grid streams in. This shell is completely static, so it can be cached and served from a CDN anywhere in the world. Your users get content instantly. Better FCP, better LCP.
-- Now let's check the session detail page. It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. Watch when the content loads — the whole comment section jumps down. Classic layout shift. Let's fix that with proper skeleton fallbacks that reserve the right space. (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
-- The idea is simple: push dynamic data deep in the tree, wrap it in Suspense, and the framework handles the rest. That's how you get "show the shell first, stream the rest."
-
-### 2) Route Navigation
-
-- Still data loading — but this time during navigation. Without Suspense, navigating to a new page shows nothing until all the data is ready. With Suspense, we show destination skeletons immediately and stream in data progressively.
-- Navigate to the questions page — no Suspense boundaries at all, so the whole page blocks. Let's wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks. Now they stream in independently instead of blocking. We'll add animations to navigations later.
-- Same in-between state — loading — and the same primitive: `<Suspense>`. But here the router plays a role too. Navigation in the App Router already runs inside a `startTransition`, so the old page stays visible and interactive while each Suspense boundary on the destination resolves independently.
+- The idea is simple: push dynamic data deep in the component tree, wrap it in Suspense, and the framework handles the rest. That's how you get "show the shell first, stream the rest."
+- Now let's apply the same pattern to the rest of the app.
+- **Session detail page**: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
+- **Questions page**: No Suspense at all — navigate there and the whole page blocks. Use the `questionsSuspense` snippet to wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks. Now they stream in independently.
 
 ## Navigation
 
-### 3) Query Param Navigation
+### Query Param Navigation
 
 - Now navigation — the second pillar. Filtering is technically a navigation, but you're still on the same page. Try switching between Day 1 and Day 2 — the UI freezes while new data loads. We want the tab to switch instantly while fresh data loads behind the scenes.
-- Look at BottomNav — right now it takes an `onChange` callback. You click a tab, it calls `onChange`, and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes.
-- Let's change `onChange` to an `action` prop. This is the **action props pattern** — design components expose a prop like `action`, `changeAction`, or `submitAction`, and internally use `useOptimistic` and `useTransition` to handle pending states and instant feedback. The consumer just passes data and a callback; the component handles the async coordination. This is the same pattern used in the Async React demo at React Conf — `SearchInput`, `TabList`, `CompleteButton` all work this way.
+- Look at BottomNav — right now it takes an `onChange` callback. You click a tab, it calls `onChange`, and that's it. No transition, no optimistic state, the UI just freezes until the navigation completes. What if the component itself could handle this for us?
+- Let's change `onChange` to an `action` prop. That's all we do on the consumer side — just rename the prop. But inside BottomNav, `action` signals that this callback will run inside a transition. The component uses `useOptimistic` and `useTransition` internally to give instant feedback and keep old content visible. This is the **action props pattern** — the same pattern used in the Async React demo at React Conf, where `SearchInput`, `TabList`, `CompleteButton` all work this way.
 - Now the day tabs switch instantly. The old content stays visible while new data loads. The parent just passes an array of routes — no async React code needed.
 - The label filter pills use ChipGroup — same pattern. Click "React" or "Performance" and the pill highlights right away while the filtered grid loads. When Favorites tab is active, the filter hides automatically.
 - The key insight: most developers shouldn't need to use `startTransition` themselves. If your router wraps navigation in transitions and your UI components expose action props, you just plug things together. The Async React Working Group is standardizing these patterns across routers, data libraries, and design systems.
@@ -90,14 +86,14 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Mutations
 
-### 4) Background Update
+### Background Update
 
 - Before we get into user mutations, let's handle the other direction — data coming in from the server without any user action. Right now the questions page is static — you have to refresh the browser to see new questions or upvotes from other attendees.
 - Let's add a `usePolling` hook that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component.
 - Because it's inside `startTransition`, the update coordinates with `useOptimistic` — if you're in the middle of upvoting a question, your optimistic state stays stable while fresh data arrives. Upvotes, sort changes, and background polls all go through the same pipeline — there's no competing data layer that updates outside of transitions.
 - The in-between state here is ideally invisible — there's no user action to respond to, so the best outcome is that fresh data just appears without disrupting anything.
 
-### 5) User Mutations
+### User Mutations
 
 Now the third pillar — user-driven mutations. The user taps a heart, upvotes a question, deletes a comment. Right now the flow is: click, wait for the server, then render. We want to flip that — show the change immediately, then reconcile when the server confirms. Not everything has a design component with an action prop — sometimes you use `useOptimistic` and `useTransition` directly. Let's go through each one.
 

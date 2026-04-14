@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
@@ -56,6 +57,25 @@ async function CommentList({ slug }: { slug: string }) {
         return <CommentCard key={comment.id} comment={comment} currentUser={currentUser} />;
       })}
       {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
+    </div>
+  );
+}
+
+// eslint-disable-next-line autofix/no-unused-vars
+function CommentListSkeleton() {
+  return (
+    <div className="space-y-2">
+      {Array.from({ length: 3 }).map((_, i) => {
+        return (
+          <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
+            <Skeleton className="size-7 rounded-full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

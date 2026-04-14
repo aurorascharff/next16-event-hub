@@ -3,7 +3,7 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug } from '@/data/queries/event';
+import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 import { EventDetails } from './_components/EventDetails';
@@ -18,6 +18,15 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
   };
 }
 
+export async function generateStaticParams() {
+  const events = await getEvents();
+  return events.map(event => {
+    return {
+      slug: event.slug,
+    };
+  });
+}
+
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
@@ -27,9 +36,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
           <EventDetails slug={slug} />
         </Suspense>
         <div className="mt-4 min-h-9">
-          <Suspense fallback={<CenteredSpinner />}>
-            <CommentForm />
-          </Suspense>
+          <CommentForm />
         </div>
       </div>
       <Suspense fallback={<CenteredSpinner />}>

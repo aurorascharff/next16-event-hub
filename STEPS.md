@@ -36,7 +36,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 4: Async React Render Cycle — Transitions
 
-- (Open `/slides/4`) This is what the React team calls Async React — the combination of concurrent rendering and coordination primitives. The key is transitions. A transition wraps the entire render cycle, coordinates the async work, and ensures updates happen smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
+- (Open `/slides/4`) To solve this coordination problem, the React team introduced a new concept called Async React — a set of primitives built on top of concurrent rendering that handle async coordination declaratively. The key is transitions. A transition wraps the entire render cycle, coordinates the async work, and ensures updates happen smoothly. It batches all updates together as an "Action" and commits them when they're all done — avoiding weird flickers in the UI.
 
 ## Slide 5: Async React Render Cycle — Primitives
 
@@ -44,11 +44,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 6: Async React Render Cycle — Clean
 
-- The real magic — when async operations take very little time to complete, the whole interaction feels synchronous. The busy/loading/done labels disappear. Under 150ms feels synchronous; above 150ms the in-between states appear. That's the goal. (Credit: Async React talk at React Conf)
+- The real magic — when things are fast enough, the user never sees the in-between states at all. The busy, loading, and done labels disappear. The whole interaction just feels instant. That's the goal — design the in-between states so they're there when needed, but invisible when things are fast. (Credit: Async React talk at React Conf)
 
 ## Slide 7: Where the Gaps Are
 
-- (Open `/slides/7`) Think about what happens in our app. There are three places where async creates gaps in the UI.
+- (Open `/slides/7`) Think about what happens in our apps. There are three places where async creates gaps in the UI.
 - **Data loading** — the page fetches sessions, comments, questions from the server. That's where we get blank screens, spinners, and layout shifts.
 - **Mutations** — the user submits a comment, toggles a favorite, upvotes a question. That's where we get frozen buttons, no feedback, and stale state.
 - **Navigation** — the user switches tabs, filters by label, navigates to a session. That's where the UI locks up and content flashes.
@@ -66,9 +66,10 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Right now the whole app has a single global `<Suspense>` with a centered spinner in the root layout wrapping `{children}`. Every page blocks on all data behind that one spinner — the user sees nothing until everything is ready. Instead of loading all code and data and then rendering, we want to render the static shell first, stream in dynamic data, and complete progressively.
 - Step 1: Remove the global Suspense from the root layout. On page load, we now see an error. This is Cache Components (`cacheComponents: true` in `next.config.ts`) — the Next.js 16 rendering model. There are no longer static OR dynamic pages; every route is a mix. The framework is telling us we have a performance problem: these async components are blocking the entire route. Cache Components forces us to be explicit — either cache it with `'use cache'` or stream it with `<Suspense>`. This is a good thing — it's the framework helping us find and fix the exact spots where data loading blocks rendering.
-- Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. Better FCP, better LCP.
+- This is where `<Suspense>` comes in — the first primitive from the render cycle. Suspense is declarative: you place a boundary around any async component, give it a fallback, and it catches the data fetching for you. You decide where loading states go and what they look like. Each boundary works independently — they compose naturally without knowing about each other.
+- Fix: wrap EventGrid in `<Suspense>` with a skeleton fallback that mimics the card grid layout. Now the shell — header, day tabs, label pills — renders immediately while only the session grid streams in. This shell is static — it can be cached and served instantly from a CDN anywhere in the world, so the user gets the fastest possible experience with the most amount of content up front. Better FCP, better LCP.
 - Navigate to the session detail page. It already has Suspense, but the top boundary has no fallback at all and the bottom one uses a centered spinner. When the event details load, the whole comment section jumps down — clear CLS. Fix: add proper skeleton fallbacks that reserve the right amount of space for both boundaries. Each skeleton should match the shape of the content. Use the React Devtools Suspense panel to pin skeletons and verify there's no CLS.
-- The in-between state here is loading — and the primitive is `<Suspense>`. Suspense is declarative — you place loading boundaries where you want them, and they compose naturally. Each async server component can define its own fallback independently. This is what makes "render the static shell first, stream the rest" possible. Push dynamic data access deep in the component tree, wrap it in Suspense, and the framework handles the rest.
+- The key idea: push dynamic data access deep in the component tree, wrap it in Suspense, and the framework handles the rest. That's what makes "render the static shell first, stream the rest" possible.
 
 ### 2) Route Navigation
 
@@ -155,7 +156,7 @@ Sometimes in-between states are not desirable — and you can eliminate them ent
 
 - Start with EventDetails. Right now it fetches the event and the user's favorite status together — the user-specific cookie dependency forces the whole component to be dynamic. But the event data doesn't change per user. Refactor: move the favorite status out and pass it as `children`. Now EventDetails only calls `getEventBySlug`, which has no dynamic API dependency.
 - Add `'use cache'` with `cacheTag` to the EventDetails component. The entire rendered output — title, speaker, labels, description — is cached per slug. The `children` (FavoriteButton) are passed through without affecting the cache entry. This is composable caching — the donut pattern, but for caching. The cached shell renders instantly; only the small FavoriteButton streams in via its own Suspense.
-- But we still see a Cache Components error on the session page — `params` is dynamic, and there's no cache or Suspense above the page component reading it. Right now there's a `loading.tsx` handling this, but it's a blunt tool — it wraps the entire page in a single loading state. Instead, tell Next.js which params exist ahead of time. Add `generateStaticParams` to the session page and delete `loading.tsx`. Now all slugs are known at build time, params resolves during the build, and the cached EventDetails output becomes part of the static shell via Partial Prerendering. The router prefetches this shell — navigation feels instant. Suspense skeletons only show for truly dynamic data like comments, questions, and favorite status.
+- We already have `generateStaticParams` on the session page, so all slugs are known at build time and `params` resolves during the build. That means the cached EventDetails output becomes part of the static shell via Partial Prerendering. The router prefetches this shell — navigation feels instant. Suspense skeletons only show for truly dynamic data like comments, questions, and favorite status.
 - Optimistic updates also eliminate in-between states — the FavoriteButton, LikeButton, and UpvoteButton all update instantly because `useOptimistic` skips the wait entirely.
 
 ## Review

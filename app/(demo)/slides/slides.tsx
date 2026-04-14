@@ -211,17 +211,23 @@ export const slides = [
   <Slide key="async-pillars">
     <SlideTitle>Where the gaps are</SlideTitle>
     <div className="mt-16 flex items-center justify-center gap-12">
-      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
         <Download className="text-primary size-8" />
-        <span className="text-xl font-semibold">Data Loading</span>
+        <span className="text-xl font-semibold">
+          <span className="text-primary">Async</span> Data Loading
+        </span>
       </div>
-      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
         <MousePointerClick className="text-primary size-8" />
-        <span className="text-xl font-semibold">Mutations</span>
+        <span className="text-xl font-semibold">
+          <span className="text-primary">Async</span> Mutations
+        </span>
       </div>
-      <div className="border-primary bg-primary/5 flex flex-col items-center gap-3 rounded-xl border px-8 py-6">
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
         <Route className="text-primary size-8" />
-        <span className="text-xl font-semibold">Navigation</span>
+        <span className="text-xl font-semibold">
+          <span className="text-primary">Async</span> Navigation
+        </span>
       </div>
     </div>
   </Slide>,

@@ -22,9 +22,7 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 export async function generateStaticParams() {
   const events = await getEvents();
   return events.map(event => {
-    return {
-      slug: event.slug,
-    };
+    return { slug: event.slug };
   });
 }
 

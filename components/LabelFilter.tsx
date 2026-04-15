@@ -30,7 +30,11 @@ export function LabelFilter() {
     router.push(qs ? `/?${qs}` : '/');
   }
 
-  return <ChipGroup items={labelItems} value={activeLabel} onChange={handleChange} />;
+  return (
+    <div>
+      <ChipGroup items={labelItems} value={activeLabel} onChange={handleChange} />
+    </div>
+  );
 }
 
 export function LabelFilterSkeleton() {

@@ -43,8 +43,8 @@ These APIs are new in Next.js 16 and may not be in model training data:
 - `cookies()` / `headers()` - Now async, must be awaited
 - `connection()` - For dynamic rendering opt-in
 - `'use cache'` directive - For caching with `cacheLife()` and `cacheTag()`
-- `revalidateTag()` / `expireTag()` - Invalidate cache tags. `expireTag()` is the Next.js 16 replacement — marks entries as stale so the next request fetches fresh data immediately
-- `refresh()` - Refresh client router from Server Actions
+- `updateTag()` - Invalidate cache tags immediately (read-your-own-writes). `revalidateTag()` for stale-while-revalidate in Route Handlers
+- `refresh()` - Re-render server components for current user (this app uses `updateTag()` instead)
 - `after()` - Run code after response is sent
 
 ## Typed Routes
@@ -90,7 +90,7 @@ components/
   ui/                         # shadcn/ui primitives
 data/
   queries/                    # Server-side queries with cache()
-  actions/                    # Server Actions (mutations with refresh())
+  actions/                    # Server Actions (mutations with updateTag() or refresh())
 types/                        # Shared types derived from query return types (Question, Comment, SortValue)
 lib/                          # Utility functions and hooks (usePolling)
 prisma/                       # Prisma schema and seeds
@@ -100,13 +100,13 @@ prisma/                       # Prisma schema and seeds
 - **components/design** — Components that expose action props and handle async coordination internally (`useOptimistic`, `useTransition`). Consumers pass data and callbacks; the component handles transition mechanics.
 - **components/ui** — shadcn/ui primitives
 - **data/queries** — Server-side data fetching with `cache()` for deduplication
-- **data/actions** — Server Actions with `"use server"` for mutations. Use `refresh()` to invalidate the client router.
+- **data/actions** — Server Actions with `"use server"` for mutations. Use `updateTag()` to invalidate cached data. Use `refresh()` to invalidate the client router.
 
 Route-specific code goes in `_components` folders. Shared code lives at the nearest common ancestor.
 
 ## cacheComponents & Static Shell
 
-`cacheComponents: true` in `next.config.ts` caches server components that don't access dynamic data. To maximize the static shell:
+[`cacheComponents: true`](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents) in `next.config.ts` excludes data fetching from prerenders unless explicitly cached with `use cache`. To maximize the static shell:
 
 - Keep pages **non-async**. Push `searchParams`, `cookies()`, `headers()`, and uncached fetches into async server components inside `<Suspense>`.
 - Async components accessing dynamic data should be wrapped in `<Suspense>` with skeleton fallbacks.
@@ -116,8 +116,8 @@ Route-specific code goes in `_components` folders. Shared code lives at the near
 Push dynamic data access as deep as possible in the component tree to maximize static content.
 
 - **Fetching data** — Create queries in `data/queries/`, call in Server Components. Use `cache()` for deduplication.
-- **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `refresh()` to invalidate. Use `useOptimistic` for instant feedback.
-- **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Comments update on user action via `refresh()`.
+- **Mutating data** — Create Server Actions in `data/actions/` with `"use server"`. Use `updateTag()` to invalidate cached data. Use `useOptimistic` for instant feedback.
+- **Live data** — Questions poll via `startTransition(() => router.refresh())`, keeping updates in React's transition system. Comments update on user action via `updateTag()`.
 - **Navigate + mutate** — Mutations and navigation coordinate through React's transition system. Favorite sessions, then switch to the Favorites tab — optimistic updates settle naturally when the server responds.
 
 ## Data Fetching & Mutations
@@ -134,7 +134,7 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 export async function addComment(eventSlug: string, formData: FormData) {
   'use server';
   // ... create comment
-  refresh();
+  updateTag(`comments-${eventSlug}`);
 }
 ```
 
@@ -148,7 +148,7 @@ Replace manual `isLoading`/`isError` state with React 19 primitives:
 
 ```tsx
 const [isPending, startTransition] = useTransition();
-function handleDeleteAction() {
+function handleDelete() {
   startTransition(async () => {
     await deleteComment(id);
   });
@@ -176,7 +176,7 @@ Components in `components/design/` handle async coordination internally and expo
 ```tsx
 // Consumer — pass an action prop instead of a plain callback
 <BottomNav tabs={tabs} activeIndex={activeIndex} action={href => router.push(href)} />
-<ChipGroup items={items} value={active} action={handleSortAction} />
+<ChipGroup items={items} value={active} action={sortAction} />
 
 // Inside a design component — wraps the action in a transition with optimistic feedback
 function BottomNav({ tabs, activeIndex, action }) {

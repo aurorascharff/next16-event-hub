@@ -22,7 +22,7 @@ export function LabelFilter() {
     return null;
   }
 
-  function handleChange(value: string) {
+  function changeAction(value: string) {
     const params = new URLSearchParams();
     if (activeDay) params.set('day', activeDay);
     if (value !== 'all') params.set('label', value);
@@ -30,7 +30,11 @@ export function LabelFilter() {
     router.push(qs ? `/?${qs}` : '/');
   }
 
-  return <ChipGroup items={labelItems} value={activeLabel} action={handleChange} />;
+  return (
+    <div>
+      <ChipGroup items={labelItems} value={activeLabel} action={changeAction} />
+    </div>
+  );
 }
 
 export function LabelFilterSkeleton() {

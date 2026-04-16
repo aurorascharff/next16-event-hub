@@ -209,6 +209,17 @@
   animation: none;
 }
 
+::view-transition-group(dialog-overlay) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(dialog-overlay) {
+  display: none;
+}
+::view-transition-new(dialog-overlay) {
+  animation: none;
+}
+
 ::view-transition-group(theme-toggle) {
   animation: none;
   z-index: 100;

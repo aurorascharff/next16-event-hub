@@ -230,6 +230,17 @@
   animation: none;
 }
 
+::view-transition-group(qr-dialog) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(qr-dialog) {
+  display: none;
+}
+::view-transition-new(qr-dialog) {
+  animation: none;
+}
+
 ::view-transition-group(theme-toggle) {
   animation: none;
   z-index: 100;

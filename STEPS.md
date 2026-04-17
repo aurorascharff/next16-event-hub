@@ -137,12 +137,16 @@ Sometimes the best loading state is no loading state at all. You can just skip i
 - We already have `generateStaticParams` on this page, so all slugs are known at build time. That means the cached output becomes part of the static shell through Partial Prerendering. The router prefetches it — navigation feels instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
 - And remember, optimistic updates also eliminate in-between states — the hearts and upvotes all update instantly because `useOptimistic` skips the wait entirely.
 
+## Offline Support
+
+- One more thing before we wrap up the code. (Show `next.config.ts` — `experimental: { useOffline: true }`.) This is a new experimental flag we're working on. All the Suspense boundaries and static shells we just built? They make offline support possible. When there's no connection, the cached shell still renders — skeletons show where data would be — and when the connection comes back, content streams in. We'll see this in action on the deployed app in a moment.
+
 ## Review
 
 - Remember how the app looked at the start? (Switch to the `start` branch / stash changes to show the broken version.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
 - Now let me show you the after. This app is deployed and live right now — with all the changes we just made.
-- Remember that Slow 3G blank screen from the start? (Open the deployed app → DevTools → Slow 3G, reload.) The static shell shows up instantly — header, tabs, skeletons — all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
-- And here's something we're working on — let's go fully offline. (Turn off Wi-Fi.) Navigate to a session. The static shell still loads — header, tabs, skeletons all render from the cache. Now turn Wi-Fi back on — the content streams in and fills the skeletons. The app stays usable even with no connection, and recovers gracefully when you're back online.
+- Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (Open the deployed app → DevTools → Network throttling → Slow 3G, reload.) The static shell shows up instantly — header, tabs, skeletons — all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
+- Now let's take it further — same dropdown, switch to Offline. (Navigate to a session.) The static shell still loads — header, tabs, skeletons all render from the cache. Now switch back to No Throttling — content streams in and fills the skeletons. The app stays usable even with no connection, and recovers gracefully when you're back online. That's the `useOffline` flag we just saw.
 - The important thing to remember — the actual interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
 - Now — it's great to learn all of this, but realistically you're not going to be hand-coding every `useOptimistic` reducer and `data-pending` pattern from scratch. So we've created two agent skills for this — knowledge files that teach your coding agent how to implement these patterns correctly. (Show the `.agents/skills/` folder.)
   - **async-react** — handles everything we just did: Suspense boundaries, optimistic updates, action props, pending states. It covers both migration paths — fixing legacy `useState` + `useEffect` patterns, and adding coordination to a non-interactive app.

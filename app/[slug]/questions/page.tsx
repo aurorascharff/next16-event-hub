@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 
 export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
-    <div className="flex h-[calc(100dvh-6rem)] flex-col sm:h-[calc(100dvh-8rem)]">
+    <div className="flex h-[calc(100dvh-6rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] flex-col sm:h-[calc(100dvh-8rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]">
       <div className="shrink-0 pb-3">
         <Suspense fallback={<EventHeaderSkeleton />}>
           <EventHeader params={params} />

@@ -1,5 +1,4 @@
 import { Clock, MapPin } from 'lucide-react';
-
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEventBySlug } from '@/data/queries/event';

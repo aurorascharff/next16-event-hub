@@ -55,7 +55,7 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   return (
-    <div className="flex items-center gap-3">
+    <div className="bg-background sticky top-0 z-10 flex items-center gap-3 pb-3">
       {event.speaker && <Avatar name={event.speaker} variant="speaker" size="lg" />}
       <div className="min-w-0 flex-1">
         <h1 className="truncate font-sans text-base font-bold tracking-tight sm:text-lg">{event.name}</h1>

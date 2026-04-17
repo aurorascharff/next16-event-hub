@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
 import { addQuestion } from '@/data/actions/question';
-import { useFlashOnChange } from '@/lib/useFlashOnChange';
 import { usePolling } from '@/lib/usePolling';
 import type { Question, SortValue } from '@/types';
 import { QuestionCard } from './QuestionCard';
@@ -29,7 +28,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser, childre
   const searchParams = useSearchParams();
   const sort = (searchParams.get('sort') as SortValue) || 'top';
 
-  useFlashOnChange(initialQuestions);
   usePolling(5000);
 
   const [optimisticQuestions, setOptimisticQuestions] = useOptimistic(

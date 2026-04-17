@@ -114,7 +114,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
 - Let's add a `usePolling` hook that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component. Background update uses transitions by default since nextjs router uses transitions.
-- On window focus we can also trigger a refresh to make sure data is fresh when the user comes back. Just refresh on focus inside this hook and use animate-flash to highlight new items. Now questions and upvotes from other attendees show up in real time without any manual refresh.
+- On window focus we can also trigger a refresh to make sure data is fresh when the user comes back. Now questions and upvotes from other attendees show up in real time without any manual refresh.
 - The in-between state here is ideally invisible — fresh data just appears without disrupting anything. And because it shares the same transition pipeline as user mutations, everything coordinates naturally.
 
 ### List Animation

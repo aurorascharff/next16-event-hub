@@ -44,7 +44,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
       style={{ viewTransitionName: 'bottom-nav' }}
       aria-busy={isPending}
     >
-      <div className="mx-auto flex max-w-4xl">
+      <div className="mx-auto flex max-w-4xl gap-1 px-2 py-1.5">
         {tabs.map((tab, i) => {
           const isActive = i === (action ? optimisticActive : resolvedActive);
           return (
@@ -63,8 +63,8 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
                 }
               }}
               className={cn(
-                'flex flex-1 flex-col items-center gap-0.5 border-t-2 border-transparent py-2.5 text-xs font-medium transition-[color,opacity,border-color]',
-                isActive ? 'border-primary bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground',
+                'flex flex-1 flex-col items-center gap-0.5 rounded-full py-2 text-xs font-medium transition-[color,opacity,background-color]',
+                isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground',
                 action && isPending && !isActive && 'opacity-40',
               )}
             >

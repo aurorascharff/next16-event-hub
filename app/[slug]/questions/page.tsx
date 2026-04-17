@@ -19,10 +19,9 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <div>
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 pb-3">
+      <QuestionFeed params={params}>
         <EventHeader params={params} />
-      </div>
-      <QuestionFeed params={params} />
+      </QuestionFeed>
     </div>
   );
 }
@@ -42,11 +41,18 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
   );
 }
 
-async function QuestionFeed({ params }: Pick<PageProps<'/[slug]/questions'>, 'params'>) {
+async function QuestionFeed({
+  params,
+  children,
+}: Pick<PageProps<'/[slug]/questions'>, 'params'> & { children: React.ReactNode }) {
   const { slug } = await params;
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
-  return <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser} />;
+  return (
+    <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser}>
+      {children}
+    </QuestionList>
+  );
 }
 
 // eslint-disable-next-line autofix/no-unused-vars

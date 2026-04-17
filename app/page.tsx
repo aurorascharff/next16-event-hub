@@ -31,7 +31,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
       default="none"
     >
-      <div className="group min-h-[calc(100dvh-env(safe-area-inset-top))] pb-16">
+      <div className="group min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <header
           className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b"
           style={{ viewTransitionName: 'site-header' }}

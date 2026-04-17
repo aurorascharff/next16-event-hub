@@ -1,16 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { startTransition, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export function usePolling(intervalMs = 5000) {
   const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      startTransition(() => {
-        router.refresh();
-      });
+      router.refresh();
     }, intervalMs);
     return () => {
       clearInterval(interval);

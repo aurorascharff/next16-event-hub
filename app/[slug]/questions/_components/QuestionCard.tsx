@@ -9,7 +9,7 @@ type Props = {
 
 export function QuestionCard({ question }: Props) {
   return (
-    <div data-question-id={question.id} className="flex items-start gap-2 rounded-lg border p-3">
+    <div className="flex items-start gap-2 rounded-lg border p-3">
       <UpvoteButton
         questionId={question.id}
         eventSlug={question.eventSlug}

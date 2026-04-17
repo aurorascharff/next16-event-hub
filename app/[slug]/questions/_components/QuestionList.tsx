@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ChipGroup } from '@/components/design/ChipGroup';
 import { addQuestion } from '@/data/actions/question';
-import { useFlashOnChange } from '@/lib/useFlashOnChange';
 import type { Question, SortValue } from '@/types';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
@@ -26,8 +25,6 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser, childre
   const router = useRouter();
   const searchParams = useSearchParams();
   const sort = (searchParams.get('sort') as SortValue) || 'top';
-
-  useFlashOnChange(initialQuestions);
 
   async function postAction(content: string) {
     const formData = new FormData();

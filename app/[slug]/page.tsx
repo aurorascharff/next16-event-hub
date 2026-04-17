@@ -28,7 +28,7 @@ export async function generateStaticParams() {
 
 export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" style={{ overflowAnchor: 'none' }}>
       <div>
         <Suspense>
           <SessionDetails params={params} />

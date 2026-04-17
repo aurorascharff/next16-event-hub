@@ -47,5 +47,7 @@ export const getQuestionsByEvent = cache(async (eventSlug: string, currentUser?:
 });
 
 export const getQuestionCount = cache(async (eventSlug: string) => {
+  'use cache';
+  cacheTag(`questions-${eventSlug}`);
   return prisma.question.count({ where: { eventSlug } });
 });

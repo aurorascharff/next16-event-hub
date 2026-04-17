@@ -3,11 +3,10 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
-    authInterrupts: true,
-    staleTimes: {
-      dynamic: 30,
-    },
+    cachedNavigations: true,
+    prefetchInlining: true,
     useOffline: true,
+    varyParams: true,
     viewTransition: true,
   },
   reactCompiler: true,

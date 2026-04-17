@@ -8,7 +8,7 @@ import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export const unstable_instant = {
@@ -19,6 +19,7 @@ export const unstable_instant = {
       params: { slug: 'opening-party' },
     },
   ],
+  unstable_disableValidation: true,
 };
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
@@ -37,13 +38,16 @@ export async function generateStaticParams() {
   });
 }
 
-export default function SessionPage({ params }: PageProps<'/[slug]'>) {
+export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
+  const { slug } = await params;
   return (
     <div className="flex flex-col gap-6" style={{ overflowAnchor: 'none' }}>
       <div className="min-h-56 sm:min-h-72">
-        <Suspense fallback={<EventDetailsSkeleton />}>
-          <SessionDetails params={params} />
-        </Suspense>
+        <EventDetails slug={slug}>
+          <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+            <FavoriteStatus slug={slug} />
+          </Suspense>
+        </EventDetails>
         <div className="mt-4 min-h-9">
           <CommentForm />
         </div>
@@ -56,27 +60,17 @@ export default function SessionPage({ params }: PageProps<'/[slug]'>) {
         }
       >
         <ViewTransition enter="slide-up" default="none">
-          <SessionComments params={params} />
+          <CommentList slug={slug} />
         </ViewTransition>
       </Suspense>
     </div>
   );
 }
 
-async function SessionDetails({ params }: { params: PageProps<'/[slug]'>['params'] }) {
-  const { slug } = await params;
-  return (
-    <EventDetails slug={slug}>
-      <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-        <FavoriteStatus slug={slug} />
-      </Suspense>
-    </EventDetails>
-  );
-}
-
-async function SessionComments({ params }: { params: PageProps<'/[slug]'>['params'] }) {
-  const { slug } = await params;
-  return <CommentList slug={slug} />;
+async function FavoriteStatus({ slug }: { slug: string }) {
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }
 
 async function CommentList({ slug }: { slug: string }) {
@@ -114,10 +108,4 @@ function CommentListSkeleton() {
       })}
     </div>
   );
-}
-
-async function FavoriteStatus({ slug }: { slug: string }) {
-  const currentUser = await getCurrentUser();
-  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }

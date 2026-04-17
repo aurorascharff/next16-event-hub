@@ -1,17 +1,19 @@
 'use client';
 
 import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { BottomNav } from '@/components/design/BottomNav';
 import type { Route } from 'next';
 
 export default function SessionTabs() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { slug } = useParams<{ slug: string }>();
 
   const qs = searchParams.toString();
   const suffix = qs ? `?${qs}` : '';
+  const activeIndex = pathname.endsWith('/questions') ? 2 : 1;
 
   const tabs = [
     { href: `/${suffix}` as Route, icon: <ArrowLeft className="size-5" />, label: 'Back' },
@@ -22,6 +24,7 @@ export default function SessionTabs() {
   return (
     <BottomNav
       tabs={tabs}
+      activeIndex={activeIndex}
       onChange={href => {
         router.push(href);
       }}

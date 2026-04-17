@@ -58,8 +58,8 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
     <div className="flex items-center gap-3">
       {event.speaker && <Avatar name={event.speaker} variant="speaker" size="lg" />}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate font-sans text-sm font-bold tracking-tight sm:text-base">{event.name}</h1>
-        {event.speaker && <p className="text-muted-foreground text-xs">{event.speaker}</p>}
+        <h1 className="truncate font-sans text-base font-bold tracking-tight sm:text-lg">{event.name}</h1>
+        {event.speaker && <p className="text-muted-foreground text-xs sm:text-sm">{event.speaker}</p>}
       </div>
       <QrCodeDialog eventName={event.name} />
     </div>
@@ -79,7 +79,7 @@ function EventHeaderSkeleton() {
       <Skeleton className="size-8 shrink-0 rounded-full" />
       <div className="flex-1 space-y-1.5">
         <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-3 w-24" />
+        <Skeleton className="h-3.5 w-24" />
       </div>
     </div>
   );

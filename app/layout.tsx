@@ -1,12 +1,14 @@
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import { Suspense } from 'react';
 import { AuthGate } from '@/components/common/AuthGate';
+
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { getCurrentUser } from '@/data/queries/auth';
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
+import { OfflineIndicator } from '@/components/common/OfflineIndicator';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -60,6 +62,7 @@ export default function RootLayout({
           />
           <main className="pt-[env(safe-area-inset-top)]">{children}</main>
           <Toaster />
+          <OfflineIndicator />
         </ThemeProvider>
       </body>
     </html>

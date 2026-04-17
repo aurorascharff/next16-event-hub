@@ -19,7 +19,7 @@ export const unstable_instant = {
       params: { slug: 'opening-party' },
     },
   ],
-  unstable_disableValidation: true,
+  unstable_disableBuildValidation: true,
 };
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {

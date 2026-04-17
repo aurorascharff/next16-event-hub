@@ -55,7 +55,7 @@ async function QuestionFeed({
   );
 }
 
-export function EventHeaderSkeleton() {
+function EventHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
       <Skeleton className="size-8 shrink-0 rounded-full" />
@@ -67,7 +67,7 @@ export function EventHeaderSkeleton() {
   );
 }
 
-export function QuestionFeedSkeleton() {
+function QuestionFeedSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">

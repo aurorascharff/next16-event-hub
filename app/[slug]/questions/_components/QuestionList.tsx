@@ -54,7 +54,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
 
   return (
     <div className="space-y-3">
-      <div className="bg-background sticky top-[3.5rem] z-10 space-y-3 pb-3">
+      <div className="bg-background sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-10 space-y-3 pb-3">
         <QuestionForm postAction={postAction} />
         <div className="flex items-center justify-between">
           <QuestionCount count={initialQuestions.length} />

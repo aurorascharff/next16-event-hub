@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
     <div>
-      <div className="bg-background sticky top-0 z-10 pb-3">
+      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 pb-3">
         <EventHeader params={params} />
       </div>
       <QuestionFeed params={params} />

@@ -8,7 +8,8 @@ type Props = {
   currentUser: string | null;
 };
 
-export function CommentCard({ comment, currentUser }: Props) {
+export async function CommentCard({ comment, currentUser }: Props) {
+  'use cache';
   const isOwner = currentUser === comment.userName;
 
   return (

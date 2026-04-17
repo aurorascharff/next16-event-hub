@@ -28,12 +28,12 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
       <button
         type="submit"
         className={cn(
-          'cursor-pointer rounded p-1 transition-colors',
+          'cursor-pointer rounded p-1.5 transition-colors',
           optimisticFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',
         )}
         aria-label={optimisticFavorited ? 'Remove from favorites' : 'Add to favorites'}
       >
-        <Heart className={cn('size-4', optimisticFavorited && 'fill-current')} />
+        <Heart className={cn('size-5', optimisticFavorited && 'fill-current')} />
       </button>
     </form>
   );

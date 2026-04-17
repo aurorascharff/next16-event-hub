@@ -29,7 +29,7 @@ export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
       exit={{ default: 'none', 'nav-back': 'slide-to-right' }}
       default="none"
     >
-      <div className="min-h-screen pb-16">
+      <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-16">
         <ViewTransition>
           <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
         </ViewTransition>

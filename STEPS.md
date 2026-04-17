@@ -22,6 +22,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
   - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
 - So the traditional approach actually made things worse. Let's leave it broken for now — we'll come back and fix it properly.
+- And just to drive it home — let's see what this looks like on a real-world connection. (Open DevTools → Network → Slow 3G, reload the page.) Blank screen. Nothing. For seconds. That global spinner is the only thing between the user and a white page. This is what your users on spotty conference Wi-Fi actually experience.
 - Here's what I want you to take away: this isn't really a performance problem — it's a coordination problem. Loading, mutations, navigation — they're all running in their own little worlds with no coordination. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
 
 ## Slide 2: React Render Cycle
@@ -140,6 +141,7 @@ Sometimes the best loading state is no loading state at all. You can just skip i
 
 - Remember how the app looked at the start? (Switch to the `start` branch / stash changes to show the broken version.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
 - Now let me show you the after. This app is deployed and live right now — with all the changes we just made.
+- Remember that Slow 3G blank screen from the start? (Open the deployed app → DevTools → Slow 3G, reload.) The static shell shows up instantly — header, tabs, skeletons — all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
 - The important thing to remember — the actual interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
 - Now — it's great to learn all of this, but realistically you're not going to be hand-coding every `useOptimistic` reducer and `data-pending` pattern from scratch. So we've created two agent skills for this — knowledge files that teach your coding agent how to implement these patterns correctly. (Show the `.agents/skills/` folder.)
   - **async-react** — handles everything we just did: Suspense boundaries, optimistic updates, action props, pending states. It covers both migration paths — fixing legacy `useState` + `useEffect` patterns, and adding coordination to a non-interactive app.

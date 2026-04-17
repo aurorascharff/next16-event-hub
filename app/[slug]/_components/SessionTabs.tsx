@@ -22,8 +22,10 @@ export default function SessionTabs() {
       action={href => {
         if (href === '/') {
           addTransitionType('nav-back');
+          router.back();
+        } else {
+          router.push(href);
         }
-        return router.push(href);
       }}
     />
   );

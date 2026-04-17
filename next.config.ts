@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     staleTimes: {
       dynamic: 30,
     },
+    useOffline: true,
     viewTransition: true,
   },
   reactCompiler: true,

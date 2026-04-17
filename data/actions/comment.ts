@@ -6,7 +6,7 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
 
 const commentSchema = z.object({
-  content: z.string().min(1, 'Comment is required').max(500),
+  content: z.string().trim().min(1, 'Comment is required').max(500),
 });
 
 export type CommentActionResult = { success: true } | { error: string; success: false };

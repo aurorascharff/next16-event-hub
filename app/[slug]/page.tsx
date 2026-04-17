@@ -11,16 +11,18 @@ import { CommentForm } from './_components/CommentForm';
 import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
-export const unstable_instant = {
-  prefetch: 'runtime',
-  samples: [
-    {
-      cookies: [{ name: 'event-hub-user', value: null }],
-      params: { slug: 'opening-party' },
-    },
-  ],
-  unstable_disableBuildValidation: true,
-};
+export const unstable_prefetch = 'runtime';
+
+// export const unstable_instant = {
+//   prefetch: 'runtime',
+//   samples: [
+//     {
+//       cookies: [{ name: 'event-hub-user', value: null }],
+//       params: { slug: 'opening-party' },
+//     },
+//   ],
+//   unstable_disableBuildValidation: true,
+// };
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;

@@ -8,16 +8,18 @@ import { QrCodeDialog } from './_components/QrCodeDialog';
 import { QuestionList } from './_components/QuestionList';
 import type { Metadata } from 'next';
 
-export const unstable_instant = {
-  prefetch: 'runtime',
-  samples: [
-    {
-      cookies: [{ name: 'event-hub-user', value: 'testuser' }],
-      params: { slug: 'opening-party' },
-      searchParams: { sort: null },
-    },
-  ],
-};
+export const unstable_prefetch = 'runtime';
+
+// export const unstable_instant = {
+//   prefetch: 'runtime',
+//   samples: [
+//     {
+//       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
+//       params: { slug: 'opening-party' },
+//       searchParams: { sort: null },
+//     },
+//   ],
+// };
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
   const { slug } = await params;

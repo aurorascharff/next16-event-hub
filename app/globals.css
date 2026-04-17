@@ -293,6 +293,18 @@
     var(--duration-move) ease-in both slide-y;
 }
 
+/* --- Data-refresh flash --- */
+
+@keyframes flash {
+  from {
+    background-color: var(--primary / 0.12);
+  }
+}
+
+.animate-flash {
+  animation: flash 600ms ease-out;
+}
+
 /* --- Reduced motion --- */
 
 @media (prefers-reduced-motion: reduce) {

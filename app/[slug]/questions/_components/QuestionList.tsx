@@ -65,7 +65,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser, childre
       </div>
       <div className="space-y-2">
         {sorted.map(question => {
-          return <QuestionCard key={question.id} question={question} />;
+          return <QuestionCard key={`${question.id}-${question.votes}`} question={question} />;
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>

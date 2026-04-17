@@ -31,7 +31,9 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-8">
       <div className="min-h-72 sm:min-h-96">
-        <EventDetails slug={slug} />
+        <Suspense fallback={<CenteredSpinner />}>
+          <EventDetails slug={slug} />
+        </Suspense>
       </div>
       <div className="border-border/60 border-t pt-8">
         <div className="mb-6 min-h-9">

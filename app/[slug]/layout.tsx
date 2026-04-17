@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { getEventBySlug } from '@/data/queries/event';
 import SessionTabs from './_components/SessionTabs';
 import type { Metadata } from 'next';
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
   return (
     <div className="min-h-screen pb-16">
+      <ScrollToTop />
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
       <Suspense>
         <SessionTabs />

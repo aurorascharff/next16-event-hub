@@ -16,7 +16,7 @@ export function CommentCard({ comment, currentUser }: Props) {
       <Avatar name={comment.userName} size="md" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium">{comment.userName}</span>
+          <span className="text-sm font-medium">{comment.userName}</span>
           <span className="text-muted-foreground text-xs">{timeAgo(comment.createdAt)}</span>
         </div>
         <p className="mt-0.5 text-sm leading-relaxed wrap-break-word">{comment.content}</p>

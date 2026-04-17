@@ -56,20 +56,17 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
             className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
           >
             <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                  {getDayLabel(event.day)}
-                </span>
-                <span className="text-border">·</span>
-                <span className="text-muted-foreground flex items-center gap-1 text-xs">
-                  <Clock className="size-3" />
+              <div className="text-muted-foreground flex items-center gap-2.5 text-xs sm:text-sm">
+                <span className="font-semibold tracking-wide uppercase">{getDayLabel(event.day)}</span>
+                <span className="flex items-center gap-1">
+                  <Clock className="size-3.5" />
                   {event.time}
                 </span>
               </div>
               <FavoriteButton favorited={event.hasFavorited} eventSlug={event.slug} />
             </div>
             {labels.length > 0 && (
-              <div className="mb-2 flex flex-wrap gap-1">
+              <div className="mb-2 flex flex-wrap gap-1.5">
                 {labels.map(label => {
                   return (
                     <span
@@ -82,19 +79,17 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
                 })}
               </div>
             )}
-            <h3 className="text-primary text-sm leading-snug font-semibold sm:text-[15px]">{event.name}</h3>
+            <h3 className="text-primary font-sans text-base leading-snug font-semibold sm:text-lg">{event.name}</h3>
             {event.speaker && (
               <div className="mt-2 flex items-center gap-2">
                 <Avatar name={event.speaker} variant="speaker" />
-                <span className="text-muted-foreground text-xs font-medium">{event.speaker}</span>
+                <span className="text-muted-foreground text-sm font-medium">{event.speaker}</span>
               </div>
             )}
             <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
-            <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
-              <span className="flex items-center gap-1">
-                <MapPin className="size-3" />
-                {event.location}
-              </span>
+            <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-xs sm:text-sm">
+              <MapPin className="size-3.5" />
+              <span>{event.location}</span>
             </div>
           </Link>
         );
@@ -110,29 +105,29 @@ export function EventGridSkeleton() {
         return (
           <div key={i} className="rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <Skeleton className="h-4 w-10" />
                 <Skeleton className="h-4 w-16" />
               </div>
               <Skeleton className="size-5 rounded" />
             </div>
-            <div className="mb-2 flex gap-1">
+            <div className="mb-2 flex gap-1.5">
               <Skeleton className="h-5 w-14 rounded-full" />
               <Skeleton className="h-5 w-18 rounded-full" />
             </div>
             <div>
-              <Skeleton className="h-4 w-4/5" />
-              <Skeleton className="mt-1 h-4 w-3/5" />
+              <Skeleton className="h-5 w-4/5" />
+              <Skeleton className="mt-1 h-5 w-3/5" />
             </div>
             <div className="mt-2 flex items-center gap-2">
               <Skeleton className="size-5 rounded-full" />
-              <Skeleton className="h-3.5 w-28" />
+              <Skeleton className="h-4 w-28" />
             </div>
-            <Skeleton className="mt-2 h-3.5 w-full" />
-            <Skeleton className="mt-1 h-3.5 w-3/5" />
-            <div className="mt-3 flex items-center gap-1">
-              <Skeleton className="size-3" />
-              <Skeleton className="h-3.5 w-28" />
+            <Skeleton className="mt-2 h-4 w-full" />
+            <Skeleton className="mt-1 h-4 w-3/5" />
+            <div className="mt-3 flex items-center gap-1.5">
+              <Skeleton className="size-3.5" />
+              <Skeleton className="h-4 w-28" />
             </div>
           </div>
         );

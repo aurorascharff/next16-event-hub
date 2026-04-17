@@ -24,7 +24,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
         <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex min-w-0 items-center gap-2">
-              <h1 className="font-sans text-base font-bold tracking-tight sm:text-lg">Event Hub</h1>
+              <h1 className="font-sans text-lg font-bold tracking-tight sm:text-xl">Event Hub</h1>
               <HeaderLinks />
             </div>
             <div className="flex items-center gap-2">

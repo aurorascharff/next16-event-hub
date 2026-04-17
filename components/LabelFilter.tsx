@@ -41,7 +41,7 @@ export function LabelFilterSkeleton() {
   return (
     <div className="flex gap-1.5 overflow-hidden">
       {Array.from({ length: 8 }).map((_, i) => {
-        return <Skeleton key={i} className="h-7 w-18 shrink-0 rounded-full" />;
+        return <Skeleton key={i} className="h-7 w-18 shrink-0 rounded-full bg-black/5 dark:bg-white/5" />;
       })}
     </div>
   );

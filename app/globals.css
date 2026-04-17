@@ -297,7 +297,7 @@
 
 @keyframes flash {
   from {
-    background-color: var(--primary / 0.12);
+    background-color: color-mix(in oklch, var(--primary) 15%, transparent);
   }
 }
 

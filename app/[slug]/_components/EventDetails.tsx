@@ -26,7 +26,7 @@ export async function EventDetails({ slug, children }: { slug: string; children?
             <span className="text-foreground/80 text-sm font-medium sm:text-base">{event.speaker}</span>
           </div>
         )}
-        <div className="h-24 overflow-y-auto sm:h-28">
+        <div className="h-40 overflow-y-auto sm:h-44">
           <p className="text-muted-foreground text-sm leading-relaxed sm:text-[15px]">{event.description}</p>
         </div>
       </div>
@@ -50,11 +50,13 @@ export function EventDetailsSkeleton() {
           <Skeleton className="size-8 shrink-0 rounded-full" />
           <Skeleton className="h-4 w-36" />
         </div>
-        <div className="h-24 overflow-hidden sm:h-28">
+        <div className="h-40 overflow-hidden sm:h-44">
           <div className="space-y-2 sm:space-y-2.5">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-11/12" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
           </div>
         </div>

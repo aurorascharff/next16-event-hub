@@ -8,7 +8,7 @@ import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export const unstable_instant = {
@@ -41,28 +41,32 @@ export async function generateStaticParams() {
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <div className="flex flex-col gap-6">
-      <div className="min-h-56 sm:min-h-72">
-        <EventDetails slug={slug}>
-          <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-            <FavoriteStatus slug={slug} />
-          </Suspense>
-        </EventDetails>
-        <div className="mt-4 min-h-9">
+    <div className="flex flex-col gap-8">
+      <div className="min-h-72 sm:min-h-96">
+        <Suspense fallback={<EventDetailsSkeleton />}>
+          <EventDetails slug={slug}>
+            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+              <FavoriteStatus slug={slug} />
+            </Suspense>
+          </EventDetails>
+        </Suspense>
+      </div>
+      <div className="border-border/60 border-t pt-8">
+        <div className="mb-6 min-h-9">
           <CommentForm />
         </div>
-      </div>
-      <Suspense
-        fallback={
-          <ViewTransition exit="slide-down">
-            <CommentListSkeleton />
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <CommentListSkeleton />
+            </ViewTransition>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <CommentList slug={slug} />
           </ViewTransition>
-        }
-      >
-        <ViewTransition enter="slide-up" default="none">
-          <CommentList slug={slug} />
-        </ViewTransition>
-      </Suspense>
+        </Suspense>
+      </div>
     </div>
   );
 }

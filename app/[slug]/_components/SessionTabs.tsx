@@ -19,7 +19,11 @@ export default function SessionTabs() {
     <BottomNav
       tabs={tabs}
       onChange={href => {
-        return router.push(href);
+        if (href === '/') {
+          router.back();
+        } else {
+          router.push(href);
+        }
       }}
     />
   );

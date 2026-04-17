@@ -51,7 +51,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
 
 function HeaderLinks() {
   return (
-    <div className="flex shrink-0 items-center gap-1.5">
+    <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
       <Link
         href="/slides/2"
         className="text-muted-foreground hover:text-foreground transition-colors"

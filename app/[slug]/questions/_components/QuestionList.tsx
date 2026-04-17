@@ -53,17 +53,21 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   });
 
   return (
-    <div className="space-y-3">
-      <QuestionForm postAction={postAction} />
-      <div className="flex items-center justify-between">
-        <QuestionCount count={initialQuestions.length} />
-        <ChipGroup items={sortOptions} value={sort} action={sortChange} variant="toggle" />
+    <div className="flex h-full flex-col gap-3">
+      <div className="shrink-0 space-y-3">
+        <QuestionForm postAction={postAction} />
+        <div className="flex items-center justify-between">
+          <QuestionCount count={initialQuestions.length} />
+          <ChipGroup items={sortOptions} value={sort} action={sortChange} variant="toggle" />
+        </div>
       </div>
-      <div className="space-y-2">
-        {sorted.map(question => {
-          return <QuestionCard key={question.id} question={question} />;
-        })}
-        {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+      <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="space-y-2">
+          {sorted.map(question => {
+            return <QuestionCard key={question.id} question={question} />;
+          })}
+          {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+        </div>
       </div>
     </div>
   );

@@ -55,8 +55,7 @@ async function QuestionFeed({
   );
 }
 
-// eslint-disable-next-line autofix/no-unused-vars
-function EventHeaderSkeleton() {
+export function EventHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
       <Skeleton className="size-8 shrink-0 rounded-full" />
@@ -68,8 +67,7 @@ function EventHeaderSkeleton() {
   );
 }
 
-// eslint-disable-next-line autofix/no-unused-vars
-function QuestionFeedSkeleton() {
+export function QuestionFeedSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">

@@ -70,7 +70,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - The idea is simple: push dynamic data deep in the component tree, wrap it in Suspense, and the framework handles the rest. That's how you get "show the shell first, stream the rest."
 - Now let's apply the same pattern to the rest of the app.
 - **Session detail page**: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
-- **Questions page**: No Suspense at all — navigate there and the whole page blocks. Use the `questionsSuspense` snippet to wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks. Now they stream in independently.
+- **Questions page**: No Suspense at all — navigate there and the whole page blocks. Can also just use loading.tsx.
 
 ## Navigation
 

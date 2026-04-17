@@ -36,7 +36,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
 
   return (
     <nav
-      className={cn('fixed inset-x-0 bottom-0 z-40 px-4 pb-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]', className)}
+      className={cn('fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]', className)}
       style={{ viewTransitionName: 'bottom-nav' }}
       aria-busy={isPending}
     >

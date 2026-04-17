@@ -41,7 +41,7 @@ export async function generateStaticParams() {
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <div className="flex flex-col gap-6" style={{ overflowAnchor: 'none' }}>
+    <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
         <EventDetails slug={slug}>
           <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>

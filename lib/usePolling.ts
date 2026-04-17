@@ -10,8 +10,15 @@ export function usePolling(intervalMs = 5000) {
     const interval = setInterval(() => {
       router.refresh();
     }, intervalMs);
+
+    const onFocus = () => {
+      router.refresh();
+    };
+    window.addEventListener('focus', onFocus);
+
     return () => {
       clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
     };
   }, [router, intervalMs]);
 }

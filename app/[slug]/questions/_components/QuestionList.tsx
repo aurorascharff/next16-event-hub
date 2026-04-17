@@ -101,7 +101,7 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser, childre
         {sorted.map(question => {
           return (
             <ViewTransition key={question.id}>
-              <QuestionCard question={question} />
+              <QuestionCard key={`${question.id}-${question.votes}`} question={question} />
             </ViewTransition>
           );
         })}

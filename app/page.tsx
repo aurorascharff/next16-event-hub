@@ -11,16 +11,6 @@ import type { Metadata } from 'next';
 
 export const unstable_prefetch = 'runtime';
 
-// export const unstable_instant = {
-//   prefetch: 'runtime',
-//   samples: [
-//     {
-//       cookies: [{ name: 'event-hub-user', value: 'testuser' }],
-//       searchParams: { day: 'day-1', label: null },
-//     },
-//   ],
-// };
-
 export const metadata: Metadata = {
   description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',
   title: 'Event Hub',

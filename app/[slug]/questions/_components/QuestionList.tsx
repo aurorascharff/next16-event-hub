@@ -84,24 +84,28 @@ export function QuestionList({ initialQuestions, eventSlug, currentUser }: Props
   });
 
   return (
-    <div className="space-y-3">
-      <QuestionForm postAction={postAction} />
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
-          Live · {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
-        </span>
-        <ChipGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />
+    <div className="flex h-full flex-col gap-3">
+      <div className="shrink-0 space-y-3">
+        <QuestionForm postAction={postAction} />
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
+            Live · {optimisticQuestions.length} question{optimisticQuestions.length !== 1 ? 's' : ''}
+          </span>
+          <ChipGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />
+        </div>
       </div>
-      <div className="space-y-2">
-        {sorted.map(question => {
-          return (
-            <ViewTransition key={question.id}>
-              <QuestionCard question={question} />
-            </ViewTransition>
-          );
-        })}
-        {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+      <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="space-y-2">
+          {sorted.map(question => {
+            return (
+              <ViewTransition key={question.id}>
+                <QuestionCard question={question} />
+              </ViewTransition>
+            );
+          })}
+          {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+        </div>
       </div>
     </div>
   );

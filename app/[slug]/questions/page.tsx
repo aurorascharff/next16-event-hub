@@ -30,11 +30,13 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 
 export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
   return (
-    <div>
-      <Suspense fallback={<EventHeaderSkeleton />}>
-        <EventHeader params={params} />
-      </Suspense>
-      <div className="mt-3">
+    <div className="flex h-[calc(100dvh-6rem)] flex-col sm:h-[calc(100dvh-8rem)]">
+      <div className="shrink-0 pb-3">
+        <Suspense fallback={<EventHeaderSkeleton />}>
+          <EventHeader params={params} />
+        </Suspense>
+      </div>
+      <div className="min-h-0 flex-1">
         <Suspense
           fallback={
             <ViewTransition exit="slide-down">
@@ -55,7 +57,7 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   return (
-    <div className="bg-background sticky top-0 z-10 flex items-center gap-3 pb-3">
+    <div className="flex items-center gap-3">
       {event.speaker && <Avatar name={event.speaker} variant="speaker" size="lg" />}
       <div className="min-w-0 flex-1">
         <h1 className="truncate font-sans text-base font-bold tracking-tight sm:text-lg">{event.name}</h1>

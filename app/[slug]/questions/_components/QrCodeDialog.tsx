@@ -39,7 +39,7 @@ export function QrCodeDialog({ eventName }: Props) {
       <DialogTrigger render={<Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" />}>
         <QrCode className="size-4" />
       </DialogTrigger>
-      <DialogContent className="items-center text-center">
+      <DialogContent className="items-center text-center" style={{ viewTransitionName: 'qr-dialog' }}>
         <DialogHeader className="items-center pr-6">
           <DialogTitle>{eventName}</DialogTitle>
           <DialogDescription>Scan to join the Q&A</DialogDescription>

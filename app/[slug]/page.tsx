@@ -37,17 +37,12 @@ export async function generateStaticParams() {
   });
 }
 
-export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
-  const { slug } = await params;
+export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="min-h-56 sm:min-h-72">
         <Suspense fallback={<EventDetailsSkeleton />}>
-          <EventDetails slug={slug}>
-            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-              <FavoriteStatus slug={slug} />
-            </Suspense>
-          </EventDetails>
+          <SessionDetails params={params} />
         </Suspense>
         <div className="mt-4 min-h-9">
           <CommentForm />
@@ -61,11 +56,27 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
         }
       >
         <ViewTransition enter="slide-up" default="none">
-          <CommentList slug={slug} />
+          <SessionComments params={params} />
         </ViewTransition>
       </Suspense>
     </div>
   );
+}
+
+async function SessionDetails({ params }: { params: PageProps<'/[slug]'>['params'] }) {
+  const { slug } = await params;
+  return (
+    <EventDetails slug={slug}>
+      <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+        <FavoriteStatus slug={slug} />
+      </Suspense>
+    </EventDetails>
+  );
+}
+
+async function SessionComments({ params }: { params: PageProps<'/[slug]'>['params'] }) {
+  const { slug } = await params;
+  return <CommentList slug={slug} />;
 }
 
 async function CommentList({ slug }: { slug: string }) {

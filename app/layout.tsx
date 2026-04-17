@@ -1,6 +1,7 @@
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import { Suspense } from 'react';
 import { AuthGate } from '@/components/common/AuthGate';
+
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { CenteredSpinner } from '@/components/ui/spinner';

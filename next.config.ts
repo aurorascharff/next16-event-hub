@@ -3,7 +3,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
-    authInterrupts: true,
+    cachedNavigations: true,
+    prefetchInlining: true,
+    varyParams: true,
     viewTransition: true,
   },
   reactCompiler: true,

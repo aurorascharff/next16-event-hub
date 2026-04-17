@@ -26,32 +26,21 @@ export async function generateStaticParams() {
   });
 }
 
-export default function SessionPage({ params }: PageProps<'/[slug]'>) {
+export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
+  const { slug } = await params;
   return (
     <div className="flex flex-col gap-6" style={{ overflowAnchor: 'none' }}>
       <div>
-        <Suspense>
-          <SessionDetails params={params} />
-        </Suspense>
+        <EventDetails slug={slug} />
         <div className="mt-4 min-h-9">
           <CommentForm />
         </div>
       </div>
       <Suspense fallback={<CenteredSpinner />}>
-        <SessionComments params={params} />
+        <CommentList slug={slug} />
       </Suspense>
     </div>
   );
-}
-
-async function SessionDetails({ params }: { params: PageProps<'/[slug]'>['params'] }) {
-  const { slug } = await params;
-  return <EventDetails slug={slug} />;
-}
-
-async function SessionComments({ params }: { params: PageProps<'/[slug]'>['params'] }) {
-  const { slug } = await params;
-  return <CommentList slug={slug} />;
 }
 
 async function CommentList({ slug }: { slug: string }) {

@@ -12,12 +12,11 @@ type Props = {
   eventSlug: string;
   currentUser: string | null;
   questionCount: number;
-  header: React.ReactNode;
   sort: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function OptimisticQuestions({ eventSlug, currentUser, questionCount, header, sort, children }: Props) {
+export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sort, children }: Props) {
   usePolling(5000);
 
   const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
@@ -34,9 +33,7 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, hea
       votes: 0,
     };
 
-    setPendingQuestions(c => {
-      return [newQuestion, ...c];
-    });
+    setPendingQuestions(c => [newQuestion, ...c]);
     const formData = new FormData();
     formData.set('content', content);
     formData.set('id', id);
@@ -49,9 +46,8 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, hea
   const totalCount = questionCount + pendingQuestions.length;
 
   return (
-    <div className="space-y-3">
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pb-3">
-        {header}
+    <>
+      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
         <QuestionForm postAction={postAction} />
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
@@ -67,6 +63,6 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, hea
         })}
         {children}
       </div>
-    </div>
+    </>
   );
 }

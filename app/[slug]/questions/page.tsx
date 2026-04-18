@@ -5,10 +5,10 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { SortValue } from '@/types';
-import { BasicQuestionForm } from './_components/BasicQuestionForm';
 import { QrCodeDialog } from './_components/QrCodeDialog';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
+import { Questions } from './_components/Questions';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
@@ -45,17 +45,12 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   return (
     <div className="space-y-3">
       <EventHeader params={params} />
-      <BasicQuestionForm
-        eventSlug={slug}
-        currentUser={currentUser}
-        questionCount={questions.length}
-        sort={<QuestionSort />}
-      >
+      <Questions eventSlug={slug} currentUser={currentUser} questionCount={questions.length} sort={<QuestionSort />}>
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
-      </BasicQuestionForm>
+      </Questions>
     </div>
   );
 }

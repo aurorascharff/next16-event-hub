@@ -1,11 +1,12 @@
 'use client';
 
-import { useOptimistic } from 'react';
+import { useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/data/actions/question';
 import type { Question } from '@/types';
 import { QuestionCard } from './QuestionCard';
-import { QuestionForm } from './QuestionForm';
 
 type Props = {
   eventSlug: string;
@@ -16,9 +17,14 @@ type Props = {
 };
 
 export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sort, children }: Props) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
 
-  async function postAction(content: string) {
+  async function submitAction(formData: FormData) {
+    const content = (formData.get('content') as string)?.trim();
+    if (!content) return;
+    formRef.current?.reset();
+
     const id = crypto.randomUUID();
     const newQuestion: Question = {
       content,
@@ -33,10 +39,10 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sor
     setPendingQuestions(c => {
       return [newQuestion, ...c];
     });
-    const formData = new FormData();
-    formData.set('content', content);
-    formData.set('id', id);
-    const result = await addQuestion(eventSlug, formData);
+    const serverData = new FormData();
+    serverData.set('content', content);
+    serverData.set('id', id);
+    const result = await addQuestion(eventSlug, serverData);
     if (!result.success) {
       toast.error(result.error);
     }
@@ -47,7 +53,10 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sor
   return (
     <>
       <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
-        <QuestionForm postAction={postAction} />
+        <form ref={formRef} action={submitAction} className="flex gap-2">
+          <Input name="content" placeholder="Ask a question..." required className="flex-1" />
+          <Button type="submit">Ask</Button>
+        </form>
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />

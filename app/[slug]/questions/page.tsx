@@ -47,8 +47,8 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
       <EventHeader params={params} />
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-          {questions.length} question{questions.length !== 1 ? 's' : ''}
+          <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
+          Live · {questions.length} question{questions.length !== 1 ? 's' : ''}
         </span>
         <QuestionSort />
       </div>

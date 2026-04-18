@@ -132,7 +132,7 @@ Sometimes the best in-between state is none at all — you eliminate it entirely
 
 ## Offline Support
 
-- One more thing before we wrap up the code. (Show `next.config.ts` — `experimental: { useOffline: true }`.) This is a new experimental flag we're working on. All the Suspense boundaries and static shells we just built? They make offline support possible. When there's no connection, the cached shell still renders — skeletons show where data would be — and when the connection comes back, content streams in. We'll see this in action on the deployed app in a moment.
+- One more thing before we wrap up the code. (Show `next.config.ts` — `experimental: { useOffline: true }`.) This is a new experimental flag we're working on. All the Suspense boundaries and static shells we just built? They make offline support possible. The router prefetches all cacheable content — static shells, cached components, everything behind `'use cache'` — and stores it in a service worker cache. (Open DevTools → Application → Cache Storage to show the prefetched content.) When there's no connection, the cached shell still renders — skeletons show where data would be — and when the connection comes back, content streams in. We'll see this in action on the deployed app in a moment.
 
 ## Review
 

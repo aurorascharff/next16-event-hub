@@ -1,19 +1,15 @@
 'use client';
 
+import { SendHorizonal } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/data/actions/question';
 
 type Props = {
   eventSlug: string;
-  currentUser: string | null;
-  questionCount: number;
-  sort: React.ReactNode;
-  children: React.ReactNode;
 };
 
-export function Questions({ eventSlug, questionCount, sort, children }: Props) {
+export function Questions({ eventSlug }: Props) {
   async function submitAction(formData: FormData) {
     const content = (formData.get('content') as string)?.trim();
     if (!content) return;
@@ -27,21 +23,20 @@ export function Questions({ eventSlug, questionCount, sort, children }: Props) {
   }
 
   return (
-    <>
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
-        <form action={submitAction} className="flex gap-2">
-          <Input name="content" placeholder="Ask a question..." required className="flex-1" />
-          <Button type="submit">Ask</Button>
-        </form>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-            <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-            {questionCount} question{questionCount !== 1 ? 's' : ''}
-          </span>
-          {sort}
-        </div>
-      </div>
-      <div className="space-y-2">{children}</div>
-    </>
+    <div
+      className="bg-background fixed inset-x-0 bottom-0 z-30 px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+      style={{ viewTransitionName: 'question-form' }}
+    >
+      <form action={submitAction} className="mx-auto flex max-w-2xl gap-2">
+        <Input name="content" placeholder="Ask a question..." required className="flex-1" />
+        <button
+          type="submit"
+          className="text-primary hover:text-primary/80 flex shrink-0 items-center justify-center rounded-md px-2 transition-colors"
+          aria-label="Send question"
+        >
+          <SendHorizonal className="size-5" />
+        </button>
+      </form>
+    </div>
   );
 }

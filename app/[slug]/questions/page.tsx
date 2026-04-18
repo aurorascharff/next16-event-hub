@@ -43,14 +43,22 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   });
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pb-14">
       <EventHeader params={params} />
-      <Questions eventSlug={slug} currentUser={currentUser} questionCount={questions.length} sort={<QuestionSort />}>
+      <div className="flex items-center justify-between">
+        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+          <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
+          {questions.length} question{questions.length !== 1 ? 's' : ''}
+        </span>
+        <QuestionSort />
+      </div>
+      <div className="space-y-2">
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
-      </Questions>
+      </div>
+      <Questions eventSlug={slug} />
     </div>
   );
 }
@@ -72,17 +80,13 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
 
 function QuestionFeedSkeleton() {
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <Skeleton className="h-9 flex-1 rounded-md" />
-        <Skeleton className="h-9 w-14 rounded-md" />
-      </div>
+    <div className="space-y-3 pb-14">
       <div className="flex items-center justify-between">
         <Skeleton className="h-3 w-24" />
         <Skeleton className="h-6 w-28 rounded-full" />
       </div>
       <div className="space-y-2">
-        {Array.from({ length: 3 }).map((_, i) => {
+        {Array.from({ length: 4 }).map((_, i) => {
           return (
             <div key={i} className="flex items-start gap-2 rounded-lg border p-3">
               <Skeleton className="h-10 w-8 rounded-md" />

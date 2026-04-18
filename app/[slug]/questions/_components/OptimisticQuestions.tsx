@@ -1,8 +1,8 @@
 'use client';
 
+import { SendHorizonal } from 'lucide-react';
 import { useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/data/actions/question';
 import type { Question } from '@/types';
@@ -11,12 +11,9 @@ import { QuestionCard } from './QuestionCard';
 type Props = {
   eventSlug: string;
   currentUser: string | null;
-  questionCount: number;
-  sort: React.ReactNode;
-  children: React.ReactNode;
 };
 
-export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sort, children }: Props) {
+export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
 
@@ -48,28 +45,25 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sor
     }
   }
 
-  const totalCount = questionCount + pendingQuestions.length;
-
   return (
     <>
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
-        <form ref={formRef} action={submitAction} className="flex gap-2">
+      {pendingQuestions.map(question => {
+        return <QuestionCard key={question.id} question={question} pending />;
+      })}
+      <div
+        className="bg-background fixed inset-x-0 bottom-0 z-30 px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+        style={{ viewTransitionName: 'question-form' }}
+      >
+        <form ref={formRef} action={submitAction} className="mx-auto flex max-w-2xl gap-2">
           <Input name="content" placeholder="Ask a question..." required className="flex-1" />
-          <Button type="submit">Ask</Button>
+          <button
+            type="submit"
+            className="text-primary hover:text-primary/80 flex shrink-0 items-center justify-center rounded-md px-2 transition-colors"
+            aria-label="Send question"
+          >
+            <SendHorizonal className="size-5" />
+          </button>
         </form>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-            <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
-            Live · {totalCount} question{totalCount !== 1 ? 's' : ''}
-          </span>
-          {sort}
-        </div>
-      </div>
-      <div className="space-y-2">
-        {pendingQuestions.map(question => {
-          return <QuestionCard key={question.id} question={question} pending />;
-        })}
-        {children}
       </div>
     </>
   );

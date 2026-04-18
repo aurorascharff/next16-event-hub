@@ -3,6 +3,7 @@
 import { useOptimistic } from 'react';
 import { toast } from 'sonner';
 import { addQuestion } from '@/data/actions/question';
+
 import type { Question } from '@/types';
 import { QuestionCard } from './QuestionCard';
 import { QuestionForm } from './QuestionForm';
@@ -11,11 +12,12 @@ type Props = {
   eventSlug: string;
   currentUser: string | null;
   questionCount: number;
+  header: React.ReactNode;
   sort: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sort, children }: Props) {
+export function OptimisticQuestions({ eventSlug, currentUser, questionCount, header, sort, children }: Props) {
   const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
 
   async function postAction(content: string) {
@@ -45,23 +47,24 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sor
   const totalCount = questionCount + pendingQuestions.length;
 
   return (
-    <>
-      <QuestionForm postAction={postAction} />
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-          {totalCount} question{totalCount !== 1 ? 's' : ''}
-        </span>
-        {sort}
-      </div>
-      {pendingQuestions.length > 0 && (
-        <div className="space-y-2">
-          {pendingQuestions.map(question => {
-            return <QuestionCard key={question.id} question={question} pending />;
-          })}
+    <div className="space-y-3">
+      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pb-3">
+        {header}
+        <QuestionForm postAction={postAction} />
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
+            Live · {totalCount} question{totalCount !== 1 ? 's' : ''}
+          </span>
+          {sort}
         </div>
-      )}
-      {children}
-    </>
+      </div>
+      <div className="space-y-2">
+        {pendingQuestions.map(question => {
+          return <QuestionCard key={question.id} question={question} pending />;
+        })}
+        {children}
+      </div>
+    </div>
   );
 }

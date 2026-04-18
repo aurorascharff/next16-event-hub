@@ -1,6 +1,5 @@
 import { Avatar } from '@/components/common/Avatar';
-import { cn } from '@/lib/utils';
-import { timeAgo } from '@/lib/utils';
+import { cn, timeAgo } from '@/lib/utils';
 import type { Question } from '@/types';
 import { UpvoteButton } from './UpvoteButton';
 

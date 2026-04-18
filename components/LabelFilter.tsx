@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChipGroup } from '@/components/design/ChipGroup';
+import { ToggleGroup } from '@/components/design/ToggleGroup';
 import { LABELS } from '@/lib/utils';
 import { Skeleton } from './ui/skeleton';
 
@@ -32,7 +32,7 @@ export function LabelFilter() {
 
   return (
     <div>
-      <ChipGroup items={labelItems} value={activeLabel} onChange={handleChange} />
+      <ToggleGroup items={labelItems} value={activeLabel} onChange={handleChange} />
     </div>
   );
 }

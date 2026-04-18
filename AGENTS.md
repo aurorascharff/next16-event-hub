@@ -86,7 +86,7 @@ app/
       _components/            # Question-local components
 components/
   common/                     # Shared utility components (Avatar, EmptyState, AuthGate, ThemeToggle)
-  design/                     # Action prop components (BottomNav, ChipGroup, SubmitButton)
+  design/                     # Action prop components (BottomNav, ToggleGroup, SubmitButton)
   ui/                         # shadcn/ui primitives
 data/
   queries/                    # Server-side queries with cache()
@@ -176,7 +176,7 @@ Components in `components/design/` handle async coordination internally and expo
 ```tsx
 // Consumer — pass an action prop instead of a plain callback
 <BottomNav tabs={tabs} activeIndex={activeIndex} action={href => router.push(href)} />
-<ChipGroup items={items} value={active} action={sortAction} />
+<ToggleGroup items={items} value={active} action={sortAction} />
 
 // Inside a design component — wraps the action in a transition with optimistic feedback
 function BottomNav({ tabs, activeIndex, action }) {

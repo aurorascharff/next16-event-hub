@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChipGroup } from '@/components/design/ChipGroup';
+import { ToggleGroup } from '@/components/design/ToggleGroup';
 import type { SortValue } from '@/types';
 
 const sortOptions: { label: string; value: SortValue }[] = [
@@ -25,5 +25,5 @@ export function QuestionSort() {
     router.replace(qs ? `?${qs}` : '?');
   }
 
-  return <ChipGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />;
+  return <ToggleGroup items={sortOptions} value={sort} action={sortAction} variant="toggle" />;
 }

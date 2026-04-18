@@ -131,6 +131,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  body:has([data-offline]) main {
+    padding-bottom: 2rem;
+  }
 }
 
 @theme {

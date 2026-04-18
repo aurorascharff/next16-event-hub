@@ -108,7 +108,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 ### Questions Page
 
 - **UpvoteButton**: Same **busy** state pattern — use the `upvoteOptimistic` snippet. It replaces `onSubmit` with `action`, adds `useOptimistic` with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Right now submitting a question waits for the server before it shows up — the **busy** state has no feedback. Let's add `useOptimistic` in QuestionList so the question appears immediately. The trick: generate a UUID on the client with `crypto.randomUUID()` and pass it to the server action — so the optimistic item and the real one share the same ID. No duplicate flash. Add a dedup check in the reducer for background polls, and a toast on error — `useOptimistic` rolls back automatically if the action fails.
+- **Optimistic Create**: Right now submitting a question waits for the server before it shows up — the **busy** state has no feedback. Add OptimisticQuestions. The pattern: the server component renders the real list, and a client component uses `useOptimistic([])` for pending items. The form `action` calls `setOptimisticQuestions((c) => [newQuestion, ...c])` for instant feedback, then awaits the server action. When the server responds, `refresh()` updates the real list and the optimistic state auto-resets. Generate a UUID on the client with `crypto.randomUUID()` and pass it to the server action — so the optimistic item and the real one share the same ID. No duplicate.
 
 ### Background Update — Questions Page
 

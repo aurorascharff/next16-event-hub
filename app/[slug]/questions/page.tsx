@@ -1,10 +1,14 @@
 import { Avatar } from '@/components/common/Avatar';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
+import type { SortValue } from '@/types';
+import { BasicQuestionForm } from './_components/BasicQuestionForm';
 import { QrCodeDialog } from './_components/QrCodeDialog';
-import { QuestionList } from './_components/QuestionList';
+import { QuestionCard } from './_components/QuestionCard';
+import { QuestionSort } from './_components/QuestionSort';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
@@ -16,10 +20,10 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
   };
 }
 
-export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
+export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
     <div>
-      <QuestionFeed params={params}>
+      <QuestionFeed params={params} searchParams={searchParams}>
         <EventHeader params={params} />
       </QuestionFeed>
     </div>
@@ -43,15 +47,42 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
 
 async function QuestionFeed({
   params,
+  searchParams,
   children,
-}: Pick<PageProps<'/[slug]/questions'>, 'params'> & { children: React.ReactNode }) {
+}: Pick<PageProps<'/[slug]/questions'>, 'params' | 'searchParams'> & { children: React.ReactNode }) {
   const { slug } = await params;
+  const { sort: sortParam } = await searchParams;
+  const sort = (sortParam as SortValue) || 'top';
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
+
+  const sorted = [...questions].sort((a, b) => {
+    if (sort === 'top') {
+      return b.votes - a.votes;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return (
-    <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser}>
-      {children}
-    </QuestionList>
+    <div className="space-y-3">
+      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pb-3">
+        {children}
+        <BasicQuestionForm eventSlug={slug} />
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
+            {questions.length} question{questions.length !== 1 ? 's' : ''}
+          </span>
+          <QuestionSort />
+        </div>
+      </div>
+      <div className="space-y-2">
+        {sorted.map(question => {
+          return <QuestionCard key={question.id} question={question} />;
+        })}
+        {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+      </div>
+    </div>
   );
 }
 

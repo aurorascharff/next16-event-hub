@@ -1,12 +1,14 @@
 import 'server-only';
 
+import { cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { prisma } from '@/db';
-import { parseTime, slow } from '@/lib/utils';
+import { parseTime } from '@/lib/utils';
 
 export const getEvents = cache(async (day?: string, label?: string) => {
-  await slow();
+  'use cache';
+  cacheTag('events');
   const where: Record<string, unknown> = {};
   if (day) {
     where.day = day;
@@ -36,7 +38,8 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 });
 
 export const getUserFavorites = cache(async (userName: string) => {
-  await slow(500);
+  'use cache';
+  cacheTag('favorites');
   const favorites = await prisma.favorite.findMany({
     select: { eventSlug: true },
     where: { userName },
@@ -49,7 +52,8 @@ export const getUserFavorites = cache(async (userName: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  await slow();
+  'use cache';
+  cacheTag(`event-${slug}`);
   const event = await prisma.event.findUnique({
     where: { slug },
   });

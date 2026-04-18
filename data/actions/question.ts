@@ -1,10 +1,9 @@
 'use server';
 
-import { refresh } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
-import { slow } from '@/lib/utils';
 
 const questionSchema = z.object({
   content: z.string().min(1, 'Question is required').max(500),
@@ -25,7 +24,6 @@ export async function addQuestion(eventSlug: string, formData: FormData): Promis
     return { error: result.error.issues[0].message, success: false };
   }
 
-  await slow();
   const clientId = (formData.get('id') as string) || undefined;
   await prisma.question.create({
     data: {
@@ -36,15 +34,13 @@ export async function addQuestion(eventSlug: string, formData: FormData): Promis
     },
   });
 
-  refresh();
+  updateTag(`questions-${eventSlug}`);
   return { success: true };
 }
 
 export async function upvoteQuestion(questionId: string, eventSlug: string) {
   const userName = await getCurrentUser();
   if (!userName) return;
-
-  await slow(300);
 
   const existing = await prisma.questionVote.findUnique({
     where: { userName_questionId: { questionId, userName } },
@@ -58,5 +54,5 @@ export async function upvoteQuestion(questionId: string, eventSlug: string) {
     where: { id: questionId },
   });
 
-  refresh();
+  updateTag(`questions-${eventSlug}`);
 }

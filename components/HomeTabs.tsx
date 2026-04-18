@@ -33,7 +33,7 @@ export default function HomeTabs() {
     <BottomNav
       tabs={homeTabs}
       activeIndex={activeIndex}
-      onChange={href => {
+      action={href => {
         return router.push(href);
       }}
     />

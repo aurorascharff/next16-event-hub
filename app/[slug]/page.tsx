@@ -1,14 +1,17 @@
-import { Suspense } from 'react';
+import { connection } from 'next/dist/server/web/exports';
+import { Suspense, ViewTransition } from 'react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug, getEvents } from '@/data/queries/event';
+import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 import type { Metadata } from 'next';
+
+export const prefetch = 'runtime';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
@@ -31,37 +34,59 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <div className="flex flex-col gap-8">
       <div className="min-h-72 sm:min-h-96">
-        <Suspense fallback={<CenteredSpinner />}>
-          <EventDetails slug={slug} />
+        <Suspense fallback={<EventDetailsSkeleton />}>
+          <EventDetails slug={slug}>
+            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+              <FavoriteStatus slug={slug} />
+            </Suspense>
+          </EventDetails>
         </Suspense>
       </div>
       <div className="border-border/60 border-t pt-8">
         <div className="mb-6 min-h-9">
           <CommentForm />
         </div>
-        <Suspense fallback={<CenteredSpinner />}>
-          <CommentList slug={slug} />
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <CommentListSkeleton />
+            </ViewTransition>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <CommentList slug={slug} />
+          </ViewTransition>
         </Suspense>
       </div>
     </div>
   );
 }
 
+async function FavoriteStatus({ slug }: { slug: string }) {
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
+}
+
 async function CommentList({ slug }: { slug: string }) {
+  await connection();
   const currentUser = await getCurrentUser();
   const comments = await getCommentsByEvent(slug, currentUser);
 
   return (
     <div className="space-y-2">
       {comments.map(comment => {
-        return <CommentCard key={comment.id} comment={comment} currentUser={currentUser} />;
+        return (
+          <ViewTransition key={comment.id}>
+            <CommentCard comment={comment} currentUser={currentUser} />
+          </ViewTransition>
+        );
       })}
       {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
     </div>
   );
 }
 
-// eslint-disable-next-line autofix/no-unused-vars
 function CommentListSkeleton() {
   return (
     <div className="space-y-2">

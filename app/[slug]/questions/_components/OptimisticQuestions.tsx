@@ -5,6 +5,7 @@ import { useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/data/actions/question';
+import { usePolling } from '@/lib/usePolling';
 import type { Question } from '@/types';
 import { QuestionCard } from './QuestionCard';
 
@@ -14,6 +15,8 @@ type Props = {
 };
 
 export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
+  usePolling(5000);
+
   const formRef = useRef<HTMLFormElement>(null);
   const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
 

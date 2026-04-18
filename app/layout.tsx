@@ -4,11 +4,11 @@ import { AuthGate } from '@/components/common/AuthGate';
 
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
-import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
+import { OfflineIndicator } from '@/components/common/OfflineIndicator';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -61,10 +61,9 @@ export default function RootLayout({
             className="bg-background fixed inset-x-0 top-0 z-50 h-[env(safe-area-inset-top)]"
             style={{ viewTransitionName: 'safe-area-top' }}
           />
-          <main className="pt-[env(safe-area-inset-top)]">
-            <Suspense fallback={<CenteredSpinner />}>{children}</Suspense>
-          </main>
+          <main className="pt-[env(safe-area-inset-top)]">{children}</main>
           <Toaster />
+          <OfflineIndicator />
         </ThemeProvider>
       </body>
     </html>

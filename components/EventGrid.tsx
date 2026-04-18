@@ -1,5 +1,6 @@
 import { Clock, Heart, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -50,48 +51,50 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
       {events.map(event => {
         const labels = parseLabels(event.labels);
         return (
-          <Link
-            key={event.slug}
-            href={`/${event.slug}${returnQuery ? `?${returnQuery}` : ''}`}
-            className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <div className="text-muted-foreground flex items-center gap-2.5 text-xs sm:text-sm">
-                <span className="font-semibold tracking-wide uppercase">{getDayLabel(event.day)}</span>
-                <span className="flex items-center gap-1">
-                  <Clock className="size-3.5" />
-                  {event.time}
-                </span>
+          <ViewTransition key={event.slug} update={{ default: 'none', filter: 'auto' }} default="none">
+            <Link
+              href={`/${event.slug}${returnQuery ? `?${returnQuery}` : ''}`}
+              transitionTypes={['nav-forward']}
+              className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <div className="text-muted-foreground flex items-center gap-2.5 text-xs sm:text-sm">
+                  <span className="font-semibold tracking-wide uppercase">{getDayLabel(event.day)}</span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="size-3.5" />
+                    {event.time}
+                  </span>
+                </div>
+                <FavoriteButton eventSlug={event.slug} favorited={event.hasFavorited} />
               </div>
-              <FavoriteButton favorited={event.hasFavorited} eventSlug={event.slug} />
-            </div>
-            {labels.length > 0 && (
-              <div className="mb-2 flex flex-wrap gap-1.5">
-                {labels.map(label => {
-                  return (
-                    <span
-                      key={label}
-                      className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize"
-                    >
-                      {label}
-                    </span>
-                  );
-                })}
+              {labels.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-1.5">
+                  {labels.map(label => {
+                    return (
+                      <span
+                        key={label}
+                        className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs capitalize"
+                      >
+                        {label}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+              <h3 className="text-primary font-sans text-base leading-snug font-semibold sm:text-lg">{event.name}</h3>
+              {event.speaker && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Avatar name={event.speaker} variant="speaker" />
+                  <span className="text-muted-foreground text-sm font-medium">{event.speaker}</span>
+                </div>
+              )}
+              <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
+              <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-xs sm:text-sm">
+                <MapPin className="size-3.5" />
+                <span>{event.location}</span>
               </div>
-            )}
-            <h3 className="text-primary font-sans text-base leading-snug font-semibold sm:text-lg">{event.name}</h3>
-            {event.speaker && (
-              <div className="mt-2 flex items-center gap-2">
-                <Avatar name={event.speaker} variant="speaker" />
-                <span className="text-muted-foreground text-sm font-medium">{event.speaker}</span>
-              </div>
-            )}
-            <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
-            <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-xs sm:text-sm">
-              <MapPin className="size-3.5" />
-              <span>{event.location}</span>
-            </div>
-          </Link>
+            </Link>
+          </ViewTransition>
         );
       })}
     </div>
@@ -106,8 +109,8 @@ export function EventGridSkeleton() {
           <div key={i} className="rounded-lg border p-4">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Skeleton className="h-4 w-10" />
-                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-4 w-18" />
               </div>
               <Skeleton className="size-5 rounded" />
             </div>
@@ -117,7 +120,7 @@ export function EventGridSkeleton() {
             </div>
             <div>
               <Skeleton className="h-5 w-4/5" />
-              <Skeleton className="mt-1 h-5 w-3/5" />
+              <Skeleton className="mt-1.5 h-5 w-3/5" />
             </div>
             <div className="mt-2 flex items-center gap-2">
               <Skeleton className="size-5 rounded-full" />

@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
 
@@ -18,5 +18,5 @@ export async function toggleFavorite(eventSlug: string) {
     await prisma.favorite.create({ data: { eventSlug, userName } });
   }
 
-  refresh();
+  updateTag('favorites');
 }

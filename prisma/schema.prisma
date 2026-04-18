@@ -3,9 +3,9 @@ generator client {
     output   = "../generated/prisma"
 }
 
-// SQLite (local dev) — for PostgreSQL Vercel deploy, change to "postgresql"
+// PostgreSQL (Vercel) — for SQLite local dev, change to "sqlite"
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
 }
 
 model Event {
@@ -25,14 +25,14 @@ model Event {
 }
 
 model Comment {
-    id        String        @id @default(cuid())
-    content   String
-    userName  String
-    likes     Int           @default(0)
-    event     Event         @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
-    eventSlug String
+    id           String        @id @default(cuid())
+    content      String
+    userName     String
+    likes        Int           @default(0)
+    event        Event         @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
+    eventSlug    String
     commentLikes CommentLike[]
-    createdAt DateTime      @default(now())
+    createdAt    DateTime      @default(now())
 }
 
 model CommentLike {
@@ -45,14 +45,14 @@ model CommentLike {
 }
 
 model Question {
-    id        String         @id @default(cuid())
-    content   String
-    userName  String
-    votes     Int            @default(0)
-    event     Event          @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
-    eventSlug String
+    id            String         @id @default(cuid())
+    content       String
+    userName      String
+    votes         Int            @default(0)
+    event         Event          @relation(fields: [eventSlug], references: [slug], onDelete: Cascade)
+    eventSlug     String
     questionVotes QuestionVote[]
-    createdAt DateTime       @default(now())
+    createdAt     DateTime       @default(now())
 }
 
 model QuestionVote {

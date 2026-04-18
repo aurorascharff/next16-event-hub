@@ -45,22 +45,17 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   return (
     <div className="space-y-3">
       <EventHeader params={params} />
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
-        <BasicQuestionForm eventSlug={slug} />
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-            <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-            {questions.length} question{questions.length !== 1 ? 's' : ''}
-          </span>
-          <QuestionSort />
-        </div>
-      </div>
-      <div className="space-y-2">
+      <BasicQuestionForm
+        eventSlug={slug}
+        currentUser={currentUser}
+        questionCount={questions.length}
+        sort={<QuestionSort />}
+      >
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
-      </div>
+      </BasicQuestionForm>
     </div>
   );
 }

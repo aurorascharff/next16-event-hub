@@ -74,7 +74,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - OK so our skeletons handle the **loading** state — but when content loads, it just pops in. That's the **done** state from our render cycle — the new UI is ready but hasn't appeared yet. `<ViewTransition>` is the primitive for this phase. It animates DOM changes during commit. It activates automatically when changes happen inside a React transition — and Suspense resolving is a transition, so we get this for free.
 - Wrap the skeleton fallback with `exit="slide-down"` and the content with `enter="slide-up"`. Now the skeleton slides away and the real content slides in. Default is a cross-fade, but we customize with CSS for the slide effect. Do the same on the home page EventGrid Suspense.
-- **Questions page**: No Suspense at all — navigate there and the whole page blocks. Use the `questionsSuspense` snippet to wrap EventHeader and QuestionFeed in Suspense with skeleton fallbacks and ViewTransition reveals — all in one go. We already know the pattern: Suspense for the **loading** state, ViewTransition for the **done** state. The snippet handles both together. Now they stream in independently with smooth motion.
+- **Questions page**: No Suspense at all — navigate there and the whole page blocks. Use the `questionsSuspense` snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. We already know the pattern: Suspense for the **loading** state, ViewTransition for the **done** state. The snippet handles both together. Now the feed streams in with smooth motion.
 
 ## Navigation
 
@@ -108,18 +108,18 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 ### Questions Page
 
 - **UpvoteButton**: Same **busy** state pattern — use the `upvoteOptimistic` snippet. It replaces `onSubmit` with `action`, adds `useOptimistic` with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Right now submitting a question waits for the server before it shows up — the **busy** state has no feedback. Add OptimisticQuestions. The pattern: the server component renders the real list, and a client component uses `useOptimistic([])` for pending items. The form `action` calls `setOptimisticQuestions((c) => [newQuestion, ...c])` for instant feedback, then awaits the server action. When the server responds, `refresh()` updates the real list and the optimistic state auto-resets. Generate a UUID on the client with `crypto.randomUUID()` and pass it to the server action — so the optimistic item and the real one share the same ID. No duplicate.
+- **Optimistic Create**: Submitting a question waits for the server — no **busy** state feedback. Replace `BasicQuestionForm` and the count/sort row with `OptimisticQuestions`. The server renders the real list, the client component uses `useOptimistic([])` for pending items — they show above the list with "Sending..." and reduced opacity. When the server responds, `refresh()` updates the real list and the optimistic state resets. A client-generated `crypto.randomUUID()` is passed to the server action so there's no duplicate.
 
 ### Background Update — Questions Page
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a `usePolling` hook that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The new `initialQuestions` flow down as props to the client component. Background update uses transitions by default since nextjs router uses transitions.
+- Let's add a `usePolling` hook to `OptimisticQuestions` that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. Background update uses transitions by default since the Next.js router uses transitions.
 - On window focus we can also trigger a refresh to make sure data is fresh when the user comes back. Now questions and upvotes from other attendees show up in real time without any manual refresh.
 - The in-between state here is ideally invisible — fresh data just appears without disrupting anything. And because it shares the same transition pipeline as user mutations, everything coordinates naturally.
 
 ### List Animation
 
-- Now the **done** state for mutations — our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in a `<ViewTransition key={uniqueId}>` — the key lets React track individual items across renders. Do this for event cards in EventGrid (`key={event.slug}` with `update={{ filter: 'auto', default: 'none' }}`), QuestionCards (`key={item.id}`), and CommentCards (`key={comment.id}`). Now cards animate to new positions on filter/sort, new items fade in, deleted ones fade out, and upvotes reorder smoothly. The sort toggle in QuestionList already uses `action`, so sort changes run in a transition and list animations fire correctly.
+- Now the **done** state for mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in `<ViewTransition key={uniqueId}>` — the key lets React track items across renders. EventGrid cards get `key={event.slug}` with `update={{ filter: 'auto', default: 'none' }}`, QuestionCards get `key={item.id}`, CommentCards get `key={comment.id}`. Cards animate to new positions on filter/sort, new items fade in, deleted ones fade out, upvotes reorder smoothly.
 
 ## Eliminating In-Between States — Session Page
 

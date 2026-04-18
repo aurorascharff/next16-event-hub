@@ -33,7 +33,9 @@ export function OptimisticQuestions({ eventSlug, currentUser, questionCount, sor
       votes: 0,
     };
 
-    setPendingQuestions(c => [newQuestion, ...c]);
+    setPendingQuestions(c => {
+      return [newQuestion, ...c];
+    });
     const formData = new FormData();
     formData.set('content', content);
     formData.set('id', id);

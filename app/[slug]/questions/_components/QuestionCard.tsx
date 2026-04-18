@@ -1,15 +1,17 @@
 import { Avatar } from '@/components/common/Avatar';
+import { cn } from '@/lib/utils';
 import { timeAgo } from '@/lib/utils';
 import type { Question } from '@/types';
 import { UpvoteButton } from './UpvoteButton';
 
 type Props = {
   question: Question;
+  pending?: boolean;
 };
 
-export function QuestionCard({ question }: Props) {
+export function QuestionCard({ question, pending }: Props) {
   return (
-    <div className="flex items-start gap-2 rounded-lg border p-3">
+    <div className={cn('flex items-start gap-2 rounded-lg border p-3', pending && 'opacity-60')}>
       <UpvoteButton
         questionId={question.id}
         eventSlug={question.eventSlug}
@@ -22,7 +24,11 @@ export function QuestionCard({ question }: Props) {
           <Avatar name={question.userName} size="xs" />
           <span className="text-muted-foreground text-xs">{question.userName}</span>
           <span className="text-muted-foreground text-xs">·</span>
-          <span className="text-muted-foreground text-xs">{timeAgo(question.createdAt)}</span>
+          {pending ? (
+            <span className="text-muted-foreground animate-pulse text-xs">Sending...</span>
+          ) : (
+            <span className="text-muted-foreground text-xs">{timeAgo(question.createdAt)}</span>
+          )}
         </div>
       </div>
     </div>

@@ -1,11 +1,15 @@
 import { Suspense, ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
+import type { SortValue } from '@/types';
+import { OptimisticQuestions } from './_components/OptimisticQuestions';
 import { QrCodeDialog } from './_components/QrCodeDialog';
-import { QuestionList } from './_components/QuestionList';
+import { QuestionCard } from './_components/QuestionCard';
+import { QuestionSort } from './_components/QuestionSort';
 import type { Metadata } from 'next';
 
 export const unstable_prefetch = 'runtime';
@@ -19,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
   };
 }
 
-export default async function QuestionsPage({ params }: PageProps<'/[slug]/questions'>) {
+export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
     <div>
       <Suspense
@@ -30,7 +34,7 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
         }
       >
         <ViewTransition enter="slide-up" default="none">
-          <QuestionFeed params={params}>
+          <QuestionFeed params={params} searchParams={searchParams}>
             <Suspense fallback={<EventHeaderSkeleton />}>
               <EventHeader params={params} />
             </Suspense>
@@ -38,6 +42,46 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
         </ViewTransition>
       </Suspense>
     </div>
+  );
+}
+
+async function QuestionFeed({
+  params,
+  searchParams,
+  children,
+}: Pick<PageProps<'/[slug]/questions'>, 'params' | 'searchParams'> & { children: React.ReactNode }) {
+  const { slug } = await params;
+  const { sort: sortParam } = await searchParams;
+  const sort = (sortParam as SortValue) || 'top';
+  const currentUser = await getCurrentUser();
+  const questions = await getQuestionsByEvent(slug, currentUser);
+
+  const sorted = [...questions].sort((a, b) => {
+    if (sort === 'top') {
+      return b.votes - a.votes;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  return (
+    <OptimisticQuestions
+      eventSlug={slug}
+      currentUser={currentUser}
+      questionCount={questions.length}
+      header={children}
+      sort={<QuestionSort />}
+    >
+      <div className="space-y-2">
+        {sorted.map(question => {
+          return (
+            <ViewTransition key={question.id}>
+              <QuestionCard question={question} />
+            </ViewTransition>
+          );
+        })}
+        {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+      </div>
+    </OptimisticQuestions>
   );
 }
 
@@ -53,20 +97,6 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
       </div>
       <QrCodeDialog eventName={event.name} />
     </div>
-  );
-}
-
-async function QuestionFeed({
-  params,
-  children,
-}: Pick<PageProps<'/[slug]/questions'>, 'params'> & { children: React.ReactNode }) {
-  const { slug } = await params;
-  const currentUser = await getCurrentUser();
-  const questions = await getQuestionsByEvent(slug, currentUser);
-  return (
-    <QuestionList initialQuestions={questions} eventSlug={slug} currentUser={currentUser}>
-      {children}
-    </QuestionList>
   );
 }
 

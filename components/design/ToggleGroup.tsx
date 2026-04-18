@@ -3,13 +3,13 @@
 import { addTransitionType, useOptimistic, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 
-type ChipItem<V extends string> = {
+type ToggleItem<V extends string> = {
   label: string;
   value: V;
 };
 
 type Props<V extends string> = {
-  items: ChipItem<V>[];
+  items: ToggleItem<V>[];
   value: V;
   action?: (value: V) => void | Promise<void>;
   onChange?: (value: V) => void;
@@ -17,7 +17,7 @@ type Props<V extends string> = {
   className?: string;
 };
 
-export function ChipGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
+export function ToggleGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
   const [, startTransition] = useTransition();
 
@@ -35,7 +35,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
 
   if (variant === 'toggle') {
     return (
-      <div className={cn('bg-muted flex rounded-full p-0.5', className)}>
+      <div className={cn('bg-muted flex rounded-lg p-1', className)}>
         {items.map(item => {
           return (
             <button
@@ -44,7 +44,7 @@ export function ChipGroup<V extends string>({ items, value, action, onChange, va
                 handleSelect(item.value);
               }}
               className={cn(
-                'rounded-full px-2.5 py-0.5 text-xs font-medium transition-all',
+                'rounded-md px-3 py-1.5 text-sm font-medium transition-all',
                 optimisticValue === item.value
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground',

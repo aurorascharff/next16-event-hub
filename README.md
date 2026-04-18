@@ -32,7 +32,7 @@ prisma/                   # Schema and seed data
 ```
 
 - **components/ui** — shadcn/ui components. Add with `npx shadcn@latest add <component-name>`
-- **components/design** — Components that expose action props and handle async coordination internally (BottomNav, ChipGroup, SubmitButton)
+- **components/design** — Components that expose action props and handle async coordination internally (BottomNav, ToggleGroup, SubmitButton)
 - **components/common** — Shared utility components without complex async logic
 
 Every route folder should contain everything it needs. Components and functions live at the nearest shared space in the hierarchy.

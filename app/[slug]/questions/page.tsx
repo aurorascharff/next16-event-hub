@@ -23,18 +23,12 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
     <div>
-      <QuestionFeed params={params} searchParams={searchParams}>
-        <EventHeader params={params} />
-      </QuestionFeed>
+      <QuestionFeed params={params} searchParams={searchParams} />
     </div>
   );
 }
 
-async function QuestionFeed({
-  params,
-  searchParams,
-  children,
-}: Pick<PageProps<'/[slug]/questions'>, 'params' | 'searchParams'> & { children: React.ReactNode }) {
+async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/questions'>, 'params' | 'searchParams'>) {
   const { slug } = await params;
   const { sort: sortParam } = await searchParams;
   const sort = (sortParam as SortValue) || 'top';
@@ -50,8 +44,8 @@ async function QuestionFeed({
 
   return (
     <div className="space-y-3">
-      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pb-3">
-        {children}
+      <EventHeader params={params} />
+      <div className="bg-background sticky top-[env(safe-area-inset-top)] z-10 space-y-3 pt-5 pb-3">
         <BasicQuestionForm eventSlug={slug} />
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
@@ -78,22 +72,10 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
     <div className="flex items-center gap-3">
       {event.speaker && <Avatar name={event.speaker} variant="speaker" size="lg" />}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate font-sans text-base font-bold tracking-tight sm:text-lg">{event.name}</h1>
+        <h1 className="truncate font-sans text-lg font-bold tracking-tight sm:text-xl">{event.name}</h1>
         {event.speaker && <p className="text-muted-foreground text-xs sm:text-sm">{event.speaker}</p>}
       </div>
       <QrCodeDialog eventName={event.name} />
-    </div>
-  );
-}
-
-function EventHeaderSkeleton() {
-  return (
-    <div className="flex items-center gap-3">
-      <Skeleton className="size-8 shrink-0 rounded-full" />
-      <div className="flex-1 space-y-1.5">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-3.5 w-24" />
-      </div>
     </div>
   );
 }

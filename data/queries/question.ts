@@ -44,8 +44,3 @@ export const getQuestionsByEvent = cache(async (eventSlug: string, currentUser?:
     return { ...q, hasVoted: votedIds.has(q.id) };
   });
 });
-
-export const getQuestionCount = cache(async (eventSlug: string) => {
-  await slow(300);
-  return prisma.question.count({ where: { eventSlug } });
-});

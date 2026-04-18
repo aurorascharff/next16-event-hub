@@ -53,30 +53,3 @@ export async function deleteComment(commentId: string, eventSlug: string) {
 
   refresh();
 }
-
-export async function toggleLike(commentId: string, eventSlug: string) {
-  const userName = await getCurrentUser();
-  if (!userName) return;
-
-  await slow(300);
-
-  const existing = await prisma.commentLike.findUnique({
-    where: { userName_commentId: { commentId, userName } },
-  });
-
-  if (existing) {
-    await prisma.commentLike.delete({ where: { id: existing.id } });
-    await prisma.comment.update({
-      data: { likes: { decrement: 1 } },
-      where: { id: commentId },
-    });
-  } else {
-    await prisma.commentLike.create({ data: { commentId, userName } });
-    await prisma.comment.update({
-      data: { likes: { increment: 1 } },
-      where: { id: commentId },
-    });
-  }
-
-  refresh();
-}

@@ -33,15 +33,3 @@ export const getCommentsByEvent = cache(async (eventSlug: string, currentUserNam
     };
   });
 });
-
-export const getCommentCount = cache(async (eventSlug: string) => {
-  await slow(300);
-  return prisma.comment.count({ where: { eventSlug } });
-});
-
-export const getUserLike = cache(async (commentId: string, userName: string) => {
-  const like = await prisma.commentLike.findUnique({
-    where: { userName_commentId: { commentId, userName } },
-  });
-  return !!like;
-});

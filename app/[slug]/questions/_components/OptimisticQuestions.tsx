@@ -1,6 +1,6 @@
 'use client';
 
-import { SendHorizonal } from 'lucide-react';
+import { SendHorizontal } from 'lucide-react';
 import { useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
@@ -61,7 +61,7 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
             className="text-primary hover:text-primary/80 flex shrink-0 items-center justify-center rounded-md px-2 transition-colors"
             aria-label="Send question"
           >
-            <SendHorizonal className="size-5" />
+            <SendHorizontal className="size-5" />
           </button>
         </form>
       </div>

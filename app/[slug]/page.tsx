@@ -1,6 +1,7 @@
 import { connection } from 'next/dist/server/web/exports';
 import { Suspense, ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { NavForward } from '@/components/animations';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
@@ -32,33 +33,39 @@ export async function generateStaticParams() {
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
-    <div className="flex flex-col gap-8">
-      <div className="min-h-72 sm:min-h-96">
-        <Suspense fallback={<EventDetailsSkeleton />}>
-          <EventDetails slug={slug}>
-            <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
-              <FavoriteStatus slug={slug} />
-            </Suspense>
-          </EventDetails>
-        </Suspense>
-      </div>
-      <div className="border-border/60 border-t pt-8">
-        <div className="mb-6 min-h-9">
-          <CommentForm />
+    <NavForward>
+      <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+          <div className="flex flex-col gap-8">
+            <div className="min-h-72 sm:min-h-96">
+              <Suspense fallback={<EventDetailsSkeleton />}>
+                <EventDetails slug={slug}>
+                  <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+                    <FavoriteStatus slug={slug} />
+                  </Suspense>
+                </EventDetails>
+              </Suspense>
+            </div>
+            <div className="border-border/60 border-t pt-8">
+              <div className="mb-6 min-h-9">
+                <CommentForm />
+              </div>
+              <Suspense
+                fallback={
+                  <ViewTransition exit="slide-down">
+                    <CommentListSkeleton />
+                  </ViewTransition>
+                }
+              >
+                <ViewTransition enter="slide-up" default="none">
+                  <CommentList slug={slug} />
+                </ViewTransition>
+              </Suspense>
+            </div>
+          </div>
         </div>
-        <Suspense
-          fallback={
-            <ViewTransition exit="slide-down">
-              <CommentListSkeleton />
-            </ViewTransition>
-          }
-        >
-          <ViewTransition enter="slide-up" default="none">
-            <CommentList slug={slug} />
-          </ViewTransition>
-        </Suspense>
       </div>
-    </div>
+    </NavForward>
   );
 }
 

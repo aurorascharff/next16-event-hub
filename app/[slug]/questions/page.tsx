@@ -24,19 +24,27 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
-    <div>
-      <Suspense
-        fallback={
-          <ViewTransition exit="slide-down">
-            <QuestionFeedSkeleton />
-          </ViewTransition>
-        }
-      >
-        <ViewTransition enter="slide-up" default="none">
-          <QuestionFeed params={params} searchParams={searchParams} />
-        </ViewTransition>
-      </Suspense>
-    </div>
+    <ViewTransition
+      enter={{ default: 'none', 'tab-switch': 'auto' }}
+      exit={{ default: 'none', 'tab-switch': 'auto' }}
+      default="none"
+    >
+      <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+          <Suspense
+            fallback={
+              <ViewTransition exit="slide-down">
+                <QuestionFeedSkeleton />
+              </ViewTransition>
+            }
+          >
+            <ViewTransition enter="slide-up" default="none">
+              <QuestionFeed params={params} searchParams={searchParams} />
+            </ViewTransition>
+          </Suspense>
+        </div>
+      </div>
+    </ViewTransition>
   );
 }
 

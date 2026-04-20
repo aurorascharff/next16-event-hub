@@ -3,10 +3,12 @@ import 'server-only';
 import { cacheTag } from 'next/cache';
 import { cache } from 'react';
 import { prisma } from '@/db';
+import { slow } from '@/lib/utils';
 
 export const getQuestionsByEvent = cache(async (eventSlug: string, currentUser?: string | null) => {
   'use cache';
   cacheTag(`questions-${eventSlug}`);
+  await slow();
 
   const questions = await prisma.question.findMany({
     orderBy: { createdAt: 'desc' },

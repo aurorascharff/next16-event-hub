@@ -92,7 +92,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Directional Navigation
 
-- We handled the **busy** state with action props — now let's handle the **done** state for navigation too. Going to a session should slide in from the right, going back should slide from the left. Add `transitionTypes={['nav-forward']}` to the event card `<Link>`, wrap the home page content and session layout in matching `<ViewTransition>` wrappers with slide classes, and add `addTransitionType('nav-back')` on the back button. Now it feels like a real app — same `<ViewTransition>` primitive, just with directional CSS.
+- We handled the **busy** state with action props — now let's handle the **done** state for navigation too. Going to a session should slide in from the right, going back should slide from the left. We have two reusable wrappers: `<NavForward>` and `<NavBack>` — each is just a `<ViewTransition>` with type-keyed enter/exit maps. Wrap the session page in `<NavForward>` and the home page in `<NavBack>`. Add `transitionTypes={['nav-forward']}` to the event card `<Link>`, and `addTransitionType('nav-back')` on the back button. Now it feels like a real app — same `<ViewTransition>` primitive, just with directional CSS.
 
 ## Mutations
 

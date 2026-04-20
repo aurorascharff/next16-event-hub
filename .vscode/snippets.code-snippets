@@ -16,37 +16,6 @@
       "</Suspense>",
     ],
   },
-  "directionalVTHome": {
-    "prefix": "directionalVTHome",
-    "description": "Animations: directional VT for home page (exits left on nav-forward, enters from left on nav-back)",
-    "body": [
-      "<ViewTransition",
-      "  enter={{ 'nav-back': 'slide-from-left', default: 'none' }}",
-      "  exit={{ 'nav-forward': 'slide-to-left', default: 'none' }}",
-      "  default=\"none\"",
-      ">",
-      "  ${0}",
-      "</ViewTransition>",
-    ],
-  },
-  "directionalVTSession": {
-    "prefix": "directionalVTSession",
-    "description": "Animations: directional VT for session layout (enters from right on nav-forward, exits right on nav-back)",
-    "body": [
-      "<ViewTransition",
-      "  enter={{ 'nav-forward': 'slide-from-right', default: 'none' }}",
-      "  exit={{ 'nav-back': 'slide-to-right', default: 'none' }}",
-      "  default=\"none\"",
-      ">",
-      "  ${0}",
-      "</ViewTransition>",
-    ],
-  },
-  "listVT": {
-    "prefix": "listVT",
-    "description": "Animations: keyed VT for list reorder/enter/exit",
-    "body": ["<ViewTransition key={${1:item}.id}>", "  ${0}", "</ViewTransition>"],
-  },
   "questionsSuspense": {
     "prefix": "questionsSuspense",
     "description": "Data Loading: wrap QuestionFeed in Suspense with skeleton fallback and ViewTransition reveal",

@@ -10,7 +10,7 @@ import { UserMenu } from '@/components/common/UserMenu';
 import { GithubIcon } from '@/components/ui/icons/GithubIcon';
 import type { Metadata } from 'next';
 
-export const prefetch = 'runtime';
+export const unstable_prefetch = 'force-runtime';
 
 export const metadata: Metadata = {
   description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',

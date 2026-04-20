@@ -21,6 +21,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
     <ViewTransition
       enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
       exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
+      update={{ default: 'none', 'tab-switch': 'auto' }}
       default="none"
     >
       <div className="group min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
@@ -46,21 +47,19 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             </Suspense>
           </div>
         </header>
-        <ViewTransition>
-          <div className="mx-auto max-w-4xl px-4 py-6 transition-opacity group-has-data-pending:opacity-50 sm:px-6">
-            <Suspense
-              fallback={
-                <ViewTransition exit="slide-down">
-                  <EventGridSkeleton />
-                </ViewTransition>
-              }
-            >
-              <ViewTransition enter="slide-up" default="none">
-                <EventGrid searchParams={searchParams} />
+        <div className="mx-auto max-w-4xl px-4 py-6 transition-opacity group-has-data-pending:opacity-50 sm:px-6">
+          <Suspense
+            fallback={
+              <ViewTransition exit="slide-down">
+                <EventGridSkeleton />
               </ViewTransition>
-            </Suspense>
-          </div>
-        </ViewTransition>
+            }
+          >
+            <ViewTransition enter="slide-up" default="none">
+              <EventGrid searchParams={searchParams} />
+            </ViewTransition>
+          </Suspense>
+        </div>
         <Suspense>
           <HomeTabs />
         </Suspense>

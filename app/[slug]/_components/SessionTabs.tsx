@@ -27,6 +27,7 @@ export default function SessionTabs() {
       tabs={tabs}
       activeIndex={activeIndex}
       action={href => {
+        addTransitionType('tab-switch');
         if (href.startsWith('/?') || href === '/') {
           addTransitionType('nav-back');
         }

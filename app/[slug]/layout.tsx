@@ -19,12 +19,11 @@ export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
     <ViewTransition
       enter={{ default: 'none', 'nav-forward': 'slide-from-right' }}
       exit={{ default: 'none', 'nav-back': 'slide-to-right' }}
+      update={{ default: 'none', 'tab-switch': 'auto' }}
       default="none"
     >
       <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
-        <ViewTransition>
-          <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
-        </ViewTransition>
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
         <Suspense>
           <SessionTabs />
         </Suspense>

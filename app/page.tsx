@@ -4,6 +4,7 @@ import { Suspense, ViewTransition } from 'react';
 import { EventGrid, EventGridSkeleton } from '@/components/EventGrid';
 import HomeTabs from '@/components/HomeTabs';
 import { LabelFilter, LabelFilterSkeleton } from '@/components/LabelFilter';
+import { NavBack } from '@/components/animations';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { UserMenu } from '@/components/common/UserMenu';
 import { GithubIcon } from '@/components/ui/icons/GithubIcon';
@@ -18,12 +19,7 @@ export const metadata: Metadata = {
 
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
-    <ViewTransition
-      enter={{ default: 'none', 'nav-back': 'nav-back' }}
-      exit={{ default: 'none', 'nav-forward': 'nav-forward' }}
-      update={{ default: 'none', 'tab-switch': 'auto' }}
-      default="none"
-    >
+    <NavBack>
       <div className="group min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <header
           className="bg-background sticky top-[env(safe-area-inset-top)] z-30 border-b"
@@ -64,7 +60,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
           <HomeTabs />
         </Suspense>
       </div>
-    </ViewTransition>
+    </NavBack>
   );
 }
 

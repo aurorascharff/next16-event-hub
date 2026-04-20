@@ -17,6 +17,7 @@ export function NavBack({ children }: { children: React.ReactNode }) {
     <ViewTransition
       enter={{ default: 'none', 'nav-back': 'nav-back', 'tab-switch': 'auto' }}
       exit={{ default: 'none', 'nav-forward': 'nav-forward', 'tab-switch': 'auto' }}
+      update={{ default: 'none', 'tab-switch': 'auto' }}
       default="none"
     >
       {children}

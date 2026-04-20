@@ -241,30 +241,39 @@
   animation: none;
 }
 
+/* --- Slide deck transitions (slow down library default) --- */
+
+::view-transition-new(.slide-from-right),
+::view-transition-new(.slide-from-left),
+::view-transition-old(.slide-to-left),
+::view-transition-old(.slide-to-right) {
+  animation-duration: 350ms;
+}
+
 /* --- Directional navigation --- */
 
-::view-transition-new(.slide-from-right) {
+::view-transition-new(.nav-forward) {
   --slide-offset: 60px;
   animation:
     var(--duration-enter) ease-out var(--duration-exit) both fade,
     var(--duration-move) ease-in-out both slide;
 }
 
-::view-transition-old(.slide-to-left) {
+::view-transition-old(.nav-forward) {
   --slide-offset: -60px;
   animation:
     var(--duration-exit) ease-in both fade reverse,
     var(--duration-move) ease-in-out both slide reverse;
 }
 
-::view-transition-new(.slide-from-left) {
+::view-transition-new(.nav-back) {
   --slide-offset: -60px;
   animation:
     var(--duration-enter) ease-out var(--duration-exit) both fade,
     var(--duration-move) ease-in-out both slide;
 }
 
-::view-transition-old(.slide-to-right) {
+::view-transition-old(.nav-back) {
   --slide-offset: 60px;
   animation:
     var(--duration-exit) ease-in both fade reverse,

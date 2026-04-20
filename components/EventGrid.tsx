@@ -41,11 +41,6 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
     return <EmptyState message="No sessions match your filters." hint="Try a different combination." />;
   }
 
-  const returnParams = new URLSearchParams();
-  if (day) returnParams.set('day', day);
-  if (label && !isFavorites) returnParams.set('label', label);
-  const returnQuery = returnParams.toString();
-
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {events.map(event => {
@@ -53,7 +48,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
         return (
           <ViewTransition key={event.slug} update={{ default: 'none', filter: 'auto' }} default="none">
             <Link
-              href={`/${event.slug}${returnQuery ? `?${returnQuery}` : ''}`}
+              href={`/${event.slug}`}
               transitionTypes={['nav-forward']}
               className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
             >

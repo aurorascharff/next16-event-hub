@@ -42,19 +42,6 @@
       "</ViewTransition>",
     ],
   },
-  "filterCardVT": {
-    "prefix": "filterCardVT",
-    "description": "Animations: per-card VT for filter position animation",
-    "body": [
-      "<ViewTransition",
-      "  key={${1:event}.${2:slug}}",
-      "  update={{ default: 'none', filter: 'auto' }}",
-      "  default=\"none\"",
-      ">",
-      "  ${0}",
-      "</ViewTransition>",
-    ],
-  },
   "listVT": {
     "prefix": "listVT",
     "description": "Animations: keyed VT for list reorder/enter/exit",

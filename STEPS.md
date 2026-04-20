@@ -110,8 +110,8 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 ### Background Update — Questions Page
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a `usePolling` hook to `OptimisticQuestions` that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. Background update uses transitions by default since the Next.js router uses transitions.
-- On window focus we can also trigger a refresh to make sure data is fresh when the user comes back. Now questions and upvotes from other attendees show up in real time without any manual refresh.
+- Let's add a `usePolling` hook to `OptimisticQuestions` that calls `startTransition(() => router.refresh())` every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. Because it uses `startTransition`, it's non-blocking — the user can keep interacting while fresh data streams in.
+- Let me show you. (Open two browser windows side by side on the same questions page.) I'll submit a question in this window... and watch the other one. (Submit a question in the left window, it appears in the right window within a few seconds via polling.) No WebSockets, no subscriptions — just `router.refresh()` in a transition on an interval.
 - The in-between state here is ideally invisible — fresh data just appears without disrupting anything. And because it shares the same transition pipeline as user mutations, everything coordinates naturally.
 
 ### List Animation

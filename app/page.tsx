@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 export default function HomePage({ searchParams }: PageProps<'/'>) {
   return (
     <ViewTransition
-      enter={{ default: 'none', 'nav-back': 'slide-from-left' }}
-      exit={{ default: 'none', 'nav-forward': 'slide-to-left' }}
+      enter={{ default: 'none', 'nav-back': 'nav-back' }}
+      exit={{ default: 'none', 'nav-forward': 'nav-forward' }}
       update={{ default: 'none', 'tab-switch': 'auto' }}
       default="none"
     >

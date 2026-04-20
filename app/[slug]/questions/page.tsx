@@ -7,7 +7,6 @@ import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { SortValue } from '@/types';
 import { OptimisticQuestions } from './_components/OptimisticQuestions';
-import { QrCodeDialog } from './_components/QrCodeDialog';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
 import type { Metadata } from 'next';
@@ -90,7 +89,6 @@ async function EventHeader({ params }: Pick<PageProps<'/[slug]/questions'>, 'par
         <h1 className="truncate font-sans text-lg font-bold tracking-tight sm:text-xl">{event.name}</h1>
         {event.speaker && <p className="text-muted-foreground text-xs sm:text-sm">{event.speaker}</p>}
       </div>
-      <QrCodeDialog eventName={event.name} />
     </div>
   );
 }

@@ -31,7 +31,6 @@ export const LABELS = [
   'security',
   'tooling',
   'css',
-  'career',
   'social',
 ] as const;
 

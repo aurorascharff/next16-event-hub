@@ -9,8 +9,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Opening
 
-- (Exit slides, show the app) We have two days of great talks and we need a way to keep track of everything. So I built a conference app!
-- This is Event Hub — a live session companion for React Miami. You can browse all the sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've already added some test comments and questions on my session so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
+- (Exit slides, show the app) To demonstrate these concepts, I built a conference companion app.
+- This is Event Hub — a demo conference companion app with fictional session data. You can browse sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've added some test data so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
 - Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing.
 - So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. We can call these the in-between states. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
 - Let me show you some specific ones:
@@ -69,7 +69,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Let's wrap EventGrid in `<Suspense>` with a skeleton fallback that matches the card grid. Now the shell — header, day tabs, label pills — shows up immediately, and only the session grid streams in. This shell is completely static, so it can be cached and served from a CDN anywhere in the world. Your users get content instantly. Better FCP, better LCP.
 - The idea is simple: push dynamic data deep in the component tree, wrap it in Suspense, and the framework handles the rest. That's how you get "show the shell first, stream the rest."
 - Now let's apply the same pattern to the rest of the app.
-- **Session detail page**: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
+- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
+
 ### Suspense Reveal Animation — Session Detail Page
 
 - OK so our skeletons handle the **loading** state — but when content loads, it just pops in. That's the **done** state from our render cycle — the new UI is ready but hasn't appeared yet. `<ViewTransition>` is the primitive for this phase. It animates DOM changes during commit. It activates automatically when changes happen inside a React transition — and Suspense resolving is a transition, so we get this for free.
@@ -93,10 +94,6 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - We handled the **busy** state with action props — now let's handle the **done** state for navigation too. Going to a session should slide in from the right, going back should slide from the left. Add `transitionTypes={['nav-forward']}` to the event card `<Link>`, wrap the home page content and session layout in matching `<ViewTransition>` wrappers with slide classes, and add `addTransitionType('nav-back')` on the back button. Now it feels like a real app — same `<ViewTransition>` primitive, just with directional CSS.
 
-### Tab Content Crossfade
-
-- Same **done** state for tab switches — add `<ViewTransition>` around the `children` in `HomeTabs` and `SessionTabs`. Gives you a nice crossfade when switching tabs. Since our tab changes already run inside transitions (via the action prop), the animation triggers automatically.
-
 ## Mutations
 
 Now mutations. There are two kinds of work here. Some things are actively broken — like the FavoriteButton with its `useEffect` + `useState` that doesn't coordinate with navigation. That's a legacy pattern we need to fix. Other things just need coordination added — the delete button works, the upvote works, they just have no feedback. Let's look at both.
@@ -119,7 +116,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### List Animation
 
-- Now the **done** state for mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in `<ViewTransition key={uniqueId}>` — the key lets React track items across renders. EventGrid cards get `key={event.slug}` with `update={{ filter: 'auto', default: 'none' }}`, QuestionCards get `key={item.id}`, CommentCards get `key={comment.id}`. Cards animate to new positions on filter/sort, new items fade in, deleted ones fade out, upvotes reorder smoothly.
+- Now the **done** state for mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in `<ViewTransition key={uniqueId}>` — the key lets React track items across renders. Do this for QuestionCards (`key={item.id}`) and CommentCards (`key={comment.id}`). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ## Eliminating In-Between States — Session Page
 
@@ -132,26 +129,25 @@ Sometimes the best in-between state is none at all — you eliminate it entirely
 
 ## Offline Support
 
-- One more thing before we wrap up the code. (Show `next.config.ts` — `experimental: { useOffline: true }`.) This is a new experimental flag we're working on. All the Suspense boundaries and static shells we just built? They make offline support possible. When there's no connection, the cached shell still renders — skeletons show where data would be — and when the connection comes back, content streams in. We'll see this in action on the deployed app in a moment.
+- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. We're working on a `useOffline` hook in Next.js — it's experimental, coming soon — that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
+- Let's add an offline indicator so the user actually sees what's happening. (Add the `OfflineIndicator` component using the `useOffline` hook.) When the connection drops, a bar appears. When it comes back, the hook triggers recovery and content streams in automatically.
+- We'll see this in action on the deployed app in a moment.
 
 ## Review
 
 - Remember how the app looked at the start? (Switch to the `start` branch / stash changes to show the broken version.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
-- Now let me show you the after. This app is deployed and live right now — with all the changes we just made.
+- Now let me show you the after. This app is deployed and live right now — with all the changes we just made, plus a few extra polish touches like crossfade animations on tab switches.
 - Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (Open the deployed app → DevTools → Network throttling → Slow 3G, reload.) The static shell shows up instantly — header, tabs, skeletons — all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
-- Now let's take it further — same dropdown, switch to Offline. (Navigate to a session.) The static shell still loads — header, tabs, skeletons all render from the cache. Now switch back to No Throttling — content streams in and fills the skeletons. The app stays usable even with no connection, and recovers gracefully when you're back online. That's the `useOffline` flag we just saw.
+- Now let's take it further — same dropdown, switch to Offline. (Navigate to a session.) The static shell still loads — header, tabs, skeletons all render from the cache. The offline indicator we just added tells the user what's happening. Now switch back to No Throttling — content streams in and fills the skeletons. The app recovers gracefully when you're back online.
 - The important thing to remember — the actual interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
 - Now — it's great to learn all of this, but realistically you're not going to be hand-coding every `useOptimistic` reducer and `data-pending` pattern from scratch. So we've created two agent skills for this — knowledge files that teach your coding agent how to implement these patterns correctly. (Show the `.agents/skills/` folder.)
   - **async-react** — handles everything we just did: Suspense boundaries, optimistic updates, action props, pending states. It covers both migration paths — fixing legacy `useState` + `useEffect` patterns, and adding coordination to a non-interactive app.
   - **vercel-react-view-transitions** — handles all the animations: Suspense reveals, directional navigation, list reorder, shared elements. Includes ready-to-use CSS recipes.
   - Both work in Cursor, Codex, Claude Code, and other agent environments. You can grab them from [skills.sh](https://skills.sh).
-  - <!-- TODO: Add link / QR to published skills -->
 
-## Live Q&A
+## Wrap-Up
 
-- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) This is the deployed version with all the changes we just made. (Walk through the app) Skeleton placeholders, instant feedback, smooth animations, live data — and real improvements to First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift.
-- (Navigate to "Designing the In-Between States with Async React", go to the Questions tab.) And this is the session we're in right now. Go ahead and scan the QR code or open the link — submit your questions and upvote the ones you want answered.
-- (While audience scans) Watch what happens — questions show up, upvotes move cards around, the list animates. Everything we just built, coordinating together in real time through the same transition system.
-- (Read top-voted questions, answer them live)
-- The GitHub repo is linked from the app's home page — all the source code is there.
-- You can also install this as a PWA — **Add to Home Screen** on mobile or **Install app** in the browser menu. Keep it on your phone for the rest of the conference!
+- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) This is the deployed version with all the changes we just made. Let me walk through the full experience. (Walk through the app) Skeleton placeholders, instant feedback, smooth animations, live data — and real improvements to First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift.
+- (Navigate to a session, show comments, questions, favorites in action.) Watch the coordination — submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab, no flicker. Everything flows through the same transition system.
+- The GitHub repo is linked from the app's home page — all the source code is there. The agent skills are on [skills.sh](https://skills.sh).
+- Thank you!

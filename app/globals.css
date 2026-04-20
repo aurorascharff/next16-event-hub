@@ -252,16 +252,6 @@
   animation: none;
 }
 
-::view-transition-group(question-form) {
-  animation: none;
-}
-::view-transition-old(question-form) {
-  animation: none;
-}
-::view-transition-new(question-form) {
-  animation: none;
-}
-
 /* --- Directional navigation --- */
 
 ::view-transition-new(.slide-from-right) {

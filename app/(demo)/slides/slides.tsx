@@ -253,7 +253,7 @@ export const slides = [
         </div>
         <div className="flex flex-col items-center gap-1">
           <span className="text-xl font-semibold">Agent Skills</span>
-          <span className="text-muted-foreground text-sm">skills.sh</span>
+          <span className="text-muted-foreground text-sm">skills.sh/vercel-labs/agent-skills</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 # Next 16 Event Hub
 
-A real-time conference companion app exploring Async React patterns with Cache Components and streaming. Attendees can browse sessions, post comments, ask and upvote questions, and favorite sessions. Fork and deploy it for your own conference.
+An event companion app exploring Async React, Cache Components, and streaming with Next.js 16, React 19, Tailwind CSS, Prisma, and shadcn/ui.
 
 Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
 

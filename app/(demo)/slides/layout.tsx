@@ -3,7 +3,7 @@ import { slides } from './slides';
 
 export default function SlidesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SlideDeck slides={slides} exitUrl="/" basePath="/slides" syncEndpoint="/api/nxs-sync" transition={false}>
+    <SlideDeck slides={slides} exitUrl="/" basePath="/slides" transition={true}>
       {children}
     </SlideDeck>
   );

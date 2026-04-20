@@ -1,5 +1,6 @@
 import { ChevronRight, Download, MousePointerClick, Route } from 'lucide-react';
-import { Slide, SlideTitle, SlideBadge, SlideSpeaker } from 'nextjs-slides';
+import { Slide, SlideTitle, SlideBadge, SlideSpeaker, SlideSubtitle } from 'nextjs-slides';
+import { QRCode } from './QRCode';
 
 function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
   return (
@@ -228,6 +229,32 @@ export const slides = [
         <span className="text-xl font-semibold">
           <span className="text-primary">Async</span> Navigation
         </span>
+      </div>
+    </div>
+  </Slide>,
+
+  // 8. Resources — QR codes for source code and agent skills
+  <Slide key="resources">
+    <SlideTitle>Resources</SlideTitle>
+    <SlideSubtitle>Source code &amp; agent skills</SlideSubtitle>
+    <div className="mt-12 flex items-center justify-center gap-20">
+      <div className="flex flex-col items-center gap-5">
+        <div className="rounded-2xl bg-white p-4">
+          <QRCode value="https://github.com/aurorascharff/next16-event-hub" size={180} />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-xl font-semibold">Source Code</span>
+          <span className="text-muted-foreground text-sm">github.com/aurorascharff/next16-event-hub</span>
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-5">
+        <div className="rounded-2xl bg-white p-4">
+          <QRCode value="https://skills.sh/vercel-labs/agent-skills" size={180} />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-xl font-semibold">Agent Skills</span>
+          <span className="text-muted-foreground text-sm">skills.sh/vercel-labs/agent-skills</span>
+        </div>
       </div>
     </div>
   </Slide>,

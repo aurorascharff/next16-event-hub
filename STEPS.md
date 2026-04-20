@@ -149,5 +149,5 @@ Sometimes the best in-between state is none at all — you eliminate it entirely
 
 - (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) This is the deployed version with all the changes we just made. Let me walk through the full experience. (Walk through the app) Skeleton placeholders, instant feedback, smooth animations, live data — and real improvements to First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift.
 - (Navigate to a session, show comments, questions, favorites in action.) Watch the coordination — submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab, no flicker. Everything flows through the same transition system.
-- The GitHub repo is linked from the app's home page — all the source code is there. The agent skills are on [skills.sh](https://skills.sh).
+- (Open `/slides/8` — Resources slide with QR codes.) Here are the links — scan the QR codes. The source code for everything we built is on GitHub, and the agent skills are on skills.sh. Both QR codes are right here.
 - Thank you!

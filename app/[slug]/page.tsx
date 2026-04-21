@@ -1,15 +1,14 @@
 import { connection } from 'next/dist/server/web/exports';
 import { Suspense, ViewTransition } from 'react';
-import { FavoriteButton } from '@/components/FavoriteButton';
 import { NavForward } from '@/components/animations';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
-import { getEventBySlug, getEvents, getUserFavorites } from '@/data/queries/event';
+import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton, FavoriteStatus } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export const unstable_prefetch = 'force-runtime';
@@ -68,12 +67,6 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
       </div>
     </NavForward>
   );
-}
-
-async function FavoriteStatus({ slug }: { slug: string }) {
-  const currentUser = await getCurrentUser();
-  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }
 
 async function CommentList({ slug }: { slug: string }) {

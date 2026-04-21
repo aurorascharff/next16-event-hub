@@ -1,7 +1,9 @@
 import { Clock, MapPin } from 'lucide-react';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getEventBySlug } from '@/data/queries/event';
+import { getCurrentUser } from '@/data/queries/auth';
+import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
@@ -32,6 +34,12 @@ export async function EventDetails({ slug, children }: { slug: string; children?
       </div>
     </article>
   );
+}
+
+export async function FavoriteStatus({ slug }: { slug: string }) {
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+  return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;
 }
 
 export function EventDetailsSkeleton() {

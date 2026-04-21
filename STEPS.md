@@ -14,7 +14,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - This is Event Hub — a demo conference companion app with fictional session data. You can browse sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've added some test data so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
 - Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? I've slowed down the data fetching on purpose so you can actually see what's happening.
 - (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing. Let me show you.
-- Look at the home page — the whole thing blocks until all the data is ready. Nothing shows up until everything loads. Go to a session — you get two little spinners, and when the content loads, everything jumps down. Switch between Day 1 and Day 2 — the whole thing locks up while it loads. Upvote a question — the UI just freezes until the server responds.
+- Look at the home page — the whole thing blocks until all the data is ready. Try switching between Day 1 and Day 2, the whole thing locks up while it loads. Now go to a session — see those two little spinners? When the content loads, everything jumps down. Try upvoting a question, the UI just freezes until the server responds.
 - So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
 - So how would we normally fix this? Let's look at FavoriteButton — it's doing the classic thing: useEffect to fetch favorite status from an API endpoint, then local useState to manage it. Sound familiar? But watch what happens:
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
@@ -71,7 +71,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of the apps loading states.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space.
-- Also animate them. Let's just do a some crossfade on the comment section. I'm not going to need it on the details, we'll see why later.
+- Also animate them. Let's just do a crossfade on the comment section. I'm not going to need it on the details, we'll see why later.
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
 - **Questions page**: No Suspense at all — navigate there and the whole page blocks. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. We already know the pattern: Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion.
 
@@ -132,7 +132,7 @@ Sometimes the best in-between state is no state at all.
 
 ## Review & Wrap-Up
 
-- Remember how the app looked at the start? (Revert all changes.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
+- Remember how the app looked at the start? (Revert all changes.) Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
 - (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
 - Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
 - Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells the user what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.

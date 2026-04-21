@@ -28,20 +28,25 @@ export async function generateStaticParams() {
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
+
   return (
-    <div className="flex flex-col gap-8">
-      <Suspense>
-        <div className="min-h-72 sm:min-h-96">
-          <EventDetails slug={slug} />
+    <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+        <div className="flex flex-col gap-8">
+          <Suspense>
+            <div className="min-h-72 sm:min-h-96">
+              <EventDetails slug={slug} />
+            </div>
+          </Suspense>
+          <div className="border-border/60 border-t pt-8">
+            <div className="mb-6 min-h-9">
+              <CommentForm />
+            </div>
+            <Suspense fallback={<CenteredSpinner />}>
+              <CommentList slug={slug} />
+            </Suspense>
+          </div>
         </div>
-      </Suspense>
-      <div className="border-border/60 border-t pt-8">
-        <div className="mb-6 min-h-9">
-          <CommentForm />
-        </div>
-        <Suspense fallback={<CenteredSpinner />}>
-          <CommentList slug={slug} />
-        </Suspense>
       </div>
     </div>
   );
@@ -60,7 +65,6 @@ async function CommentList({ slug }: { slug: string }) {
     </div>
   );
 }
-
 // eslint-disable-next-line autofix/no-unused-vars
 function CommentListSkeleton() {
   return (

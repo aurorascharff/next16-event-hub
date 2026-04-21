@@ -14,11 +14,11 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
 
 export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
   return (
-    <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
-      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">{children}</div>
+    <>
+      {children}
       <Suspense>
         <SessionTabs />
       </Suspense>
-    </div>
+    </>
   );
 }

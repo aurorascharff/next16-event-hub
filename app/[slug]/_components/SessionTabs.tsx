@@ -22,7 +22,10 @@ export default function SessionTabs() {
     <BottomNav
       tabs={tabs}
       activeIndex={activeIndex}
-      onChange={href => {
+      action={href => {
+        if (href === '/') {
+          //
+        }
         router.push(href);
       }}
     />

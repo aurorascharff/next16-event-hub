@@ -3,6 +3,8 @@ import { EventGrid } from '@/components/EventGrid';
 import HomeTabs from '@/components/HomeTabs';
 import { SiteHeader } from '@/components/common/SiteHeader';
 import type { Metadata } from 'next';
+// eslint-disable-next-line import/order, autofix/no-unused-vars
+import { ViewTransition } from 'react';
 
 export const metadata: Metadata = {
   description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',

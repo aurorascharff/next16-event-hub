@@ -9,6 +9,8 @@ import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
 import { EventDetails } from './_components/EventDetails';
 import type { Metadata } from 'next';
+// eslint-disable-next-line import/order, autofix/no-unused-vars
+import { ViewTransition } from 'react';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;

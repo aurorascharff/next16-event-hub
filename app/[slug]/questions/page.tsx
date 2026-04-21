@@ -9,6 +9,8 @@ import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
 import { Questions } from './_components/Questions';
 import type { Metadata } from 'next';
+// eslint-disable-next-line import/order, autofix/no-unused-vars
+import { ViewTransition } from 'react';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
   const { slug } = await params;

@@ -95,7 +95,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Mutations
 
-Now let's handle async mutations. Everything works, but nothing gives feedback. The **busy** state is completely undesigned. The favorite, the upvote, the question submit, they all just freeze until the server responds. This is where useOptimistic comes in.
+Now let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with useOptimistic — the UI updates immediately, and if something goes wrong, it rolls back.
 
 ### Session Page
 
@@ -104,12 +104,12 @@ Now let's handle async mutations. Everything works, but nothing gives feedback. 
 
 ### Questions Page
 
-- **UpvoteButton**: Same idea, designing the **busy** state. upvoteOptimistic snippet. It replaces onSubmit with action, useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Submitting a question also just waits for the server, the **busy** state is empty. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
+- **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. It replaces onSubmit with action, useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
+- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
 
 ### List Animation
 
-- That's our **busy** states for mutations designed. Every action gives instant feedback now.
+- No more waiting on mutations. Every action feels instant. Sometimes the best in-between state is no state at all.
 - But there's no animation when items change in the list. The **done** state is undesigned, same ViewTransition primitive fixes it. Since mutations and background updates all run inside transitions, ViewTransition can animate the results. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ### Background Update — Questions Page
@@ -121,7 +121,7 @@ Now let's handle async mutations. Everything works, but nothing gives feedback. 
 
 ## Eliminating In-Between States — Session Page
 
-Sometimes the best in-between state is no state at all.
+We eliminated the **busy** state with useOptimistic. Now let's eliminate the **loading** state too, with caching.
 
 - Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's move the favorite out and pass it as children. Now EventDetails only needs getEventBySlug.
 - Add 'use cache' and now the whole rendered output — title, speaker, labels, description — is cached per slug. Because it's a server component, we're caching the rendered result, not just the data. The children (FavoriteButton) pass through without affecting the cache. Think of it like the donut pattern, but for caching. We already have generateStaticParams on this page, so all slugs are known at build time. That means the cached output becomes part of the static shell through Partial Prerendering. The router prefetches it, navigation feels instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.

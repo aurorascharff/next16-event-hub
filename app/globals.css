@@ -157,10 +157,10 @@
 
 @keyframes slide {
   from {
-    translate: var(--slide-offset);
+    transform: translateX(var(--slide-offset));
   }
   to {
-    translate: 0;
+    transform: translateX(0);
   }
 }
 

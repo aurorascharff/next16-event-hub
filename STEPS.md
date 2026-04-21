@@ -56,12 +56,12 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense Boundaries — Home Page
 
 - Right now, the initial page load is actually blocked. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a performance problem — it shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
-- Suspense is the primitive for the **loading** state from our render cycle. You place a boundary around any async component, give it a fallback, and you decide where loading states go and what they look like declaratively.
+- This is where Suspense comes in. It works with Suspense-enabled data sources like RSCs. Give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, EventGrid is the blocking component. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Now the shell — header, day tabs, label pills — shows up immediately, and only the session grid streams in, content shows up instantly.
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now — but when content loads, it just pops in. That's the **done** state, the new UI is ready but hasn't appeared yet. ViewTransition is the primitive for this. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can automatically animate the result into the new UI.
+- OK so our data is streaming in now, but when content loads, it just pops in. We want to animate that, add a **done** state so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can automatically animate the result into the new UI.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
 - Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
@@ -75,23 +75,25 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
 - **Questions page**: No Suspense at all — navigate there and the whole page blocks and delays with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. We already know the pattern: Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion.
 
+### Directional Navigation
+
+- Navigation feels smooth now, but when we actually navigate to a session, the content just pops in. We need to animate that **done** state. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward slides in from the right, going back from the left. The list feels "behind" the detail. You feel like you know where you are.
+- We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the session page in NavForward and the home page in NavBack. Add transitionTypes={['nav-forward']} to the event card Link, and addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS.
+
 ## Navigation
 
 ### Query Param Navigation — Home Page
 
-- Now let's handle async navigation. I click and nothing changes — that's the **busy** state. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
-- Look at BottomNav. Right now it takes an onChange callback. What if the component itself could handle async coordination for us?
-- Let's just change onChange to action. That's all we change on the consumer side — one prop name. Try it now — the day tabs switch instantly. The old content stays visible while new data loads in the background. And these transitions are interruptible — if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. Same thing for the session tabs.
-- So what's happening inside? When the prop is called action, BottomNav wraps it in startTransition and uses useOptimistic to update the active tab immediately. The optimistic state shows for as long as the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
-- So quick thing on terminology: any async function called inside startTransition is an "Action". React tracks its pending state and bubbles errors to error boundaries. That's why the prop is called action. Notice the naming — we need to mark our deferred behavior so the parent knows this is happening in a transition. Think about React's own form component: it has onSubmit or action. Same idea. This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
-- Now the label filter pills — same idea with ToggleGroup, also navigating via query params with router.push. Right now LabelFilter passes onChange — same problem, no transition. Change it to action and the pills highlight instantly. That's ToggleGroup's useOptimistic kicking in, same as BottomNav.
-- But what about fading the grid while filtered data loads? That's not really ToggleGroup's job — it's about the surrounding content. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.
-- And here's the thing, most developers shouldn't need to use startTransition and useOptimistic themselves. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. That's where this is heading — headless libraries like Base UI and Radix are starting to adopt this, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
-
-### Directional Navigation
-
-- Navigation feels smooth now, but when we actually navigate to a session, the content just pops in — that's the **done** state again. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward slides in from the right, going back from the left. The list feels "behind" the detail. You feel like you know where you are.
-- We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the session page in NavForward and the home page in NavBack. Add transitionTypes={['nav-forward']} to the event card Link, and addTransitionType('nav-back') on the back SessionTabs back. Same ViewTransition primitive, just with directional CSS.
+- Now let's handle async navigation. I click between tabs and nothing updates. We need to add a **busy** state in the UI so you know something is happening. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
+- Look at HomeTabs, using BottomNav. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
+- So let's just change onChange to action.
+- Try it now... see?
+- (And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.)
+- So what just happened? Let's look inside BottomNav. This is startTransition and useOptimistic in action. BottomNav wraps our callback in a transition and optimistically updates the active tab immediately. That optimistic value shows while the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
+- This is called the **action props pattern** — the design component handles async coordination so consumers just pass a callback. The convention is that an action name means it runs in a transition.
+- Now the label filter pills, same problem, no feedback, also navigating via query params with router.push. Right now LabelFilter passes onChange. Change it to action, and rename to changeAction to adhere to convention. Now, the pills highlight instantly. Async coordination is built in.
+- (In this case, the design component didn't include any build in pending state. But as the consumer, we can add one. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.)
+- And here's the thing. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. Component libraries like Base UI and Radix can adopt the action prop pattern, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
 
 ## Mutations
 
@@ -99,7 +101,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### Session Page
 
-- **FavoriteButton**: Remember the broken hearts from the opening? Let's fix this. Delete the API endpoint, rip out the useEffect and local state, get the favorited prop from the server instead. Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action — same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
+- **FavoriteButton**: Remember the flickery favorite page from the opening? Let's fix this. Delete the API endpoint, rip out the useEffect and local state, get the favorited prop from the server instead. Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action — same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
 - Now tap a few favorites, switch to the Favorites tab. See? It just works. Mutations and navigation go through the same transition system, so it all coordinates. And we simplified a bunch of clunky code.
 
 ### Questions Page
@@ -109,7 +111,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### List Animation
 
-- Our mutations work now, but there's no animation when items change in the list. Since mutations and background updates all run inside transitions, we can animate these changes too — that's the **done** state for mutations. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
+- Our mutations work now, but there's no animation when items change in the list. We can add a **done** state here too, since mutations and background updates all run inside transitions. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ### Background Update — Questions Page
 

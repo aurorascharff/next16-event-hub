@@ -236,8 +236,7 @@ export const slides = [
   // 8. Resources — QR codes for source code and agent skills
   <Slide key="resources">
     <SlideTitle>Resources</SlideTitle>
-    <SlideSubtitle>Source code &amp; agent skills</SlideSubtitle>
-    <div className="mt-12 flex items-center justify-center gap-20">
+    <div className="mt-16 flex items-center justify-center gap-20">
       <div className="flex flex-col items-center gap-5">
         <div className="rounded-2xl bg-white p-4">
           <QRCode value="https://github.com/aurorascharff/next16-event-hub" size={180} />
@@ -249,11 +248,11 @@ export const slides = [
       </div>
       <div className="flex flex-col items-center gap-5">
         <div className="rounded-2xl bg-white p-4">
-          <QRCode value="https://skills.sh/vercel-labs/agent-skills" size={180} />
+          <QRCode value="https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions" size={180} />
         </div>
         <div className="flex flex-col items-center gap-1">
-          <span className="text-xl font-semibold">Agent Skills</span>
-          <span className="text-muted-foreground text-sm">skills.sh/vercel-labs/agent-skills</span>
+          <span className="text-xl font-semibold">View Transitions Skill</span>
+          <span className="text-muted-foreground text-sm">skills.sh/.../vercel-react-view-transitions</span>
         </div>
       </div>
     </div>

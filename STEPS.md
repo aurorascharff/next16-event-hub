@@ -91,11 +91,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - So what's happening inside? When the prop is called action, BottomNav wraps it in startTransition and uses useOptimistic to update the active tab immediately. It also dims the non-active tabs while the transition is running. Quick terminology recap: any async function called inside startTransition is an "Action" — React tracks its pending state and bubbles errors to error boundaries. That's why the prop is called action. This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
 - Now the label filter pills — same idea with ToggleGroup, also navigating via query params with router.push. Right now LabelFilter passes onChange — same problem, no transition. Change it to action and the pills highlight instantly. That's ToggleGroup's useOptimistic kicking in, same as BottomNav.
 - But what about fading the grid while filtered data loads? That's not really ToggleGroup's job — it's about the surrounding content. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.
-- The key insight: most developers shouldn't need to use startTransition and useOptimistic themselves. If your UI components expose action props, you just plug things together. As headless libraries like Base UI and Radix adopt this pattern, dropdowns, autocompletes, tabs — they all just work. The async coordination lives in the component, not in your app code. That's the **busy** state handled.
+- And here's the thing, most developers shouldn't need to use startTransition and useOptimistic themselves. If your UI components expose action props, you just plug things together. As headless libraries like Base UI and Radix adopt this pattern, dropdowns, autocompletes, tabs — they all just work. The async coordination lives in the component, not in your app code.
 
 ### Directional Navigation
 
-- We handled the **busy** state with action props — now let's handle the **done** state too. That's between Render and Commit — the new UI is ready but hasn't appeared yet. Right now, navigating to a session just pops the content in. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward can slide in from the right, going back can slide from the left. It creates a spatial model — the list is "behind" the detail. Users feel oriented, not teleported.
+- We handled the **busy** state with action props, now let's handle the **done** state too. Right now, navigating to a session just pops the content in. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward can slide in from the right, going back can slide from the left. It creates a spatial model — the list is "behind" the detail. Users feel oriented, not teleported.
 - We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the session page in NavForward and the home page in NavBack. Add transitionTypes={['nav-forward']} to the event card Link, and addTransitionType('nav-back') on the back SessionTabs back. Same ViewTransition primitive, just with directional CSS.
 
 ## Mutations
@@ -104,16 +104,17 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### Session Page
 
-- **FavoriteButton**: Remember the broken useEffect heart from the opening? Let's fix it properly. Delete the API endpoint (app/api/favorites/[slug]/route.ts), remove the useEffect fetch and local state, add back the hasFavorited prop from the server, and move the mutation from onClick to a form action. A form's action prop works just like the action prop on BottomNav or ToggleGroup — React wraps it in a transition automatically. So we add useOptimistic with a to toggle the favorite immediately. That's the **busy** state handled. Now tap a few favorites, then switch to the Favorites tab — no flickering, no stale data. Mutations and navigation both go through the transition system, so useOptimistic handles the instant heart fill and when you switch tabs, React coordinates everything in a single render pass. Optimistic updates settle naturally when the server responds with new data.
+- **FavoriteButton**: Remember the broken hearts from the opening? Let's fix this. Delete the API endpoint, rip out the useEffect and local state, get the favorited prop from the server instead. Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action, same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
+- Now tap a few favorites, switch to the Favorites tab. See? It just works. Mutations and navigation go through the same transition system, so it all coordinates. And we simplified a bunch of clunky code.
 
 ### Questions Page
 
-- **UpvoteButton**: Same **busy** state pattern — use the upvoteOptimistic snippet. It replaces onSubmit with action, adds useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Submitting a question waits for the server — no **busy** state feedback. Replace BasicQuestionForm and the count/sort row with OptimisticQuestions. The server renders the real list, the client component uses useOptimistic([]) for pending items — they show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state resets.
+- **UpvoteButton**: Same idea here — use the upvoteOptimistic snippet. It replaces onSubmit with action, adds useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
+- **Optimistic Create**: Submitting a question also just waits for the server, no feedback at all. Replace BasicQuestionForm and the count/sort row with OptimisticQuestions. The server renders the real list, the client component uses useOptimistic([]) for pending items — they show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state resets.
 
 ### List Animation
 
-- Now the **done** state for mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in ViewTransition key={uniqueId} — the key lets React track items across renders. Do this for QuestionCards (key={item.id}) and CommentCards (key={comment.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
+- Now let's handle the **done** state for our mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in ViewTransition key={uniqueId} — the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ### Background Update — Questions Page
 
@@ -123,12 +124,12 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ## Eliminating In-Between States — Session Page
 
-Sometimes the best in-between state is none at all — you eliminate it entirely. No **loading**, no **busy**, no **done**.
+Sometimes the best in-between state is none at all. You just eliminate it entirely.
 
 - Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's move the favorite out and pass it as children. Now EventDetails only needs getEventBySlug.
 - Add 'use cache' with cacheTag and now the whole rendered output — title, speaker, labels, description — is cached per slug. The children (FavoriteButton) pass through without affecting the cache. Think of it like the donut pattern, but for caching. The cached shell renders instantly; only the tiny FavoriteButton streams in.
 - We already have generateStaticParams on this page, so all slugs are known at build time. That means the cached output becomes part of the static shell through Partial Prerendering. The router prefetches it — navigation feels instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
-- And remember, optimistic updates also eliminate in-between states — the hearts and upvotes skip the **busy** state entirely because useOptimistic updates instantly.
+- And remember, optimistic updates do the same thing. The hearts and upvotes update instantly because useOptimistic skips the wait.
 
 ## Offline Support
 
@@ -139,9 +140,9 @@ Sometimes the best in-between state is none at all — you eliminate it entirely
 ## Review & Wrap-Up
 
 - Remember how the app looked at the start? (Revert all changes.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
-- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question — shows up optimistically. Upvote — list reorders with animation. Favorite a session, switch to Favorites — no flicker.
-- Remember the Slow 3G blank screen? (DevTools → Slow 3G, reload.) Static shell shows up instantly from the CDN. Content streams in as it arrives. Optimistic updates still feel instant. Same slow network, night and day.
-- Take it further — switch to Offline. (Navigate to a session.) Static shell still loads from cache. The offline indicator tells the user what's happening. Switch back to No Throttling — content streams in. Graceful recovery.
+- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
+- Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
+- Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells the user what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. The app recovers gracefully.
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
 - Now — you're not going to hand-code every ViewTransition recipe from scratch. So we've created agent skills — knowledge files that teach your coding agent these patterns. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.

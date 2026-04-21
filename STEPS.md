@@ -24,7 +24,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 3: React Render Cycle — In-Between States
 
-- But what happens when things are async? Now there are gaps. Between Event and Update — the user clicked but nothing happened yet, that's the "busy" state. Between Update and Render — we're waiting for data, that's "loading". Between Render and Commit — the new UI is ready but hasn't appeared yet, that's "done". These gaps are the in-between states — and trying to manage all of them by hand is exactly the coordination problem we just saw.
+- But what happens when things are async? Now there are gaps. Between Event and Update — the user clicked but nothing happened yet, that's the "busy" state. Between Update and Render — we're waiting for data, that's "loading". Between Render and Commit — the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what we're going to fix.
 
 ## Slide 4: Async React Render Cycle — Transitions
 

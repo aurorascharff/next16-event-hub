@@ -7,6 +7,7 @@ import { addQuestion } from '@/data/actions/question';
 
 type Props = {
   eventSlug: string;
+  currentUser: string | null;
 };
 
 export function Questions({ eventSlug }: Props) {

@@ -23,16 +23,14 @@ export function FavoriteButton({ eventSlug }: Props) {
       });
   }, [eventSlug]);
 
-  async function handleClick(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsFavorited(!isFavorited);
-    await toggleFavorite(eventSlug);
-  }
-
   return (
     <button
-      onClick={handleClick}
+      onClick={async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsFavorited(!isFavorited);
+        await toggleFavorite(eventSlug);
+      }}
       className={cn(
         'cursor-pointer rounded p-1.5 transition-colors',
         isFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',

@@ -23,8 +23,10 @@ export async function generateMetadata({ params }: PageProps<'/[slug]/questions'
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
-    <div>
-      <QuestionFeed params={params} searchParams={searchParams} />
+    <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+        <QuestionFeed params={params} searchParams={searchParams} />
+      </div>
     </div>
   );
 }
@@ -59,7 +61,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
-      <Questions eventSlug={slug} />
+      <Questions eventSlug={slug} currentUser={currentUser} />
     </div>
   );
 }

@@ -11,14 +11,14 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Opening
 
 - (Exit slides, show the app) To demonstrate these concepts, I built an app.
-- This is Event Hub — a demo conference companion app with session data. You can browse sessions, ask questions and upvote them, favorite the talks you want to see. I've added some test data so we have something to look at.
-- (Navigate around, show the app.) This app feels kind of broken. Can you see why? I've slowed down the data fetching on purpose so you can actually see what's happening.
-- Look at the home page — the whole thing blocks until all the data is ready. When switching between Day 1 and Day 2, the whole thing locks up while it loads. Now go to a session — see those two little spinners? When the content loads, everything jumps down. When upvoting a question, the UI just freezes until the server responds.
-- So how would we normally fix this? Let's look at FavoriteButton — it's doing the classic thing: useEffect to fetch favorite status from an API endpoint, then local useState to manage it. Sound familiar? But watch what happens:
+- This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, favorite the talks you want to see, view details and comment, ask questions and upvote them.
+- However, this app feels kind of broken. Can you see why?
+- When switching between Day 1 and Day 2, the whole thing locks up while it loads. Now go to a session — see those two little spinners? When the content loads, everything jumps down. When upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
+- So how would we normally fix delayed interactions? Let's look at FavoriteButton — it's doing the classic thing: useEffect to fetch favorite status from an API endpoint, then local useState to manage it. Sound familiar? But watch what happens:
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
   - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
 - So the traditional approach actually made things worse. Let's leave it broken for now — we'll come back and fix it properly.
-- Let's also see what this looks like on a real-world connection. (DevTools → Slow 3G, reload.) Blank screen. Nothing. For seconds. This is what your users on spotty conference Wi-Fi actually experience.
+- And on slow networks, all these problems become way more apparent.
 - It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users. This isn't really a performance problem — it's a coordination problem. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
 
 ## Slide 2: React Render Cycle
@@ -39,7 +39,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 6: Async React Render Cycle — Clean
 
-- And here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done labels just disappear. It all feels instant. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast.
+- And here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done labels just disappear. It all feels instant. However, on slow networks, these states are crucial. They keep users informed and engaged instead of staring at a blank screen or a frozen UI. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast.
 
 ## Slide 7: Where the Gaps Are
 
@@ -55,7 +55,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Boundaries — Home Page
 
-- We saw the page blocking — we actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is pointing us right to the problem — it shows you three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
+- Right now, the initial page load is blocked. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is pointing us right to the problem — it shows you three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
 - Suspense is the primitive for the **loading** state from our render cycle. You place a boundary around any async component, give it a fallback, and you decide where loading states go and what they look like.
 - EventGrid is the blocking component. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Now the shell — header, day tabs, label pills — shows up immediately, and only the session grid streams in. This shell is completely static, so it can be cached and served from a CDN anywhere in the world. Your users get content instantly.
 

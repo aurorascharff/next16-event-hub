@@ -61,7 +61,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so with Suspense we handle the **loading** state — but when content loads, it just pops in. As we learned, we can animate our **done** state from the render cycle where the new UI is ready but hasn't appeared yet. ViewTransition is the primitive for this phase. ViewTransitions can be triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can automatically animate the result into the new UI.
+- OK so our data is streaming in now — but when content loads, it just pops in. That's the **done** state, the new UI is ready but hasn't appeared yet. ViewTransition is the primitive for this. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can automatically animate the result into the new UI.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
 - Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
@@ -79,7 +79,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Query Param Navigation — Home Page
 
-- Now navigation — this is the **busy** state from our render cycle, between Event and Update. I click and nothing changes. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
+- Now let's handle async navigation. I click and nothing changes — that's the **busy** state. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
 - Look at BottomNav. Right now it takes an onChange callback. What if the component itself could handle async coordination for us?
 - Let's just change onChange to action. That's all we change on the consumer side — one prop name. Try it now — the day tabs switch instantly. The old content stays visible while new data loads in the background. And these transitions are interruptible — if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. Same thing for the session tabs.
 - So what's happening inside? When the prop is called action, BottomNav wraps it in startTransition and uses useOptimistic to update the active tab immediately. The optimistic state shows for as long as the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
@@ -90,7 +90,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Directional Navigation
 
-- We handled the **busy** state with action props, now let's handle the **done** state. Right now, navigating to a session just pops the content in. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward slides in from the right, going back from the left. The list feels "behind" the detail. You feel like you know where you are.
+- Navigation feels smooth now, but when we actually navigate to a session, the content just pops in — that's the **done** state again. There's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. Going forward slides in from the right, going back from the left. The list feels "behind" the detail. You feel like you know where you are.
 - We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the session page in NavForward and the home page in NavBack. Add transitionTypes={['nav-forward']} to the event card Link, and addTransitionType('nav-back') on the back SessionTabs back. Same ViewTransition primitive, just with directional CSS.
 
 ## Mutations
@@ -109,7 +109,7 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### List Animation
 
-- Now let's handle the **done** state for our mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
+- Our mutations work now, but there's no animation when items change in the list. Since mutations and background updates all run inside transitions, we can animate these changes too — that's the **done** state for mutations. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ### Background Update — Questions Page
 

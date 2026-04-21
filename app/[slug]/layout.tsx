@@ -3,7 +3,7 @@ import { getEventBySlug } from '@/data/queries/event';
 import SessionTabs from './_components/SessionTabs';
 import type { Metadata } from 'next';
 
-export const unstable_prefetch = 'force-runtime';
+// export const unstable_prefetch = 'force-runtime';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
   const { slug } = await params;

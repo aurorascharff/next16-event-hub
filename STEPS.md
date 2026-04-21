@@ -4,7 +4,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. I'm from Norway, and this is my first time at React Miami — super excited to be here.
+- (Open /slides) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel.
+- This is my first time at React Miami — super excited to be here. Cant wait to hang out with you all, talk about React, and show off some cool new features.
 - Today we're talking about designing the in-between states with Async React. Let's get started.
 
 ## Opening

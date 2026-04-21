@@ -35,7 +35,7 @@ export async function EventDetails({ slug }: { slug: string }) {
   );
 }
 
-async function FavoriteStatus({ slug }: { slug: string }) {
+export async function FavoriteStatus({ slug }: { slug: string }) {
   const currentUser = await getCurrentUser();
   const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
   return <FavoriteButton eventSlug={slug} favorited={favorites.has(slug)} />;

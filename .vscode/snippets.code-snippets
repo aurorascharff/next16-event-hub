@@ -42,4 +42,13 @@
       "</Suspense>"
     ],
   },
+  "suspenseIcon": {
+    "prefix": "suspenseIcon",
+    "description": "Suspense: fallback skeleton for icon/button",
+    "body": [
+      "<Suspense fallback={<Skeleton className=\"size-6 shrink-0 rounded-md\" />}>",
+      "  ${0}",
+      "</Suspense>"
+    ]
+  },
 }

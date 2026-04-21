@@ -129,8 +129,8 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 Sometimes the best in-between state is no state at all.
 
 - Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's move the favorite out and pass it as children. Now EventDetails only needs getEventBySlug.
-- Add 'use cache' with cacheTag and now the whole rendered output — title, speaker, labels, description — is cached per slug. The children (FavoriteButton) pass through without affecting the cache. Think of it like the donut pattern, but for caching. The cached shell renders instantly; only the tiny FavoriteButton streams in.
 - We already have generateStaticParams on this page, so all slugs are known at build time. That means the cached output becomes part of the static shell through Partial Prerendering. The router prefetches it — navigation feels instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
+- Add 'use cache' to EventDetails, and now the whole rendered output — title, speaker, labels, description — is cached per slug. The children (FavoriteButton) pass through without affecting the cache. Think of it like the donut pattern, but for caching. The cached shell renders instantly; only the tiny FavoriteButton streams in.
 
 ## Offline Support
 

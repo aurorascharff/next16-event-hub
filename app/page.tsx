@@ -4,8 +4,6 @@ import HomeTabs from '@/components/HomeTabs';
 import { NavBack } from '@/components/animations';
 import { SiteHeader } from '@/components/common/SiteHeader';
 import type { Metadata } from 'next';
-// eslint-disable-next-line import/order, autofix/no-unused-vars
-import { ViewTransition } from 'react';
 
 export const unstable_prefetch = 'force-runtime';
 

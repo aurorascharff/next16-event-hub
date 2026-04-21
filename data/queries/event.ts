@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { cache } from 'react';
 import { prisma } from '@/db';
 import { parseTime, slow } from '@/lib/utils';
@@ -36,6 +37,7 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 });
 
 export const getUserFavorites = cache(async (userName: string) => {
+  await connection();
   await slow();
   const favorites = await prisma.favorite.findMany({
     select: { eventSlug: true },

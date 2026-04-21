@@ -7,7 +7,7 @@ import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { EventDetails } from './_components/EventDetails';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
@@ -30,7 +30,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
   return (
     <div className="flex flex-col gap-8">
-      <Suspense fallback={<EventDetailsSkeleton />}>
+      <Suspense>
         <div className="min-h-72 sm:min-h-96">
           <EventDetails slug={slug} />
         </div>

@@ -21,11 +21,11 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
         setOptimisticFavorited(null);
         await toggleFavorite(eventSlug);
       }}
-      onClick={e => {
-        e.stopPropagation();
-      }}
     >
       <button
+        onClick={e => {
+          e.stopPropagation();
+        }}
         type="submit"
         className={cn(
           'cursor-pointer rounded p-1.5 transition-colors',

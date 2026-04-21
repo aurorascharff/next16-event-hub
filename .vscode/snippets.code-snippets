@@ -16,6 +16,15 @@
       "</Suspense>",
     ],
   },
+  "upvoteOptimistic": {
+    "prefix": "upvoteOptimistic",
+    "description": "Mutations: useOptimistic hook for instant upvote feedback",
+    "body": [
+      "const [optimistic, setOptimistic] = useOptimistic({ votes, hasVoted }, (state) => {",
+      "  return { votes: state.votes + 1, hasVoted: true };",
+      "});"
+    ],
+  },
   "questionsSuspense": {
     "prefix": "questionsSuspense",
     "description": "Data Loading: wrap QuestionFeed in Suspense with skeleton fallback and ViewTransition reveal",

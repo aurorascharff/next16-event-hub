@@ -51,13 +51,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - **Data loading** — we're fetching sessions, comments, questions from the server. That's where you get blank screens, spinners, layout shifts.
 - **Navigation** — switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - **Mutations** — someone submits a comment, taps a heart, upvotes a question. That's where buttons freeze, nothing gives feedback, state goes stale.
-- We've been handling each of these on our own — and they don't talk to each other. But now we have the primitives to handle all three. So let's go fix our app!
+- We've been handling each of these on our own — and they don't talk to each other. But now we have the primitives to handle all three.
+- And these primitives really shine when the framework integrates them — the router, the data layer, the design system. We're using Next.js 16 App Router with React Server Components, that's just one way to use Async React, any framework that integrates with transitions and Suspense works. I've slowed down the data fetching on purpose so you can actually see what's happening. Let's go fix our app!
 - (Exit slides, back to the app)
-
-## Setup and Starting Point
-
-- Quick context on the setup — Next.js 16 App Router, Prisma, Tailwind. We're using React Server Components for data fetching. And I've slowed down the data fetching on purpose so you can actually see what's happening.
-- We'll go through this in three parts: data loading first, then navigation, then mutations. Let's dive in.
 
 ## Data Loading
 

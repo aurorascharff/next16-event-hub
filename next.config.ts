@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     instantNavigationDevToolsToggle: true,
     optimisticRouting: true,
     prefetchInlining: true,
+    staleTimes: {
+      dynamic: 30,
+    },
     useOffline: true,
     varyParams: true,
     viewTransition: true,

@@ -71,6 +71,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Also animate them. Let's just do a crossfade on the comment section. I'm not going to need it on the details, we'll see why later.
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
 - **Questions page**: No Suspense at all — navigate there and the whole page blocks and delays with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. We already know the pattern: Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion.
+- That's all of our loading states designed. Every page streams in with skeletons and animations instead of blocking.
 
 ### Directional Navigation
 
@@ -91,29 +92,33 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Now the label filter pills, same problem, no feedback, also navigating via query params with router.push. Right now LabelFilter passes onChange. Change it to action, and rename to changeAction to adhere to convention. Now, the pills highlight instantly. Async coordination is built in.
 - (In this case, the design component didn't include any build in pending state. But as the consumer, we can add one. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.)
 - And here's the thing. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. Component libraries like Base UI and Radix can adopt the action prop pattern, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
+- Navigation in-between states, done. Tabs switch instantly, content fades in, and we barely wrote any async code ourselves.
 
 ## Mutations
 
-Now mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. Let's fix that.
+Now let's handle async mutations. Everything works, but nothing gives feedback. We need a **busy** state for our mutations. The favorite, the upvote, the question submit, they all just freeze until the server responds. This is where useOptimistic comes in.
 
 ### Session Page
 
-- **FavoriteButton**: Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action — same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
+- **FavoriteButton**: Switch useState to useOptimistic to toggle the heart instantly. Replace onClick with a form action, React wraps it in a transition automatically. Same action props pattern as BottomNav and ToggleGroup.
+- Now tap a few favorites, switch to the Favorites tab. See? Mutations and navigation go through the same transition system, so it all coordinates.
 
 ### Questions Page
 
-- **UpvoteButton**: Same idea here, let's use the upvoteOptimistic snippet. It replaces onSubmit with action, useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Submitting a question also just waits for the server, no feedback at all. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. The server renders the real list, the client component uses useOptimistic([]) for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state resets.
+- **UpvoteButton**: Same idea, same **busy** state pattern. Let's use the upvoteOptimistic snippet. It replaces onSubmit with action, useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
+- **Optimistic Create**: Submitting a question also just waits for the server, no **busy** state at all. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
 
 ### List Animation
 
-- Our mutations work now, but there's no animation when items change in the list. We can add a **done** state here too, since mutations and background updates all run inside transitions. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
+- That's our **busy** states for mutations designed. Every action gives instant feedback now.
+- But there's no animation when items change in the list. We can add a **done** state here too, same ViewTransition primitive. Since mutations and background updates all run inside transitions, ViewTransition can animate the results. Wrap each item in ViewTransition key={uniqueId}, the key lets React track items across renders. Do this for QuestionCards (key={item.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
 ### Background Update — Questions Page
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. And because it uses startTransition, it coordinates with everything else — I can keep interacting, upvoting, submitting, while fresh data streams in. It all goes through the same transition system.
+- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This refreshes the server components, fetching fresh data. And because it's wrapped in startTransition, it coordinates with everything else — I can keep interacting, upvoting, submitting, while fresh data streams in. Same transition system tying it all together.
 - Let me show you. (Open two browser windows side by side on the same questions page.) I'll submit a question in this window... and watch the other one. (Submit a question in the left window, it appears in the right window within a few seconds via polling.)
+- Mutation in-between states, done. useOptimistic for instant feedback, ViewTransition for smooth animation, startTransition tying it all together.
 
 ## Eliminating In-Between States — Session Page
 
@@ -124,7 +129,7 @@ Sometimes the best in-between state is no state at all.
 
 ## Offline Support
 
-- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. We're working on a new feature in Next.js — it's experimental, coming soon — that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
+- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. There's an experimental Next.js feature that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
 - Let's add an offline indicator so you actually see what's happening. (Add the OfflineIndicator component using the useOffline hook.) When the connection drops, a bar appears. When it comes back, the hook triggers recovery and content streams in automatically.
 - We'll see this in action on the deployed app in a moment.
 
@@ -132,11 +137,11 @@ Sometimes the best in-between state is no state at all.
 
 - Remember how the app looked at the start? (Revert all changes.) Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
 - (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
-- Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
+- Let's try it to slow down the network too.. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
 - Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Talk to your designers about what these states should look like!
-- Now — you're not going to hand-code every ViewTransition recipe from scratch. So we've created agent skills — knowledge files that teach your coding agent these patterns. (Show the .agents/skills/ folder.)
+- Now — you're not going to hand-code every ViewTransition from scratch. Agent skills are knowledge files that teach your coding agent patterns like these. I created one for view transitions as part of my work at Vercel. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
-  - We're also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states. Coming soon.
+  - I'm also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states.
 - (Open /slides/8 — Resources slide with QR codes.) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
 - Thank you!

@@ -1,5 +1,5 @@
 import { ChevronRight, Download, MousePointerClick, Route } from 'lucide-react';
-import { Slide, SlideTitle, SlideBadge, SlideSpeaker, SlideSubtitle } from 'nextjs-slides';
+import { Slide, SlideTitle, SlideBadge, SlideSpeaker } from 'nextjs-slides';
 import { QRCode } from './QRCode';
 
 function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
@@ -219,15 +219,15 @@ export const slides = [
         </span>
       </div>
       <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
-        <MousePointerClick className="text-primary size-8" />
-        <span className="text-xl font-semibold">
-          <span className="text-primary">Async</span> Mutations
-        </span>
-      </div>
-      <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
         <Route className="text-primary size-8" />
         <span className="text-xl font-semibold">
           <span className="text-primary">Async</span> Navigation
+        </span>
+      </div>
+      <div className="border-primary bg-primary/5 flex flex-col items-center gap-4 rounded-xl border px-8 py-6">
+        <MousePointerClick className="text-primary size-8" />
+        <span className="text-xl font-semibold">
+          <span className="text-primary">Async</span> Mutations
         </span>
       </div>
     </div>

@@ -43,7 +43,7 @@ export function EventDetailsSkeleton() {
       </div>
       <div className="space-y-3 sm:space-y-4">
         <div className="flex items-start justify-between gap-3">
-          <Skeleton className="h-14 w-4/5 rounded-md sm:h-18" />
+          <Skeleton className="h-14 w-4/5 rounded-md sm:h-19" />
           <Skeleton className="size-6 shrink-0 rounded-md" />
         </div>
         <div className="flex items-center gap-2.5 sm:gap-3">

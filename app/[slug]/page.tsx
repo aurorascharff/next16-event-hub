@@ -32,6 +32,7 @@ export async function generateStaticParams() {
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
+
   return (
     <NavForward>
       <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">

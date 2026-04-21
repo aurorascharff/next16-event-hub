@@ -53,7 +53,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Right now, the initial page load is actually blocked. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a performance problem — it shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
 - This is where Suspense comes in. It works with Suspense-enabled data sources like RSCs. Give it a fallback, and you decide where loading states go and what they look like declaratively.
-- Looking at our error, EventGrid is the blocking component. It's a server component that fetches data, so it works with Suspense out of the box. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready.
+- Looking at our error, EventGrid is the blocking component. It's a server component that fetches data, so it works with Suspense out of the box. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Skeletons match the shape of the real content, so loading actually feels faster. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The server fetches and streams directly instead of client round trips, and we still get to compose everything with components and local data fetching. And because the shell is static, it can be served from a CDN.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -95,7 +95,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Mutations
 
-Now let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with useOptimistic — the UI updates immediately, and if something goes wrong, it rolls back.
+Now let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with useOptimistic — the UI updates immediately. And if something does go wrong, useOptimistic just rolls back automatically.
 
 ### Session Page
 
@@ -138,7 +138,7 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 - (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
 - Let's try it to slow down the network too.. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
 - Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.
-- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely.
+- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely. It feels like a completely different app. And simultaneously this will improve Core Web Vitals like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift  dramatically which is great for performance and SEO.
 - And notice what we built. It's just components. Server components fetch data and stream, client components handle interactivity, and they all compose in the same tree. The whole app streams, but it still feels like an SPA — instant navigations, optimistic updates, smooth animations.
 - Talk to your designers about what these states should look like!
 - Now — you're not going to hand-code every ViewTransition from scratch. Agent skills are knowledge files that teach your coding agent patterns like these. I created one for view transitions as part of my work at Vercel. (Show the .agents/skills/ folder.)

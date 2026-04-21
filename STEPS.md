@@ -104,27 +104,26 @@ Now mutations. There are two kinds of work here. Some things are actively broken
 
 ### Session Page
 
-- **FavoriteButton**: Remember the broken useEffect heart from the opening? Let's fix it properly. Delete the API endpoint (app/api/favorites/[slug]/route.ts), remove the useEffect fetch and local state, add back the hasFavorited prop from the server, and replace the onClick with a form action. A form's action prop works just like the action prop on BottomNav or ToggleGroup — React wraps it in a transition automatically. So we add useOptimistic with a boolean reducer to toggle the heart immediately — that's the **busy** state handled. The transition system coordinates the rest. Now tap a few favorites, then switch to the Favorites tab — no flickering, no stale data. Compare this to the broken version from the opening. Mutations and navigation both go through the transition system, so useOptimistic handles the instant heart fill and when you switch tabs, React coordinates everything in a single render pass. Optimistic updates settle naturally when the server responds with refresh().
+- **FavoriteButton**: Remember the broken useEffect heart from the opening? Let's fix it properly. Delete the API endpoint (app/api/favorites/[slug]/route.ts), remove the useEffect fetch and local state, add back the hasFavorited prop from the server, and move the mutation from onClick to a form action. A form's action prop works just like the action prop on BottomNav or ToggleGroup — React wraps it in a transition automatically. So we add useOptimistic with a to toggle the favorite immediately. That's the **busy** state handled. Now tap a few favorites, then switch to the Favorites tab — no flickering, no stale data. Mutations and navigation both go through the transition system, so useOptimistic handles the instant heart fill and when you switch tabs, React coordinates everything in a single render pass. Optimistic updates settle naturally when the server responds with new data.
 
 ### Questions Page
 
 - **UpvoteButton**: Same **busy** state pattern — use the upvoteOptimistic snippet. It replaces onSubmit with action, adds useOptimistic with a reducer that increments the count and disables the button. Upvoting is one-way (no un-vote), so the reducer only goes in one direction.
-- **Optimistic Create**: Submitting a question waits for the server — no **busy** state feedback. Replace BasicQuestionForm and the count/sort row with OptimisticQuestions. The server renders the real list, the client component uses useOptimistic([]) for pending items — they show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state resets. A client-generated crypto.randomUUID() is passed to the server action so there's no duplicate.
-
-### Background Update — Questions Page
-
-- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. Because it uses startTransition, it's non-blocking — the user can keep interacting while fresh data streams in.
-- Let me show you. (Open two browser windows side by side on the same questions page.) I'll submit a question in this window... and watch the other one. (Submit a question in the left window, it appears in the right window within a few seconds via polling.) No WebSockets, no subscriptions — just router.refresh() in a transition on an interval.
-- The in-between state here is ideally invisible — fresh data just appears without disrupting anything. And because it shares the same transition pipeline as user mutations, everything coordinates naturally.
+- **Optimistic Create**: Submitting a question waits for the server — no **busy** state feedback. Replace BasicQuestionForm and the count/sort row with OptimisticQuestions. The server renders the real list, the client component uses useOptimistic([]) for pending items — they show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state resets.
 
 ### List Animation
 
 - Now the **done** state for mutations. Our mutations and background updates all run inside transitions, so we can animate list changes too. Wrap each item in ViewTransition key={uniqueId} — the key lets React track items across renders. Do this for QuestionCards (key={item.id}) and CommentCards (key={comment.id}). Now new items fade in, deleted ones fade out, and upvotes reorder smoothly.
 
+### Background Update — Questions Page
+
+- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
+- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This refreshes the server components, fetching fresh data. The server-rendered card list updates automatically. Because it uses startTransition, it's non-blocking — the user can keep interacting while fresh data streams in.
+- Let me show you. (Open two browser windows side by side on the same questions page.) I'll submit a question in this window... and watch the other one. (Submit a question in the left window, it appears in the right window within a few seconds via polling.)
+
 ## Eliminating In-Between States — Session Page
 
-Sometimes the best in-between state is none at all — you eliminate it entirely. No **loading**, no **busy**, no **done**. With Async React, dynamic vs static isn't binary — it's a scale, and you choose how much to make static.
+Sometimes the best in-between state is none at all — you eliminate it entirely. No **loading**, no **busy**, no **done**.
 
 - Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's move the favorite out and pass it as children. Now EventDetails only needs getEventBySlug.
 - Add 'use cache' with cacheTag and now the whole rendered output — title, speaker, labels, description — is cached per slug. The children (FavoriteButton) pass through without affecting the cache. Think of it like the donut pattern, but for caching. The cached shell renders instantly; only the tiny FavoriteButton streams in.
@@ -133,24 +132,19 @@ Sometimes the best in-between state is none at all — you eliminate it entirely
 
 ## Offline Support
 
-- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. We're working on a useOffline hook in Next.js — it's experimental, coming soon — that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
+- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. We're working on a new feature in Next.js — it's experimental, coming soon — that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
 - Let's add an offline indicator so the user actually sees what's happening. (Add the OfflineIndicator component using the useOffline hook.) When the connection drops, a bar appears. When it comes back, the hook triggers recovery and content streams in automatically.
 - We'll see this in action on the deployed app in a moment.
 
-## Review
+## Review & Wrap-Up
 
-- Remember how the app looked at the start? (Switch to the start branch / stash changes to show the broken version.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
-- Now let me show you the after. This app is deployed and live right now — with all the changes we just made, plus a few extra polish touches like crossfade animations on tab switches.
-- Remember that Slow 3G blank screen from the start? Let's try it on the fixed version. (Open the deployed app → DevTools → Network throttling → Slow 3G, reload.) The static shell shows up instantly — header, tabs, skeletons — all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side. Same slow network, completely different experience.
-- Now let's take it further — same dropdown, switch to Offline. (Navigate to a session.) The static shell still loads — header, tabs, skeletons all render from the cache. The offline indicator we just added tells the user what's happening. Now switch back to No Throttling — content streams in and fills the skeletons. The app recovers gracefully when you're back online.
-- The important thing to remember — the actual interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
-
-## Wrap-Up
-
-- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) This is the deployed version with all the changes we just made. Let me walk through the full experience. (Walk through the app) Skeleton placeholders, instant feedback, smooth animations, live data — and real improvements to First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift.
-- (Navigate to a session, show comments, questions, favorites in action.) Watch the coordination — submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab, no flicker. Everything flows through the same transition system.
-- Now — it's great to learn all of this, but realistically you're not going to be hand-coding every ViewTransition CSS recipe and directional animation from scratch. So we've created agent skills for this — knowledge files that teach your coding agent how to implement these patterns correctly. (Show the .agents/skills/ folder.)
-  - **vercel-react-view-transitions** — handles all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Includes ready-to-use CSS recipes. These work in Cursor, Codex, Claude Code, and other agent environments.
-  - We're also working on an **async-react** skill that covers the rest — Suspense boundaries, optimistic updates, action props, pending states. It's not quite ready yet, but it's coming soon.
-- (Open /slides/8 — Resources slide with QR codes.) Here are the links — scan the QR codes. The source code for everything we built is on GitHub, and the View Transitions skill is on skills.sh. Both QR codes are right here.
+- Remember how the app looked at the start? (Revert all changes.) Blank screens, jumping layouts, global spinners, frozen buttons, harsh transitions.
+- (Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app)) Now the deployed version with all our changes. (Walk through the app — navigate to a session, show comments, questions, favorites.) Submit a question — shows up optimistically. Upvote — list reorders with animation. Favorite a session, switch to Favorites — no flicker.
+- Remember the Slow 3G blank screen? (DevTools → Slow 3G, reload.) Static shell shows up instantly from the CDN. Content streams in as it arrives. Optimistic updates still feel instant. Same slow network, night and day.
+- Take it further — switch to Offline. (Navigate to a session.) Static shell still loads from cache. The offline indicator tells the user what's happening. Switch back to No Throttling — content streams in. Graceful recovery.
+- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states — and sometimes eliminating them entirely. Collaborate with your designers on what these states should look like.
+- Now — you're not going to hand-code every ViewTransition recipe from scratch. So we've created agent skills — knowledge files that teach your coding agent these patterns. (Show the .agents/skills/ folder.)
+  - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
+  - We're also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states. Coming soon.
+- (Open /slides/8 — Resources slide with QR codes.) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
 - Thank you!

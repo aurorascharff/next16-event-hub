@@ -12,19 +12,16 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - (Exit slides, show the app) To demonstrate these concepts, I built an app.
 - This is Event Hub — a demo conference companion app with fictional session data. You can browse sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've added some test data so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
-- Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing.
+- Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? I've slowed down the data fetching on purpose so you can actually see what's happening.
+- (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing. Let me show you.
+- Look at the home page — the whole thing blocks until all the data is ready. Nothing shows up until everything loads. Go to a session — you get two little spinners, and when the content loads, everything jumps down. Switch between Day 1 and Day 2 — the whole thing locks up while it loads. Upvote a question — the UI just freezes until the server responds.
 - So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
-- Let me show you some specific ones:
-  - **Global spinner**: The whole app sits behind one big spinner. You see nothing until everything loads. Not great.
-  - **Layout shift**: Go to a session — you get two little spinners. When the content loads, everything jumps down. Ouch.
-  - **Frozen navigation**: Switch between Day 1 and Day 2 — the whole thing locks up while it loads. No feedback at all.
-  - **No feedback on mutations**: Upvote a question — the UI just freezes until the server responds. No indication that anything is happening.
 - So how would we normally fix this? Let's look at FavoriteButton — it's doing the classic thing: useEffect to fetch favorite status from an API endpoint, then local useState to manage it. Sound familiar? But watch what happens:
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
   - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
 - So the traditional approach actually made things worse. Let's leave it broken for now — we'll come back and fix it properly.
-- Let's also see what this looks like on a real-world connection. (Open DevTools → Network → Slow 3G, reload the page.) Blank screen. Nothing. For seconds. That global spinner is the only thing between the user and a white page. This is what your users on spotty conference Wi-Fi actually experience.
-- Here's what I want you to take away: this isn't really a performance problem — it's a coordination problem. Loading, mutations, navigation — they're all running in their own little worlds with no coordination. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
+- Let's also see what this looks like on a real-world connection. (DevTools → Slow 3G, reload.) Blank screen. Nothing. For seconds. This is what your users on spotty conference Wi-Fi actually experience.
+- This isn't really a performance problem — it's a coordination problem. Loading, mutations, navigation — they're all running in their own little worlds with no coordination. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
 
 ## Slide 2: React Render Cycle
 
@@ -40,20 +37,20 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 5: Async React Render Cycle — Primitives
 
-- And there's a primitive for each phase. useOptimistic() spans Event through Update, it gives instant feedback during the busy phase. Suspense spans Update through Render, it shows a placeholder while data loads. And ViewTransition spans Render through Commit, it animates the new content into the DOM instead of popping it in.
+- And there's a primitive we can use to close each gap. useOptimistic() spans Event through Update, it gives instant feedback during the busy phase. Suspense spans Update through Render, it shows a placeholder while data loads. And ViewTransition spans Render through Commit, it animates the new content into the DOM instead of popping it in.
 
 ## Slide 6: Async React Render Cycle — Clean
 
-- And here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done labels just disappear. It all feels instant. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast. (Credit: Async React talk at React Conf)
+- And here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done labels just disappear. It all feels instant. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast.
 
 ## Slide 7: Where the Gaps Are
 
-- (Open /slides/7) So think about what happens in our app. There are really three places where async creates these gaps.
-- **Data loading** — we're fetching sessions, comments, questions from the server. That's where you get blank screens, spinners, layout shifts.
+- (Open /slides/7) So there are really three places where async creates these gaps.
+- **Data loading** — fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - **Navigation** — switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
-- **Mutations** — someone submits a comment, taps a heart, upvotes a question. That's where buttons freeze, nothing gives feedback, state goes stale.
-- We've been handling each of these on our own — and they don't talk to each other. But now we have the primitives to handle all three.
-- And these primitives really shine when the framework integrates them — the router, the data layer, the design system. We're using Next.js 16 App Router with React Server Components, that's just one way to use Async React, any framework that integrates with transitions and Suspense works. I've slowed down the data fetching on purpose so you can actually see what's happening. Let's go fix our app!
+- **Mutations** — submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
+- And these primitives really shine when the framework integrates them — the router, the data layer, the design system. We're using Next.js 16 App Router with React Server Components, that's just one way to use Async React, any framework that integrates with transitions and Suspense works.
+- So let's go fix our app!
 - (Exit slides, back to the app)
 
 ## Data Loading

@@ -14,10 +14,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, favorite the talks you want to see, view details and comment, ask questions and upvote them.
 - However, this app feels kind of broken. Can you see why?
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. Now go to a session — see those two little spinners? When the content loads, everything jumps down. Navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
-- So how would we normally fix delayed interactions? Let's look at FavoriteButton — it's doing the classic thing: useEffect to fetch favorite status from an API endpoint, then local useState to manage it. Sound familiar? But watch what happens:
-  - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
-  - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
-- So the traditional approach actually made things worse. Let's leave it broken for now — we'll come back and fix it properly.
+- And look at the favorites. Favorite a session, no feedback until the server responds.
 - And on slow networks, all these problems become way more apparent.
 - It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users. This isn't really a performance problem — it's a coordination problem. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
 
@@ -97,12 +94,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Mutations
 
-Now mutations. There are two kinds of work here. Some things are actively broken — like the FavoriteButton with its useEffect + useState that doesn't coordinate with navigation. That's a legacy pattern we need to fix. Other things just need coordination added — the delete button works, the upvote works, they just have no feedback. Let's look at all of them.
+Now mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. Let's fix that.
 
 ### Session Page
 
-- **FavoriteButton**: Remember the flickery favorite page from the opening? Let's fix this. Delete the API endpoint, rip out the useEffect and local state, get the favorited prop from the server instead. Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action — same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
-- Now tap a few favorites, switch to the Favorites tab. See? It just works. Mutations and navigation go through the same transition system, so it all coordinates. And we simplified a bunch of clunky code.
+- **FavoriteButton**: Switch useState to useOptimistic to toggle instantly. Replace onClick with a form action — same as BottomNav and ToggleGroup, React wraps it in a transition automatically.
 
 ### Questions Page
 

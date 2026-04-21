@@ -9,8 +9,8 @@ import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
 import { Questions } from './_components/Questions';
 import type { Metadata } from 'next';
-// eslint-disable-next-line import/order, autofix/no-unused-vars
-import { ViewTransition } from 'react';
+// eslint-disable-next-line import/order
+import { Suspense, ViewTransition } from 'react';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
   const { slug } = await params;
@@ -25,7 +25,17 @@ export default async function QuestionsPage({ params, searchParams }: PageProps<
   return (
     <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
-        <QuestionFeed params={params} searchParams={searchParams} />
+        <Suspense
+          fallback={
+            <ViewTransition exit="slide-down">
+              <QuestionFeedSkeleton />
+            </ViewTransition>
+          }
+        >
+          <ViewTransition enter="slide-up" default="none">
+            <QuestionFeed params={params} searchParams={searchParams} />
+          </ViewTransition>
+        </Suspense>
       </div>
     </div>
   );

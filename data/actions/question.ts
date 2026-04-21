@@ -44,7 +44,7 @@ export async function upvoteQuestion(questionId: string, eventSlug: string) {
   const userName = await getCurrentUser();
   if (!userName) return;
 
-  await slow(300);
+  await slow();
 
   const existing = await prisma.questionVote.findUnique({
     where: { userName_questionId: { questionId, userName } },

@@ -46,7 +46,7 @@ export async function deleteComment(commentId: string, eventSlug: string) {
   if (!userName) return;
   if (!comment || comment.userName !== userName) return;
 
-  await slow(400);
+  await slow();
   await prisma.comment.delete({
     where: { id: commentId },
   });

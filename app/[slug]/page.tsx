@@ -1,15 +1,15 @@
 import { Suspense } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CenteredSpinner } from '@/components/ui/spinner';
+
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
 import { getEventBySlug, getEvents } from '@/data/queries/event';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
+import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
 import type { Metadata } from 'next';
-// eslint-disable-next-line import/order, autofix/no-unused-vars
+// eslint-disable-next-line import/order
 import { ViewTransition } from 'react';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {
@@ -35,7 +35,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
     <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
         <div className="flex flex-col gap-8">
-          <Suspense>
+          <Suspense fallback={<EventDetailsSkeleton />}>
             <div className="min-h-72 sm:min-h-96">
               <EventDetails slug={slug} />
             </div>
@@ -44,8 +44,10 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
             <div className="mb-6 min-h-9">
               <CommentForm />
             </div>
-            <Suspense fallback={<CenteredSpinner />}>
-              <CommentList slug={slug} />
+            <Suspense fallback={<CommentListSkeleton />}>
+              <ViewTransition>
+                <CommentList slug={slug} />
+              </ViewTransition>
             </Suspense>
           </div>
         </div>
@@ -67,7 +69,7 @@ async function CommentList({ slug }: { slug: string }) {
     </div>
   );
 }
-// eslint-disable-next-line autofix/no-unused-vars
+
 function CommentListSkeleton() {
   return (
     <div className="space-y-2">

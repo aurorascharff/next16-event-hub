@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
   // // Simulate serverless environment like Vercel
   // cacheMaxMemorySize: 0,
   experimental: {
-    cachedNavigations: true,
+    // cachedNavigations: true,
     instantNavigationDevToolsToggle: true,
-    optimisticRouting: true,
+    // optimisticRouting: true,
     prefetchInlining: true,
     staleTimes: {
       dynamic: 30,

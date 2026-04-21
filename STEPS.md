@@ -4,15 +4,15 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open `/slides`) Hey everyone! I'm Aurora Scharff — I'm a DX Engineer at Vercel, working on the Next.js developer experience. I'm from Norway, and this is my first time at React Miami — super excited to be here.
-- Today we're talking about designing the in-between states with Async React. But first, let me show you something.
+- (Open `/slides`) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. I'm from Norway, and this is my first time at React Miami — super excited to be here.
+- Today we're talking about designing the in-between states with Async React. Let's get started.
 
 ## Opening
 
-- (Exit slides, show the app) To demonstrate these concepts, I built a conference companion app.
+- (Exit slides, show the app) To demonstrate these concepts, I built an app.
 - This is Event Hub — a demo conference companion app with fictional session data. You can browse sessions, post comments, ask questions and upvote them, favorite the talks you want to see. I've added some test data so we have something to look at. (Navigate to "In-Between States" session, show the comments, questions with upvotes, and the favorited session.)
 - Alright, looks pretty good right? ...but actually, this app feels kind of broken. Can you see why? (Let audience react) Yeah — flickering, things jumping around, no feedback when you click stuff, the whole page freezing.
-- So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. We can call these the in-between states. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
+- So where's the problem? It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users.
 - Let me show you some specific ones:
   - **Global spinner**: The whole app sits behind one big spinner. You see nothing until everything loads. Not great.
   - **Layout shift**: Go to a session — you get two little spinners. When the content loads, everything jumps down. Ouch.
@@ -22,7 +22,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
   - Go to the Favorites tab — the hearts start empty and then pop to filled after a beat. The server knows you favorited these, but the client has to re-fetch that separately.
   - Now unfavorite a couple sessions, then switch to Day 1 — see that? The hearts briefly flash back as filled. Mutations and navigation aren't talking to each other.
 - So the traditional approach actually made things worse. Let's leave it broken for now — we'll come back and fix it properly.
-- And just to drive it home — let's see what this looks like on a real-world connection. (Open DevTools → Network → Slow 3G, reload the page.) Blank screen. Nothing. For seconds. That global spinner is the only thing between the user and a white page. This is what your users on spotty conference Wi-Fi actually experience.
+- Let's also see what this looks like on a real-world connection. (Open DevTools → Network → Slow 3G, reload the page.) Blank screen. Nothing. For seconds. That global spinner is the only thing between the user and a white page. This is what your users on spotty conference Wi-Fi actually experience.
 - Here's what I want you to take away: this isn't really a performance problem — it's a coordination problem. Loading, mutations, navigation — they're all running in their own little worlds with no coordination. What if React itself could handle that? Let's look at the render cycle to understand where the gaps are.
 
 ## Slide 2: React Render Cycle
@@ -35,7 +35,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 4: Async React Render Cycle — Transitions
 
-- (Open `/slides/4`) So how do we fix this? The React team introduced Async React — the combination of React 18's concurrent features and React 19's coordination APIs. It's a set of primitives that handle async coordination declaratively. And the key piece is transitions. A transition wraps the entire render cycle, coordinates the async work, and batches all updates together as an "Action". It commits them when they're all ready — so you don't get those weird flickers between states.
+- (Open `/slides/4`) So how do we fix this? The React team introduced Async React. It's a set of primitives that handle async coordination declaratively. And the key piece is transitions. A transition wraps the entire render cycle, coordinates the async work, and batches all updates together as an "Action". It commits them when they're all ready — so you don't get those weird flickers between states.
 
 ## Slide 5: Async React Render Cycle — Primitives
 
@@ -49,14 +49,14 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - (Open `/slides/7`) So think about what happens in our app. There are really three places where async creates these gaps.
 - **Data loading** — we're fetching sessions, comments, questions from the server. That's where you get blank screens, spinners, layout shifts.
-- **Mutations** — someone submits a comment, taps a heart, upvotes a question. That's where buttons freeze, nothing gives feedback, state goes stale.
 - **Navigation** — switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
+- **Mutations** — someone submits a comment, taps a heart, upvotes a question. That's where buttons freeze, nothing gives feedback, state goes stale.
 - We've been handling each of these on our own — and they don't talk to each other. But now we have the primitives to handle all three. So let's go fix our app!
 - (Exit slides, back to the app)
 
 ## Setup and Starting Point
 
-- Quick context on the setup — Next.js 16 App Router, Prisma, Tailwind. We're using React Server Components for data fetching. And I've slowed down the data fetching on purpose so you can actually see what's happening — otherwise it'd be too fast on localhost.
+- Quick context on the setup — Next.js 16 App Router, Prisma, Tailwind. We're using React Server Components for data fetching. And I've slowed down the data fetching on purpose so you can actually see what's happening.
 - We'll go through this in three parts: data loading first, then navigation, then mutations. Let's dive in.
 
 ## Data Loading

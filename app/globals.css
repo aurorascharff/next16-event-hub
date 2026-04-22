@@ -175,79 +175,33 @@
 
 /* --- Persistent element isolation (prevent header/nav from animating) --- */
 
-::view-transition-group(safe-area-top) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(safe-area-top) {
-  display: none;
-}
-::view-transition-new(safe-area-top) {
-  animation: none;
-}
-
-::view-transition-group(site-header) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(site-header) {
-  display: none;
-}
-::view-transition-new(site-header) {
-  animation: none;
-}
-
-::view-transition-group(bottom-nav) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(bottom-nav) {
-  display: none;
-}
-::view-transition-new(bottom-nav) {
-  animation: none;
-}
-
-::view-transition-group(question-form) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(question-form) {
-  display: none;
-}
-::view-transition-new(question-form) {
-  animation: none;
-}
-
-::view-transition-group(auth-gate) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(auth-gate) {
-  display: none;
-}
-::view-transition-new(auth-gate) {
-  animation: none;
-}
-
-::view-transition-group(dialog-overlay) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(dialog-overlay) {
-  display: none;
-}
-::view-transition-new(dialog-overlay) {
-  animation: none;
-}
-
+::view-transition-group(safe-area-top),
+::view-transition-group(site-header),
+::view-transition-group(bottom-nav),
+::view-transition-group(question-form),
+::view-transition-group(auth-gate),
+::view-transition-group(dialog-overlay),
 ::view-transition-group(theme-toggle) {
   animation: none;
   z-index: 100;
 }
+
+::view-transition-old(safe-area-top),
+::view-transition-old(site-header),
+::view-transition-old(bottom-nav),
+::view-transition-old(question-form),
+::view-transition-old(auth-gate),
+::view-transition-old(dialog-overlay),
 ::view-transition-old(theme-toggle) {
   display: none;
 }
+
+::view-transition-new(safe-area-top),
+::view-transition-new(site-header),
+::view-transition-new(bottom-nav),
+::view-transition-new(question-form),
+::view-transition-new(auth-gate),
+::view-transition-new(dialog-overlay),
 ::view-transition-new(theme-toggle) {
   animation: none;
 }

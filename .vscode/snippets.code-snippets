@@ -20,9 +20,19 @@
     "prefix": "upvoteOptimistic",
     "description": "Mutations: useOptimistic hook for instant upvote feedback",
     "body": [
-      "const [optimisticVotes, addUpvote] = useOptimistic({ hasVoted, votes }, state => {",
-      "  return { hasVoted: true, votes: state.votes + 1 };",
-      "});"
+      "const [optimisticVotes, addUpvote] = useOptimistic(",
+      "  {",
+      "    hasVoted,",
+      "    votes,",
+      "  },",
+      "  (prev, increment: number) => {",
+      "    if (prev.hasVoted) {",
+      "      return prev;",
+      "    }",
+      "",
+      "    return { hasVoted: true, votes: prev.votes + increment };",
+      "  },",
+      ");"
     ],
   },
   "questionsSuspense": {

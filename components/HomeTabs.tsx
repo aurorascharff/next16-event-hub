@@ -34,7 +34,7 @@ export default function HomeTabs() {
       tabs={homeTabs}
       activeIndex={activeIndex}
       onChange={href => {
-        return router.push(href);
+        router.push(href);
       }}
     />
   );

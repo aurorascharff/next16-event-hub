@@ -15,20 +15,20 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - However, this app feels kind of broken. Can you see why?
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
 - And on slow networks, all these problems become way more apparent.
-- It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users. And the thing is, the interactions themselves aren't actually slow. The data fetching, the navigation, the mutations, they all work. It's the gaps between them that are completely undesigned. That's a coordination problem, not a performance problem.
-- Now, you could try to solve this yourself with useEffect and useState — track loading flags, manage error states, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
+- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. These are also UX problems, not DX problems, which is why they're commonly forgotten or not done right.
+- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
 
-- (Open /slides/2) Alright, the React render cycle. Event — the user clicks something. Update — React figures out what changed. Render — it re-renders the components. Commit — updates the DOM. Pretty straightforward when everything is synchronous.
+- (Open /slides/2) Alright, the React render cycle. This should be familiar already. In react, we have an Event like the user clicking something. That triggers an Update where React figures out what changed. With that React schedules a Render and re-renders the components. Finally , Commit updates the DOM. Pretty straightforward when everything is synchronous.
 
 ## Slide 3: React Render Cycle — In-Between States
 
-- But what happens when things are async? Now there are potential gaps. Between Event and Update, the user clicked but nothing happened yet, a "busy" state. Between Update and Render, we're waiting for data, "loading". Between Render and Commit, the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what our app is missing right now. These are UX problems, not DX problems, and they're commonly forgotten or not done right.
+- But what happens when things are async? Now there are potential gaps. Between Event and Update, the user clicked but nothing happened yet, a "busy" state. Between Update and Render, we're waiting for data, "loading". Between Render and Commit, the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what our app is missing proper designs for right now.
 
 ## Slide 4: Async React Render Cycle — Transitions
 
-- (Open /slides/4) So how do we fix this? The React team introduced Async React. It's a set of primitives that handle async coordination declaratively. And the key piece is transitions. A transition wraps the entire render cycle, coordinates the async work, and batches all updates together as an "Action". It commits them when they're all ready, so you don't get weird flickers between states.
+- (Open /slides/4) So how do we fix this? The React team recently introduced Async React. It's a set of primitives that handle async coordination declaratively. And the key piece is transitions. A transition wraps the entire render cycle, coordinates the async work, and batches all updates together as an "Action". It commits them when they're all ready, so you don't get weird flickers between states.
 
 ## Slide 5: Async React Render Cycle — Primitives
 
@@ -41,22 +41,22 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Slide 7: Where the Gaps Are
 
 - (Open /slides/7) So there are really three places where async creates these gaps.
-- **Async Data loading** — fetching data from the server. That's where you get blank screens, spinners, layout shifts.
-- **Async Navigation** — switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
-- **Async Mutations** — submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- These primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer using Suspense. The design system exposing action props is something we build ourselves. We're using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works.
-- So let's go fix our app!
+- When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
+- Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
+- Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
+- The Async react primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- With this in mind, let's go fix our app!
 - (Exit slides, back to the app. Switch to editor).
 
 ## Async Data Loading
 
 ### Suspense Boundaries — Home Page
 
-- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast with these errors. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.
+- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast by surfacing these issues. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
-- When skeletons match the shape of the real content, loading actually feels faster and stays predictable. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready.
-- And on the performance side, the server fetches and streams directly instead of client round trips. The shell is static and becomes part of the Partial Prerender — it's served from the CDN and prefetched by the router, so it shows up instantly. The dynamic content streams in behind it. We still get to compose everything with components and local data fetching.
+- When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
+- With RSCs the server fetches and streams directly instead of client round trips. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. Navigating is also instant. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to compose our app using components and local data fetching.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -72,42 +72,44 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predicable with this in-between state. No CLS.
 - Also animate them. Let's just do a crossfade on the comment section. I'm not going to need it on the details, we'll see why later.
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
-- **Questions page**: No Suspense at all — navigate there and the whole page blocks and delays with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load.
-- That's async data loading designed. Every page streams in with skeletons and animations instead of blocking.
+- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav.
+- That's async data loading designed. Let's move on.
 
 ## Async Navigation
 
 ### Query Param Navigation — Home Page
 
-- Now let's handle async navigation. I click between tabs and nothing updates. That's the **busy** state, we need to design it so you know something is happening. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
-- Look at HomeTabs, using BottomNav. BottomNav and ToggleGroup are part of my design layer for this React Miami themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
-- So let's just change onChange to action.
-- Try it now... see? The active tab updates immediately, and the content follows when it arrives.
+- Now let's handle async navigation. I click between tabs and nothing updates. That's the **busy** state, we need to design it so you know something is happening.
+- Open HomeTabs. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
+- Look BottomNav. BottomNav is part of my design layer for this React Miami pink themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
+- So let's try changing onChange to action.
+- Try it now... Now, the active tab updates immediately, and the content follows when it arrives.
 - (And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.)
-- So what just happened? Let's look inside BottomNav. This is startTransition and useOptimistic in action. BottomNav wraps our callback in a transition and optimistically updates the active tab immediately. That optimistic value shows while the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
-- Remember from the slides, any async function called inside a transition is an "Action". So the convention is: when a prop is called action, it means it runs in a transition. This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
+- So what just happened? Let's look inside BottomNav. The action prop is being wrapped in a transition and the tabs optimistically updates immediately. That optimistic value shows while the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
+- This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
+- Remember from the slides, any async function called inside a transition is an "Action". So the convention is: when a prop is called action, it means it runs in a transition.
 - Now the label filter pills, same problem, no feedback, also navigating via query params with router.push. Right now LabelFilter passes onChange. Change it to action, and rename to changeAction to adhere to convention. Because the prop is called action, that's the contract — we expect the component to handle the async coordination internally. And it does. The pills highlight instantly.
 - (In this case, the design component didn't include any build in pending state. But as the consumer, we can add one. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.)
 - And here's the thing. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. Component libraries like Base UI and Radix can adopt the action prop pattern, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
-- That's async navigation designed, they feel instant and responsive instead of frozen and janky.
+- That's async navigation designed, our interactions feel instant and responsive instead of frozen and janky.
 
 ### Directional Navigation
 
-- Navigation feels smooth now, but when we actually navigate to a session, there's no sense of place — you don't know where you came from or how to get back. Directional animations fix this. We want going forward to slide in from the right, going back from the left. So the list feels "behind" the detail and you know where you are.
-- Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link, and addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
+- Navigation feels responsive now, but when we actually navigate to a session, there's no sense of place — you don't know where you came from or how to get back. Directional animations can fix this. We want going forward to slide in from the right, going back from the left.
+- Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link. See the animation. Then add addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
 
 ## Async Mutations
 
-Now let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with optimistic updates. And if something does go wrong, useOptimistic can roll back automatically.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with useOptimistic. And if something does go wrong, useOptimistic can roll back automatically.
 
 ### Session Page
 
-- **FavoriteButton**: Switch useState to useOptimistic to toggle the heart instantly. Replace onClick with a form action, React wraps it in a transition automatically. Same action props pattern as BottomNav and ToggleGroup.
-- Now tap a few favorites, switch to the Favorites tab. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here.
+- **FavoriteButton**: Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
+- Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.
 
 ### Questions Page
 
-- **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Replaces onSubmit with action and remove preventdefault. Upvoting is one-way (no un-vote), so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
+- **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
 - **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.
 
 ### List Animation

@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronUp } from 'lucide-react';
+
 import { upvoteQuestion } from '@/data/actions/question';
 import { cn } from '@/lib/utils';
 
@@ -14,8 +15,7 @@ type Props = {
 export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) {
   return (
     <form
-      onSubmit={async e => {
-        e.preventDefault();
+      action={async () => {
         await upvoteQuestion(questionId, eventSlug);
       }}
     >

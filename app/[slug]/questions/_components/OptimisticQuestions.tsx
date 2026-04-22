@@ -15,7 +15,7 @@ type Props = {
 
 export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [pendingQuestions, setPendingQuestions] = useOptimistic<Question[]>([]);
+  const [optimisticQuestions, setOptimisticQuestions] = useOptimistic<Question[]>([]);
 
   async function submitAction(formData: FormData) {
     const content = (formData.get('content') as string)?.trim();
@@ -33,7 +33,7 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
       votes: 0,
     };
 
-    setPendingQuestions(c => {
+    setOptimisticQuestions(c => {
       return [newQuestion, ...c];
     });
     const serverData = new FormData();
@@ -47,7 +47,7 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
 
   return (
     <>
-      {pendingQuestions.map(question => {
+      {optimisticQuestions.map(question => {
         return <QuestionCard key={question.id} question={question} pending />;
       })}
       <div className="bg-background fixed inset-x-0 bottom-0 z-30 px-4 pt-1 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">

@@ -36,7 +36,7 @@ export default function HomeTabs() {
       activeIndex={activeIndex}
       action={href => {
         addTransitionType('tab-switch');
-        return router.push(href);
+        router.push(href);
       }}
     />
   );

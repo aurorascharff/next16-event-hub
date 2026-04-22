@@ -13,14 +13,24 @@ type Props = {
 };
 
 export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) {
-  const [optimisticVotes, addUpvote] = useOptimistic({ hasVoted, votes }, state => {
-    return { hasVoted: true, votes: state.votes + 1 };
-  });
+  const [optimisticVotes, addUpvote] = useOptimistic(
+    {
+      hasVoted,
+      votes,
+    },
+    (prev, increment: number) => {
+      if (prev.hasVoted) {
+        return prev;
+      }
+
+      return { hasVoted: true, votes: prev.votes + increment };
+    },
+  );
 
   return (
     <form
       action={async () => {
-        addUpvote({ hasVoted: true, votes: optimisticVotes.votes + 1 });
+        addUpvote(1);
         await upvoteQuestion(questionId, eventSlug);
       }}
     >

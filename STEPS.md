@@ -128,7 +128,7 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 - Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's pass in the dynamic content as props.
 - Add 'use cache' and now the whole component — title, speaker, labels, description — is cached per slug. Same Partial Prerendering we saw on the home page — the cached output joins the static shell, prefetched and instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
 
-## Offline Support
+## (Offline Support)
 
 - One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. There's an experimental Next.js feature that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
 - Let's add an offline indicator so you actually see what's happening. It's using our upcoming useOffline hook. We'll see this in action on the deployed app in a moment. I added a few more enhancements there too.
@@ -137,8 +137,8 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
 - Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our changes. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
-- Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
-- Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.
+- (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
+- (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, which we did using Async react to make it easy and stable, and sometimes eliminating them entirely. And simultaneously this will improve Core Web Vitals like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
 - This is a small demo app, but these patterns scale. Server components stream data without client round trips, caching and PPR guarantee fast loads, and Async React coordinates everything in between. Your app is performant by default. Your users will thank you.
 - (Go back to code) Now — you're not going to hand-code every ViewTransition from scratch. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions. (Show the .agents/skills/ folder.)

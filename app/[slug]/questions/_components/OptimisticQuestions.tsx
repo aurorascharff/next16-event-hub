@@ -20,7 +20,9 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [optimisticQuestions, setOptimisticQuestions] = useOptimistic<Question[]>([]);
 
-  async function submitAction(formData: FormData) {
+  async function handleSubmit(e: React.ChangeEvent) {
+    e.preventDefault();
+    const formData = new FormData(formRef.current!);
     const content = (formData.get('content') as string)?.trim();
     if (!content) return;
     formRef.current?.reset();
@@ -53,8 +55,11 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
       {optimisticQuestions.map(question => {
         return <QuestionCard key={question.id} question={question} pending />;
       })}
-      <div style={{ viewTransitionName: 'question-form' }} className="bg-background border-border/40 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
-        <form ref={formRef} action={submitAction} className="mx-auto flex max-w-2xl gap-2">
+      <div
+        style={{ viewTransitionName: 'question-form' }}
+        className="bg-background border-border/40 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+      >
+        <form ref={formRef} onSubmit={handleSubmit} className="mx-auto flex max-w-2xl gap-2">
           <Input name="content" placeholder="Ask a question..." required className="flex-1" />
           <button
             type="submit"

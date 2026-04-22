@@ -187,11 +187,14 @@
 
 ::view-transition-old(safe-area-top),
 ::view-transition-old(site-header),
-::view-transition-old(bottom-nav),
 ::view-transition-old(auth-gate),
 ::view-transition-old(dialog-overlay),
 ::view-transition-old(theme-toggle) {
   display: none;
+}
+
+::view-transition-old(bottom-nav) {
+  animation: none;
 }
 
 ::view-transition-new(safe-area-top),

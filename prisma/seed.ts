@@ -363,6 +363,115 @@ async function main() {
       },
       { content: 'The skeleton fallbacks look great on the projector.', eventSlug: demoSlug, userName: 'Aurora' },
       { content: 'This is a test comment to verify the delete flow.', eventSlug: demoSlug, userName: 'Aurora' },
+      {
+        content: 'Really looking forward to seeing the optimistic update patterns live!',
+        eventSlug: demoSlug,
+        userName: 'Sarah',
+      },
+      { content: 'Do you cover useActionState too?', eventSlug: demoSlug, userName: 'Marcus' },
+
+      {
+        content: 'This talk was eye-opening. Never thought about Suspense placement like that.',
+        eventSlug: 'suspense-boundaries',
+        userName: 'Jamie',
+      },
+      {
+        content: 'The waterfall fetch demo really drove the point home.',
+        eventSlug: 'suspense-boundaries',
+        userName: 'Priya',
+      },
+      { content: 'Would love to see a follow-up on nested Suspense patterns.', eventSlug: 'suspense-boundaries', userName: 'Alex' },
+
+      {
+        content: 'Seeing the actual network request trace was so helpful.',
+        eventSlug: 'server-actions-under-the-hood',
+        userName: 'Lena',
+      },
+      {
+        content: 'The serialization edge case with Date objects caught me off guard!',
+        eventSlug: 'server-actions-under-the-hood',
+        userName: 'Carlos',
+      },
+
+      {
+        content: 'The race condition demo was wild. Definitely rethinking my approach.',
+        eventSlug: 'optimistic-ui',
+        userName: 'Sarah',
+      },
+      { content: 'Great breakdown of the rollback flow.', eventSlug: 'optimistic-ui', userName: 'Nina' },
+      { content: 'Can you share the repo? Want to study the stale closure fix.', eventSlug: 'optimistic-ui', userName: 'Devon' },
+
+      {
+        content: 'Native crossfades are so much smoother than Framer Motion for page transitions.',
+        eventSlug: 'view-transitions-react',
+        userName: 'Marcus',
+      },
+      { content: 'Does this work with React Native web?', eventSlug: 'view-transitions-react', userName: 'Priya' },
+
+      {
+        content: 'The discriminated union pattern for component props is a game changer.',
+        eventSlug: 'typescript-patterns-react',
+        userName: 'Alex',
+      },
+
+      {
+        content: 'Honest and practical. The prompt patterns section was gold.',
+        eventSlug: 'ai-generated-react',
+        userName: 'Jamie',
+      },
+      { content: 'AI consistently gets error boundaries wrong — so true!', eventSlug: 'ai-generated-react', userName: 'Nina' },
+
+      {
+        content: 'The ARIA attribute walkthrough for the combobox was incredible.',
+        eventSlug: 'accessible-components',
+        userName: 'Lena',
+      },
+
+      {
+        content: 'Shaved 180kb off our bundle after this talk. Thank you!',
+        eventSlug: 'bundle-forensics',
+        userName: 'Carlos',
+      },
+
+      {
+        content: 'Local-first with React is the future. The sync demo was seamless.',
+        eventSlug: 'local-first-react',
+        userName: 'Devon',
+      },
+      { content: 'How does conflict resolution work with concurrent edits?', eventSlug: 'local-first-react', userName: 'Sarah' },
+
+      {
+        content: 'Finally someone demoed forms without reaching for a library.',
+        eventSlug: 'last-form-talk',
+        userName: 'Marcus',
+      },
+      { content: 'The progressive enhancement part was the highlight.', eventSlug: 'last-form-talk', userName: 'Jamie' },
+
+      {
+        content: 'Watching the AI agent navigate the app autonomously was surreal.',
+        eventSlug: 'react-apps-ai-agents',
+        userName: 'Nina',
+      },
+
+      {
+        content: 'The diff between what the server sends with and without streaming was really clear.',
+        eventSlug: 'streaming-ssr',
+        userName: 'Alex',
+      },
+      { content: 'This finally made streaming click for me.', eventSlug: 'streaming-ssr', userName: 'Priya' },
+
+      {
+        content: 'Zero deps is bold. But after seeing it, I believe it.',
+        eventSlug: 'zero-dependencies',
+        userName: 'Lena',
+      },
+
+      {
+        content: 'The mental model shift from "feature" to "architecture" was exactly what I needed.',
+        eventSlug: 'rsc-architecture',
+        userName: 'Carlos',
+      },
+      { content: 'Best talk of day 2 for me. Streaming from the edge is wild.', eventSlug: 'rsc-architecture', userName: 'Devon' },
     ],
   });
 
@@ -381,14 +490,63 @@ async function main() {
         userName: 'Aurora',
         votes: 0,
       },
+      { content: 'Does this work with React Native?', eventSlug: demoSlug, userName: 'Sarah', votes: 5 },
+      { content: 'How do you handle error boundaries with optimistic updates?', eventSlug: demoSlug, userName: 'Marcus', votes: 2 },
+
+      { content: 'Where should I put Suspense if my component tree is deeply nested?', eventSlug: 'suspense-boundaries', userName: 'Priya', votes: 7 },
+      { content: 'Is there a performance cost to too many Suspense boundaries?', eventSlug: 'suspense-boundaries', userName: 'Devon', votes: 4 },
+      { content: 'How do you avoid layout shift when the skeleton has a different height?', eventSlug: 'suspense-boundaries', userName: 'Lena', votes: 3 },
+
+      { content: 'Can Server Actions return streaming responses?', eventSlug: 'server-actions-under-the-hood', userName: 'Alex', votes: 6 },
+      { content: 'What is the size limit for serialized form data?', eventSlug: 'server-actions-under-the-hood', userName: 'Nina', votes: 2 },
+
+      { content: 'How do you handle optimistic deletes in a list?', eventSlug: 'optimistic-ui', userName: 'Jamie', votes: 5 },
+      { content: 'What about optimistic updates that depend on server-generated IDs?', eventSlug: 'optimistic-ui', userName: 'Carlos', votes: 8 },
+
+      { content: 'Can shared element transitions work across routes with different layouts?', eventSlug: 'view-transitions-react', userName: 'Sarah', votes: 4 },
+      { content: 'How do you handle prefers-reduced-motion?', eventSlug: 'view-transitions-react', userName: 'Lena', votes: 3 },
+
+      { content: 'How reliable is AI at generating accessible components?', eventSlug: 'ai-generated-react', userName: 'Devon', votes: 6 },
+
+      { content: 'Can CRDTs handle rich text editing reliably?', eventSlug: 'local-first-react', userName: 'Marcus', votes: 4 },
+      { content: 'What sync engine do you recommend for production?', eventSlug: 'local-first-react', userName: 'Nina', votes: 3 },
+
+      { content: 'How does useActionState compare to react-hook-form for validation?', eventSlug: 'last-form-talk', userName: 'Priya', votes: 5 },
+
+      { content: 'Does streaming SSR work with edge runtimes?', eventSlug: 'streaming-ssr', userName: 'Jamie', votes: 7 },
+      { content: 'How do you debug what the server is streaming?', eventSlug: 'streaming-ssr', userName: 'Carlos', votes: 2 },
+
+      { content: 'Is RSC architecture viable without Next.js?', eventSlug: 'rsc-architecture', userName: 'Alex', votes: 9 },
+      { content: 'How do you handle authentication in a streaming RSC setup?', eventSlug: 'rsc-architecture', userName: 'Sarah', votes: 4 },
     ],
   });
 
-  await prisma.favorite.create({
-    data: { eventSlug: demoSlug, userName: 'Aurora' },
+  await prisma.favorite.createMany({
+    data: [
+      { eventSlug: demoSlug, userName: 'Aurora' },
+      { eventSlug: demoSlug, userName: 'Sarah' },
+      { eventSlug: demoSlug, userName: 'Marcus' },
+      { eventSlug: 'suspense-boundaries', userName: 'Priya' },
+      { eventSlug: 'suspense-boundaries', userName: 'Jamie' },
+      { eventSlug: 'optimistic-ui', userName: 'Sarah' },
+      { eventSlug: 'optimistic-ui', userName: 'Nina' },
+      { eventSlug: 'optimistic-ui', userName: 'Devon' },
+      { eventSlug: 'view-transitions-react', userName: 'Marcus' },
+      { eventSlug: 'view-transitions-react', userName: 'Priya' },
+      { eventSlug: 'server-actions-under-the-hood', userName: 'Lena' },
+      { eventSlug: 'local-first-react', userName: 'Devon' },
+      { eventSlug: 'local-first-react', userName: 'Sarah' },
+      { eventSlug: 'streaming-ssr', userName: 'Alex' },
+      { eventSlug: 'rsc-architecture', userName: 'Carlos' },
+      { eventSlug: 'rsc-architecture', userName: 'Devon' },
+      { eventSlug: 'last-form-talk', userName: 'Jamie' },
+      { eventSlug: 'ai-generated-react', userName: 'Nina' },
+      { eventSlug: 'accessible-components', userName: 'Lena' },
+      { eventSlug: 'bundle-forensics', userName: 'Carlos' },
+    ],
   });
 
-  console.log(`Seeded ${events.length} events + demo comments/questions/favorite from Aurora`);
+  console.log(`Seeded ${events.length} events + comments/questions/favorites across sessions`);
 }
 
 main()

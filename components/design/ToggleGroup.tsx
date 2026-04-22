@@ -17,9 +17,16 @@ type Props<V extends string> = {
   className?: string;
 };
 
-export function ToggleGroup<V extends string>({ items, value, action, onChange, variant = 'pill', className }: Props<V>) {
+export function ToggleGroup<V extends string>({
+  items,
+  value,
+  action,
+  onChange,
+  variant = 'pill',
+  className,
+}: Props<V>) {
   const [optimisticValue, setOptimisticValue] = useOptimistic(value);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   function handleSelect(itemValue: V) {
     if (action) {
@@ -44,6 +51,7 @@ export function ToggleGroup<V extends string>({ items, value, action, onChange, 
                 handleSelect(item.value);
               }}
               className={cn(
+                isPending && item.value === optimisticValue && 'animate-pulse',
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-all',
                 optimisticValue === item.value
                   ? 'bg-background text-foreground shadow-sm'
@@ -68,6 +76,7 @@ export function ToggleGroup<V extends string>({ items, value, action, onChange, 
               handleSelect(item.value);
             }}
             className={cn(
+              isPending && item.value === optimisticValue && 'animate-pulse',
               'shrink-0 rounded-full border px-3 py-1 text-sm transition-colors',
               optimisticValue === item.value
                 ? 'bg-foreground text-background border-foreground font-medium'

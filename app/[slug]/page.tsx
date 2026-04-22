@@ -1,7 +1,7 @@
 import { connection } from 'next/dist/server/web/exports';
 import { Suspense, ViewTransition } from 'react';
-import { NavForward } from '@/components/animations';
 import { EmptyState } from '@/components/common/EmptyState';
+import { NavForward } from '@/components/common/animations';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
@@ -38,7 +38,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
             <div className="min-h-72 sm:min-h-96">
               <Suspense fallback={<EventDetailsSkeleton />}>
                 <EventDetails slug={slug}>
-                  <Suspense fallback={<Skeleton className="size-6 shrink-0 rounded-md" />}>
+                  <Suspense fallback={<Skeleton className="size-8 shrink-0 rounded-md" />}>
                     <FavoriteStatus slug={slug} />
                   </Suspense>
                 </EventDetails>

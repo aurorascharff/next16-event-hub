@@ -4,19 +4,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel.
-- This is my first time at React Miami — super excited to be here. Cant wait to hang out with you all, talk about React, and show off some cool new features.
+- (Open /slides) Hey everyone! How are you guys doing? I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features.
 - Today we're talking about designing the in-between states with Async React. Let's get started.
 
 ## Opening
 
 - (Exit slides, show the app) To demonstrate these concepts, I built an app.
-- This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, , filter category, favorite the talks you want to see, view details and comment, ask questions and upvote them.
-- However, this app feels kind of broken. Can you see why?
+- This is Event Hub — a demo conference companion app with session data. It allows you to browse sessions, favorite and filters, and view details.
+- However, the app feel kind of broken right now. Let me show you the problems.
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. No feedback on chips. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
+- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. And us developers commonly struggle or forget to handle these right as theyre related to the UX and not DX.
 - And on slow networks, all these problems become way more apparent.
-- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. These are also UX problems, not DX problems, and commonly forgotten or not done right.
-- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
+- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate. Chances are you end up with bugs and weird intermediate states that are really hard to track down. A classic react problem, unsolved for a long time. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
 
@@ -24,7 +23,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 3: React Render Cycle — In-Between States
 
-- But what happens when things are async? Now there are potential gaps. Between Event and Update, the user clicked but nothing happened yet, a "busy" state. Between Update and Render, we're waiting for data, "loading". Between Render and Commit, the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what our app is missing proper designs for right now.
+- But what happens when things are async? Now there are potential gaps. Between Event and Update, the user clicked but nothing happened yet, a "busy" state. Between Update and Render, we're waiting for data, "loading". Between Render and Commit, the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what our app is missing proper management and design for for right now.
 
 ## Slide 4: Async React Render Cycle — Transitions
 
@@ -93,7 +92,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - And here's the thing. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. Component libraries like Base UI and Radix can adopt the action prop pattern, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
 - That's async navigation designed, our interactions feel instant and responsive instead of frozen and janky.
 
-### Directional Navigation
+### Directional Animation
 
 - Navigation feels responsive now, but when we actually navigate to a session, there's no sense of place — you don't know where you came from or how to get back. Directional animations can fix this. We want going forward to slide in from the right, going back from the left.
 - Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link. See the animation. Then add addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
@@ -104,13 +103,13 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 
 ### Session Page
 
-- **FavoriteButton**: Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
+- **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
 - Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.
 
 ### Questions Page
 
+- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.
 - **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
-- (**Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.)
 
 ### List Animation
 
@@ -140,9 +139,9 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 - Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our changes. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
 - Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
 - Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.
-- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely. And simultaneously this will improve Core Web Vitals like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
-- This is a small demo app, but these patterns scale. Server components stream data without client round trips, caching and PPR guarantee fast loads, and Async React coordinates everything in between. Your app is performant by default, and with designed in-between states it actually feels that way too. Your users will thank you — they'll love your apps and won't quit them.
-- (Go back to code) Now — you're not going to hand-code every ViewTransition from scratch. Agent skills are knowledge files that teach your coding agent patterns like these. I created one for view transitions as part of my work at Vercel. (Show the .agents/skills/ folder.)
+- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, which we did using Async react to make it easy and stable, and sometimes eliminating them entirely. And simultaneously this will improve Core Web Vitals like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
+- This is a small demo app, but these patterns scale. Server components stream data without client round trips, caching and PPR guarantee fast loads, and Async React coordinates everything in between. Your app is performant by default. Your users will thank you.
+- (Go back to code) Now — you're not going to hand-code every ViewTransition from scratch. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
   - I'm also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.

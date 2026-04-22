@@ -132,12 +132,13 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 ## (Offline Support)
 
 - One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. There's an experimental Next.js feature that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
-- Let's add an offline indicator so you actually see what's happening. It's using our upcoming useOffline hook. We'll see this in action on the deployed app in a moment. I added a few more enhancements there too.
+- Let's add an offline indicator so you actually see what's happening. It's using our upcoming useOffline hook.
 
 ## Review & Wrap-Up
 
+- Let's see all this in action on the deployed app in a moment. I added a few more enhancements there too.
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
-- Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our changes. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything just works.
+- Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our improvements. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab.
 - (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
 - (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, which we did using Async react to make it easy and stable, and sometimes eliminating them entirely. And simultaneously this will improve Core Web Vitals like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.

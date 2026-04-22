@@ -5,7 +5,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Slide 1: Title
 
 - (Open /slides) Hey everyone! How are you guys doing? I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features.
-- Today we're talking about designing the in-between states with Async React. Let's get started.
+- Today I'll be showing you how to design the in-between states with Async React. I know we're all using agents to code these days but actually, lets do some good old fashioned coding today. I will however have something for your agents at the end, so stay tuned for that.
 
 ## Opening
 

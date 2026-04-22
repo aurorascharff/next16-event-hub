@@ -490,34 +490,34 @@ async function main() {
         userName: 'Aurora',
         votes: 0,
       },
-      { content: 'Does this work with React Native?', eventSlug: demoSlug, userName: 'Sarah', votes: 5 },
-      { content: 'How do you handle error boundaries with optimistic updates?', eventSlug: demoSlug, userName: 'Marcus', votes: 2 },
+      { content: 'Does this work with React Native?', eventSlug: demoSlug, userName: 'Sarah', votes: 0 },
+      { content: 'How do you handle error boundaries with optimistic updates?', eventSlug: demoSlug, userName: 'Marcus', votes: 0 },
 
-      { content: 'Where should I put Suspense if my component tree is deeply nested?', eventSlug: 'suspense-boundaries', userName: 'Priya', votes: 7 },
-      { content: 'Is there a performance cost to too many Suspense boundaries?', eventSlug: 'suspense-boundaries', userName: 'Devon', votes: 4 },
-      { content: 'How do you avoid layout shift when the skeleton has a different height?', eventSlug: 'suspense-boundaries', userName: 'Lena', votes: 3 },
+      { content: 'Where should I put Suspense if my component tree is deeply nested?', eventSlug: 'suspense-boundaries', userName: 'Priya', votes: 4 },
+      { content: 'Is there a performance cost to too many Suspense boundaries?', eventSlug: 'suspense-boundaries', userName: 'Devon', votes: 0 },
+      { content: 'How do you avoid layout shift when the skeleton has a different height?', eventSlug: 'suspense-boundaries', userName: 'Lena', votes: 0 },
 
-      { content: 'Can Server Actions return streaming responses?', eventSlug: 'server-actions-under-the-hood', userName: 'Alex', votes: 6 },
-      { content: 'What is the size limit for serialized form data?', eventSlug: 'server-actions-under-the-hood', userName: 'Nina', votes: 2 },
+      { content: 'Can Server Actions return streaming responses?', eventSlug: 'server-actions-under-the-hood', userName: 'Alex', votes: 2 },
+      { content: 'What is the size limit for serialized form data?', eventSlug: 'server-actions-under-the-hood', userName: 'Nina', votes: 0 },
 
-      { content: 'How do you handle optimistic deletes in a list?', eventSlug: 'optimistic-ui', userName: 'Jamie', votes: 5 },
-      { content: 'What about optimistic updates that depend on server-generated IDs?', eventSlug: 'optimistic-ui', userName: 'Carlos', votes: 8 },
+      { content: 'How do you handle optimistic deletes in a list?', eventSlug: 'optimistic-ui', userName: 'Jamie', votes: 0 },
+      { content: 'What about optimistic updates that depend on server-generated IDs?', eventSlug: 'optimistic-ui', userName: 'Carlos', votes: 3 },
 
-      { content: 'Can shared element transitions work across routes with different layouts?', eventSlug: 'view-transitions-react', userName: 'Sarah', votes: 4 },
-      { content: 'How do you handle prefers-reduced-motion?', eventSlug: 'view-transitions-react', userName: 'Lena', votes: 3 },
+      { content: 'Can shared element transitions work across routes with different layouts?', eventSlug: 'view-transitions-react', userName: 'Sarah', votes: 0 },
+      { content: 'How do you handle prefers-reduced-motion?', eventSlug: 'view-transitions-react', userName: 'Lena', votes: 0 },
 
-      { content: 'How reliable is AI at generating accessible components?', eventSlug: 'ai-generated-react', userName: 'Devon', votes: 6 },
+      { content: 'How reliable is AI at generating accessible components?', eventSlug: 'ai-generated-react', userName: 'Devon', votes: 0 },
 
-      { content: 'Can CRDTs handle rich text editing reliably?', eventSlug: 'local-first-react', userName: 'Marcus', votes: 4 },
-      { content: 'What sync engine do you recommend for production?', eventSlug: 'local-first-react', userName: 'Nina', votes: 3 },
+      { content: 'Can CRDTs handle rich text editing reliably?', eventSlug: 'local-first-react', userName: 'Marcus', votes: 1 },
+      { content: 'What sync engine do you recommend for production?', eventSlug: 'local-first-react', userName: 'Nina', votes: 0 },
 
-      { content: 'How does useActionState compare to react-hook-form for validation?', eventSlug: 'last-form-talk', userName: 'Priya', votes: 5 },
+      { content: 'How does useActionState compare to react-hook-form for validation?', eventSlug: 'last-form-talk', userName: 'Priya', votes: 0 },
 
-      { content: 'Does streaming SSR work with edge runtimes?', eventSlug: 'streaming-ssr', userName: 'Jamie', votes: 7 },
-      { content: 'How do you debug what the server is streaming?', eventSlug: 'streaming-ssr', userName: 'Carlos', votes: 2 },
+      { content: 'Does streaming SSR work with edge runtimes?', eventSlug: 'streaming-ssr', userName: 'Jamie', votes: 2 },
+      { content: 'How do you debug what the server is streaming?', eventSlug: 'streaming-ssr', userName: 'Carlos', votes: 0 },
 
-      { content: 'Is RSC architecture viable without Next.js?', eventSlug: 'rsc-architecture', userName: 'Alex', votes: 9 },
-      { content: 'How do you handle authentication in a streaming RSC setup?', eventSlug: 'rsc-architecture', userName: 'Sarah', votes: 4 },
+      { content: 'Is RSC architecture viable without Next.js?', eventSlug: 'rsc-architecture', userName: 'Alex', votes: 5 },
+      { content: 'How do you handle authentication in a streaming RSC setup?', eventSlug: 'rsc-architecture', userName: 'Sarah', votes: 0 },
     ],
   });
 

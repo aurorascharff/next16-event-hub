@@ -51,9 +51,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Boundaries — Home Page
 
-- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast with these errors. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
+- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast with these errors. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.
 - Suspense works with Suspense-enabled data sources like RSCs. You give it a fallback, and you decide where loading states go and what they look like declaratively.
-- Looking at our error, EventGrid is the blocking component. It's a server component that fetches data, so it works with Suspense out of the box. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Skeletons match the shape of the real content, so loading actually feels faster. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The server fetches and streams directly instead of client round trips, and we still get to compose everything with components and local data fetching. And because the shell is static, it can be served from a CDN.
+- Looking at our error, my queries to events that i get on my home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Skeletons match the shape of the real content, so loading actually feels faster. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The server fetches and streams directly instead of client round trips, and we still get to compose everything with components and local data fetching. And because the shell is static, it can be served from a CDN.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -82,7 +82,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Query Param Navigation — Home Page
 
 - Now let's handle async navigation. I click between tabs and nothing updates. That's the **busy** state, we need to design it so you know something is happening. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
-- Look at HomeTabs, using BottomNav. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
+- Look at HomeTabs, using BottomNav. BottomNav and ToggleGroup are part of my design layer for this React Miami themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
 - So let's just change onChange to action.
 - Try it now... see?
 - (And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.)

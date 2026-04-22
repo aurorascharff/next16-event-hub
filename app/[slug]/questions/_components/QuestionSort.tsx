@@ -12,11 +12,11 @@ const sortOptions: { label: string; value: SortValue }[] = [
 export function QuestionSort() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const sort = (searchParams.get('sort') as SortValue) || 'top';
+  const sort = (searchParams.get('sort') as SortValue) || 'newest';
 
   function sortAction(value: SortValue) {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === 'top') {
+    if (value === 'newest') {
       params.delete('sort');
     } else {
       params.set('sort', value);

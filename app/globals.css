@@ -203,6 +203,19 @@
   animation: none;
 }
 
+::view-transition-group(question-form) {
+  animation: none;
+  z-index: 50;
+}
+
+::view-transition-old(question-form) {
+  display: none;
+}
+
+::view-transition-new(question-form) {
+  animation: none;
+}
+
 /* --- Slide deck transitions (slow down library default) --- */
 
 ::view-transition-new(.slide-from-right),

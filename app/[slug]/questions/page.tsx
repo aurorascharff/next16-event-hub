@@ -6,7 +6,6 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { SortValue } from '@/types';
-
 import { OptimisticQuestions } from './_components/OptimisticQuestions';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';

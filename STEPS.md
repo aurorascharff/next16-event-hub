@@ -51,8 +51,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Boundaries — Home Page
 
-- Right now, the initial page load is actually blocked. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a performance problem — it shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
-- This is where Suspense comes in. It works with Suspense-enabled data sources like RSCs. Give it a fallback, and you decide where loading states go and what they look like declaratively.
+- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast with these errors. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We'll go with Suspense.
+- Suspense works with Suspense-enabled data sources like RSCs. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, EventGrid is the blocking component. It's a server component that fetches data, so it works with Suspense out of the box. Let's wrap it in Suspense with a skeleton fallback that matches the card grid. Skeletons match the shape of the real content, so loading actually feels faster. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The server fetches and streams directly instead of client round trips, and we still get to compose everything with components and local data fetching. And because the shell is static, it can be served from a CDN.
 
 ### Suspense Reveal Animation — Home Page

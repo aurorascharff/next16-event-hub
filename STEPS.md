@@ -55,7 +55,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Suspense works with Suspense-enabled data sources like RSCs. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready.
-- And on the performance side, the server fetches and streams directly instead of client round trips. The shell is static and becomes part of a Partial Prerender — it's served from the CDN and prefetched by the router, so it shows up instantly. The dynamic content streams in behind it. We still get to compose everything with components and local data fetching.
+- And on the performance side, the server fetches and streams directly instead of client round trips. The shell is static and becomes part of the Partial Prerender — it's served from the CDN and prefetched by the router, so it shows up instantly. The dynamic content streams in behind it. We still get to compose everything with components and local data fetching.
 
 ### Suspense Reveal Animation — Home Page
 

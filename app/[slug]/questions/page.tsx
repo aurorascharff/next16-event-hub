@@ -55,8 +55,8 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         </span>
         <QuestionSort />
       </div>
-      <QuestionForm eventSlug={slug} currentUser={currentUser} />
       <div className="space-y-2">
+        <QuestionForm eventSlug={slug} currentUser={currentUser} />
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
         })}

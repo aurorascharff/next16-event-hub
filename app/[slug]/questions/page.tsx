@@ -11,8 +11,6 @@ import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
 import type { Metadata } from 'next';
 
-// export const unstable_prefetch = 'force-runtime';
-
 export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEventBySlug(slug);

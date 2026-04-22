@@ -1,4 +1,5 @@
 import { Clock, MapPin } from 'lucide-react';
+import { cacheTag } from 'next/cache';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -8,6 +9,9 @@ import { getDayLabel, parseLabels } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
 export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
+  'use cache';
+  cacheTag(`event-${slug}`);
+
   const event = await getEventBySlug(slug);
   return (
     <article className="space-y-4 sm:space-y-5">

@@ -5,8 +5,6 @@ import { NavBack } from '@/components/animations';
 import { SiteHeader } from '@/components/common/SiteHeader';
 import type { Metadata } from 'next';
 
-// export const unstable_prefetch = 'force-runtime';
-
 export const metadata: Metadata = {
   description: 'Browse sessions, post comments, ask questions, and favorite sessions at the conference.',
   title: 'Event Hub',

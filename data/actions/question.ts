@@ -1,6 +1,6 @@
 'use server';
 
-import { updateTag } from 'next/cache';
+import { refresh } from 'next/cache';
 import { z } from 'zod';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
@@ -34,7 +34,7 @@ export async function addQuestion(eventSlug: string, formData: FormData): Promis
     },
   });
 
-  updateTag(`questions-${eventSlug}`);
+  refresh();
   return { success: true };
 }
 
@@ -54,5 +54,5 @@ export async function upvoteQuestion(questionId: string, eventSlug: string) {
     where: { id: questionId },
   });
 
-  updateTag(`questions-${eventSlug}`);
+  refresh();
 }

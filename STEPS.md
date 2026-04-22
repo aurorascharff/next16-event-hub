@@ -56,7 +56,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
-- With RSCs the server fetches and streams directly instead of client round trips. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to compose our app using components and local data fetching.
+- ow the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. With RSCs the server fetches and streams directly instead of client round trips. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to build our app using components that do local data fetching.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -118,7 +118,7 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 
 ### Background Update — Questions Page
 
-- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
+- Now that we have mutations on@ this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
 - Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server.
 - Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh.
 

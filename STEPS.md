@@ -11,11 +11,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Opening
 
 - (Exit slides, show the app) To demonstrate these concepts, I built an app.
-- This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, favorite the talks you want to see, view details and comment, ask questions and upvote them.
+- This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, , filter category, favorite the talks you want to see, view details and comment, ask questions and upvote them.
 - However, this app feels kind of broken. Can you see why?
-- When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
+- When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. No feedback on chips. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
 - And on slow networks, all these problems become way more apparent.
-- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. These are also UX problems, not DX problems, which is why they're commonly forgotten or not done right.
+- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. These are also UX problems, not DX problems, and commonly forgotten or not done right.
 - Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
@@ -44,7 +44,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- The Async react primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- The Async react primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
 - (Exit slides, back to the app. Switch to editor).
 
@@ -56,7 +56,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
-- With RSCs the server fetches and streams directly instead of client round trips. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. Navigating is also instant. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to compose our app using components and local data fetching.
+- With RSCs the server fetches and streams directly instead of client round trips. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to compose our app using components and local data fetching.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -87,7 +87,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - (And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.)
 - So what just happened? Let's look inside BottomNav. The action prop is being wrapped in a transition and the tabs optimistically updates immediately. That optimistic value shows while the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
 - This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
-- Remember from the slides, any async function called inside a transition is an "Action". So the convention is: when a prop is called action, it means it runs in a transition.
+- Remember from the slides, any function called inside a transition is an "Action". So the convention is: when a prop is called action, it means it runs in a transition.
 - Now the label filter pills, same problem, no feedback, also navigating via query params with router.push. Right now LabelFilter passes onChange. Change it to action, and rename to changeAction to adhere to convention. Because the prop is called action, that's the contract — we expect the component to handle the async coordination internally. And it does. The pills highlight instantly.
 - (In this case, the design component didn't include any build in pending state. But as the consumer, we can add one. So in LabelFilter, we add our own useOptimistic, call it inside the action, and set data-pending on the wrapper div. It falls back to false after the transition. The grid already has group-has-data-pending:opacity-50, so it fades automatically. The pending state just bubbles up through CSS.)
 - And here's the thing. If your UI components expose action props, you just plug things together. The async coordination lives in the component, not in your app code. Component libraries like Base UI and Radix can adopt the action prop pattern, so your dropdowns, autocompletes, tabs, they'll handle all of this for you out of the box.
@@ -110,7 +110,7 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Questions Page
 
 - **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
-- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.
+- (**Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.)
 
 ### List Animation
 

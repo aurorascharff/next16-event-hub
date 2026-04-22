@@ -4,19 +4,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. How are you guys doing?
-- This is my first time at React Miami — super excited to be here. Cant wait to hang out with you all, talk about React, and show off some cool new features.
+- (Open /slides) Hey everyone! How are you guys doing? I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features.
 - Today we're talking about designing the in-between states with Async React. Let's get started.
 
 ## Opening
 
 - (Exit slides, show the app) To demonstrate these concepts, I built an app.
-- This is Event Hub — a demo conference companion app with session data. You can browse sessions for different days Day 1 and Day 2, , filter category, favorite the talks you want to see, view details and comment, ask questions and upvote them.
-- However, this app feels kind of broken. Can you see why?
+- This is Event Hub — a demo conference companion app with session data. It allows you to browse sessions, favorite and filters, and view details.
+- However, the app feel kind of broken right now. Let me show you the problems.
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. No feedback on chips. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
+- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. And us developers commonly struggle or forget to handle these right as theyre related to the UX and not DX.
 - And on slow networks, all these problems become way more apparent.
-- The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. That's a coordination problem, not a performance problem. These are also UX problems, not DX problems, and commonly forgotten or not done right.
-- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
+- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. You end up with bugs and weird intermediate states that are really hard to track down. A classic react problem, unsolved for a long time. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
 

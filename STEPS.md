@@ -15,7 +15,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. No feedback on chips. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question. What's missing?
 - The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. And us developers commonly struggle or forget to handle these right as theyre related to the UX and not DX.
 - And on slow networks, all these problems become even more annoying.
-- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate. Chances are you end up with bugs and weird intermediate states that are really hard to track down. A classic react problem, unsolved for a long time. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
+- Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
 
@@ -24,6 +24,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ## Slide 3: React Render Cycle — In-Between States
 
 - But what happens when things are async? Now there are potential gaps. Between Event and Update, the user clicked but nothing happened yet, a "busy" state. Between Update and Render, we're waiting for data, "loading". Between Render and Commit, the new UI is ready but hasn't appeared yet, that's "done". These are the in-between states — and that's what our app is missing proper management and design for for right now.
+- Now, you could try to solve this yourself with useEffect and useState — track loading flags, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and it's not coordinated inside the React render cycle, so you end up with bugs and weird intermediate states that are really hard to track down. A classic React problem, unsolved for a long time.
 
 ## Slide 4: Async React Render Cycle — Transitions
 

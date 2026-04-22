@@ -235,26 +235,33 @@ export const slides = [
 
   // 8. Resources — QR codes for source code and agent skills
   <Slide key="resources">
-    <SlideTitle>Resources</SlideTitle>
-    <div className="mt-16 flex items-center justify-center gap-20">
-      <div className="flex flex-col items-center gap-5">
-        <div className="rounded-2xl bg-white p-4">
-          <QRCode value="https://github.com/aurorascharff/next16-event-hub" size={180} />
+    <div className="flex h-full flex-col items-center justify-center gap-12">
+      <div className="flex flex-col items-center gap-1 text-center">
+        <span className="text-4xl font-bold">Thank you!</span>
+        <span className="text-muted-foreground text-lg">@aurorascharff</span>
+      </div>
+    <div className="flex items-center justify-center gap-24">
+      <div className="flex flex-col items-center gap-6">
+        <div className="rounded-2xl bg-white p-5">
+          <QRCode value="https://github.com/aurorascharff/next16-event-hub" size={220} />
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-xl font-semibold">Source Code</span>
-          <span className="text-muted-foreground text-sm">github.com/aurorascharff/next16-event-hub</span>
+        <div className="flex flex-col items-center gap-1.5 text-center">
+          <span className="text-2xl font-bold">Demo App</span>
+          <span className="text-muted-foreground text-sm">Scan to follow along with the source code</span>
+          <span className="text-muted-foreground/60 font-mono text-xs">github.com/aurorascharff/next16-event-hub</span>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-5">
-        <div className="rounded-2xl bg-white p-4">
-          <QRCode value="https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions" size={180} />
+      <div className="flex flex-col items-center gap-6">
+        <div className="rounded-2xl bg-white p-5">
+          <QRCode value="https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions" size={220} />
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-xl font-semibold">View Transitions Skill</span>
-          <span className="text-muted-foreground text-sm">skills.sh/.../vercel-react-view-transitions</span>
+        <div className="flex flex-col items-center gap-1.5 text-center">
+          <span className="text-2xl font-bold">View Transitions Skill</span>
+          <span className="text-muted-foreground text-sm">Install the agent skill used to build these animations</span>
+          <span className="text-muted-foreground/60 font-mono text-xs">skills.sh/.../vercel-react-view-transitions</span>
         </div>
       </div>
+    </div>
     </div>
   </Slide>,
 ];

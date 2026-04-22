@@ -24,7 +24,7 @@ export default function SessionTabs() {
       activeIndex={activeIndex}
       onChange={href => {
         if (href === '/') {
-          //
+          // We are going back to the homepage
         }
         router.push(href);
       }}

@@ -1,10 +1,12 @@
 import 'server-only';
 
+import { connection } from 'next/server';
 import { cache } from 'react';
 import { prisma } from '@/db';
 import { slow } from '@/lib/utils';
 
 export const getQuestionsByEvent = cache(async (eventSlug: string, currentUser?: string | null) => {
+  await connection();
   await slow(1500);
 
   const questions = await prisma.question.findMany({

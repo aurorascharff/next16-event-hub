@@ -6,8 +6,8 @@ import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { SortValue } from '@/types';
 import { QuestionCard } from './_components/QuestionCard';
+import { QuestionForm } from './_components/QuestionForm';
 import { QuestionSort } from './_components/QuestionSort';
-import { Questions } from './_components/Questions';
 import type { Metadata } from 'next';
 // eslint-disable-next-line import/order, autofix/no-unused-vars
 import { ViewTransition } from 'react';
@@ -55,13 +55,13 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         </span>
         <QuestionSort />
       </div>
+      <QuestionForm eventSlug={slug} currentUser={currentUser} />
       <div className="space-y-2">
         {sorted.map(question => {
           return <QuestionCard key={question.id} question={question} />;
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
-      <Questions eventSlug={slug} currentUser={currentUser} />
     </div>
   );
 }

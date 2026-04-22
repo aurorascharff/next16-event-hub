@@ -15,7 +15,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - However, this app feels kind of broken. Can you see why?
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question.
 - And on slow networks, all these problems become way more apparent.
-- It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users. And the thing is, the interactions themselves aren't actually slow. The data fetching, the navigation, the mutations, they all work. It's the gaps between them that are completely undesigned. That's a coordination problem, not a performance problem. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
+- It's not the actions themselves — it's what happens in between. The moments between a user action and the final UI. They don't show up as bugs, tests won't catch them. But they're exactly what makes an app feel broken to your users. And the thing is, the interactions themselves aren't actually slow. The data fetching, the navigation, the mutations, they all work. It's the gaps between them that are completely undesigned. That's a coordination problem, not a performance problem.
+- Now, you could try to solve this yourself with useEffect and useState — track loading flags, manage error states, coordinate overlapping requests, handle race conditions. But that's a ton of boilerplate, and these independent effects don't know about each other. Your loading spinner doesn't know about your optimistic update. Your navigation doesn't know about your mutation. You end up with bugs and weird intermediate states that are really hard to track down. What if React could handle that coordination for us? Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
 
@@ -45,14 +46,14 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - **Async Mutations** — submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
 - These primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer using Suspense. The design system exposing action props is something we build ourselves. We're using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works.
 - So let's go fix our app!
-- (Exit slides, back to the app)
+- (Exit slides, back to the app. Switch to editor).
 
 ## Async Data Loading
 
 ### Suspense Boundaries — Home Page
 
 - Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast with these errors. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.
-- Suspense works with Suspense-enabled data sources like RSCs. You give it a fallback, and you decide where loading states go and what they look like declaratively.
+- Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable. Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready.
 - And on the performance side, the server fetches and streams directly instead of client round trips. The shell is static and becomes part of the Partial Prerender — it's served from the CDN and prefetched by the router, so it shows up instantly. The dynamic content streams in behind it. We still get to compose everything with components and local data fetching.

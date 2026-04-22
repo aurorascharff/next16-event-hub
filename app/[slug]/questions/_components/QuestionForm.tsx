@@ -24,10 +24,7 @@ export function QuestionForm({ eventSlug }: Props) {
   }
 
   return (
-    <div
-      style={{ viewTransitionName: 'question-form' }}
-      className="bg-background border-border/40 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
-    >
+    <div className="bg-background border-border/40 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
       <form action={submitAction} className="mx-auto flex max-w-2xl gap-2">
         <Input name="content" placeholder="Ask a question..." required className="flex-1" />
         <button

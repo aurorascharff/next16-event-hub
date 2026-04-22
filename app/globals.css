@@ -178,7 +178,6 @@
 ::view-transition-group(safe-area-top),
 ::view-transition-group(site-header),
 ::view-transition-group(bottom-nav),
-::view-transition-group(question-form),
 ::view-transition-group(auth-gate),
 ::view-transition-group(dialog-overlay),
 ::view-transition-group(theme-toggle) {
@@ -189,7 +188,6 @@
 ::view-transition-old(safe-area-top),
 ::view-transition-old(site-header),
 ::view-transition-old(bottom-nav),
-::view-transition-old(question-form),
 ::view-transition-old(auth-gate),
 ::view-transition-old(dialog-overlay),
 ::view-transition-old(theme-toggle) {
@@ -199,7 +197,6 @@
 ::view-transition-new(safe-area-top),
 ::view-transition-new(site-header),
 ::view-transition-new(bottom-nav),
-::view-transition-new(question-form),
 ::view-transition-new(auth-gate),
 ::view-transition-new(dialog-overlay),
 ::view-transition-new(theme-toggle) {

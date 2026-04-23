@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
-import type { SortValue } from '@/types';
+import type { Question, SortValue } from '@/types';
 
 import { QuestionCard } from './_components/QuestionCard';
 
@@ -39,13 +39,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   const sort = (sortParam as SortValue) || 'top';
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
-
-  const sorted = [...questions].sort((a, b) => {
-    if (sort === 'top') {
-      return b.votes - a.votes;
-    }
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
+  const sorted = sortQuestions(questions, sort);
 
   return (
     <div className="space-y-3 pb-14">
@@ -104,4 +98,13 @@ function QuestionFeedSkeleton() {
       </div>
     </div>
   );
+}
+
+function sortQuestions(questions: Question[], sort: SortValue) {
+  return [...questions].sort((a, b) => {
+    if (sort === 'top') {
+      return b.votes - a.votes;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 }

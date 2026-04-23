@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useOptimistic } from 'react';
 import { ToggleGroup } from '@/components/design/ToggleGroup';
 import { LABELS } from '@/lib/utils';
 import { Skeleton } from './ui/skeleton';
@@ -18,14 +17,12 @@ export function LabelFilter() {
   const searchParams = useSearchParams();
   const activeLabel = searchParams.get('label') || 'all';
   const activeDay = searchParams.get('day') || 'day-1';
-  const [isPending, setIsPending] = useOptimistic(false);
 
   if (activeLabel === 'favorites') {
     return null;
   }
 
   function changeAction(value: string) {
-    setIsPending(true);
     const params = new URLSearchParams();
     if (activeDay) params.set('day', activeDay);
     if (value !== 'all') params.set('label', value);
@@ -34,7 +31,7 @@ export function LabelFilter() {
   }
 
   return (
-    <div data-pending={isPending ? '' : undefined}>
+    <div>
       <ToggleGroup items={labelItems} value={activeLabel} action={changeAction} />
     </div>
   );

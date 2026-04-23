@@ -8,6 +8,8 @@ import type { Question, SortValue } from '@/types';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionForm } from './_components/QuestionForm';
 import { QuestionSort } from './_components/QuestionSort';
+// eslint-disable-next-line import/order, autofix/no-unused-vars
+import { ViewTransition } from 'react';
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (

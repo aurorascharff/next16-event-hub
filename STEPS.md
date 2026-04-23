@@ -69,11 +69,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predictable. No CLS.
-- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to EventDetails. That's a Next.js directive that caches the component output on the server.
+- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to getEventBySlug. That's a Next.js directive that caches the component output on the server.
 - Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.
-- Let's animate the remaining comment section with a crossfade.
+- (Let's animate the remaining comment section with a crossfade.)
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
-- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav.
+- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation

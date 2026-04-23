@@ -5,29 +5,18 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { Question, SortValue } from '@/types';
-
 import { QuestionCard } from './_components/QuestionCard';
-
 import { QuestionForm } from './_components/QuestionForm';
 import { QuestionSort } from './_components/QuestionSort';
-import type { Metadata } from 'next';
-// eslint-disable-next-line import/order, autofix/no-unused-vars
-import { ViewTransition } from 'react';
-
-export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
-  return {
-    description: `Ask and vote on questions for ${event.name}`,
-    title: `Questions · ${event.name} | Event Hub`,
-  };
-}
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
     <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
-        <QuestionFeed params={params} searchParams={searchParams} />
+        <div className="space-y-3 pb-14">
+          <EventHeader params={params} />
+          <QuestionFeed params={params} searchParams={searchParams} />
+        </div>
       </div>
     </div>
   );
@@ -42,8 +31,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   const sorted = sortQuestions(questions, sort);
 
   return (
-    <div className="space-y-3 pb-14">
-      <EventHeader params={params} />
+    <>
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
@@ -58,7 +46,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
-    </div>
+    </>
   );
 }
 

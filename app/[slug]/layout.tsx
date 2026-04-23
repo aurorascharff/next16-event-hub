@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getEventBySlug } from '@/data/queries/event';
+import { getEventBySlug, getEvents } from '@/data/queries/event';
 import SessionTabs from './_components/SessionTabs';
 import type { Metadata } from 'next';
 
@@ -10,6 +10,13 @@ export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promis
     description: event.description,
     title: `${event.name} | Event Hub`,
   };
+}
+
+export async function generateStaticParams() {
+  const events = await getEvents();
+  return events.map(event => {
+    return { slug: event.slug };
+  });
 }
 
 export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {

@@ -115,14 +115,15 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 
 ### List Animation
 
-- While we're at it, would be nice to see the change on upvote. The **done** state is undesigned. And because we're using transitions on all our mutations and updates, this means we can easily add animations with the same ViewTransition primitive. All we have to do is wrap each item in ViewTransition. Do this for QuestionCards (key={item.id}). Now upvotes reorder smoothly as the server update settles. We eliminated all the busy states on this page, it feels super responsive and smooth now.
+- While we're at it, would be nice to see the change on upvote. The **done** state is undesigned. And because we're using transitions on all our mutations and updates, this means we can easily add animations with the same ViewTransition primitive. All we have to do is wrap each item in ViewTransition. Do this for QuestionCards (key={item.id}).
 
 ### Background Update — Questions Page
 
-- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Background updates. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Fun feature, let's add a Poller component, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
-- Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh. Live, coordinated, smooth.
-- That's async mutations designed. And now our app handles data in both directions.
+- Let's also handle the other direction — data coming in from the server without any user action. Background updates. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
+- Final fun feature, let's add a Poller component, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
+- Let's see all our new stuff in action. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. It appears in the right window within a few seconds via polling, animated.
+- Upvote a question in the left window, it updates the vote count and reorders in the right window as the server update settles.
+- That's async mutations designed. We eliminated all the busy states on this page, and now our app handles data in both directions, user and server, with a responsive and alive-feeling experience.
 
 ## (Offline Support)
 

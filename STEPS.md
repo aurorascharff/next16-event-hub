@@ -71,7 +71,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predictable. No CLS.
 - But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to EventDetails. That's a Next.js directive that caches the component output on the server.
-- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. No skeleton needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
+- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.
 - Let's animate the remaining comment section with a crossfade.
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
 - **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav.
@@ -86,7 +86,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Look BottomNav. BottomNav is part of my design layer for this React Miami pink themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
 - So let's try changing onChange to action.
 - Try it now... Now, the active tab updates immediately, and the content follows when it arrives.
-- (And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.)
+- And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.
 - So what just happened? Let's look inside BottomNav. The action prop is being wrapped in a transition and the tabs optimistically updates immediately. That optimistic value shows while the transition runs, then settles to the real value. It also dims the non-active tabs while the transition is running.
 - This is the **action props pattern** — the design component handles async coordination so consumers just pass a callback.
 - Remember from the slides, any function called inside a transition is an "Action". So the convention is: when a prop is called action, it means it runs in a transition.

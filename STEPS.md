@@ -4,7 +4,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! How are you guys doing? I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date.
+- (Open /slides) Hey everyone! How are you guys doing? I'm so excited to kick this conference off. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date.
 - Today I'll be showing you how to design the in-between states with Async React. I know we're all using agents to code these days but actually, lets do some good old fashioned coding today. I will however have something for your agents at the end, so stay tuned for that.
 
 ## Opening
@@ -14,7 +14,6 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - However, the app feel kind of broken right now. Let me show you the problems.
 - When switching between Day 1 and Day 2, the whole thing locks up while it loads. And look at the favorites. Favorite a session, no feedback until the server responds. No feedback on chips. Now go to a session. When the content loads, everything jumps down. And, navigating to questions page is delayed. And when upvoting a question, the UI just freezes until the server responds. Same issue for the adding of a question. What's missing?
 - The thing is, the interactions themselves aren't actually that slow. What's lacking is the moments between a user action and the final UI. They're exactly what makes an app feel broken to your users. And us developers commonly struggle or forget to handle these right as theyre related to the UX and not DX.
-- And on slow networks, all these problems become even more annoying.
 - Let's look at the render cycle to understand where these gaps are.
 
 ## Slide 2: React Render Cycle
@@ -44,7 +43,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- The Async react primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
 - (Exit slides, back to the app. Switch to editor).
 
@@ -70,11 +69,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predictable. No CLS.
-- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to EventDetails. That's a Next.js directive that caches the component output on the server.
+- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to getEventBySlug. That's a Next.js directive that caches the component output on the server.
 - Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.
-- Let's animate the remaining comment section with a crossfade.
+- (Let's animate the remaining comment section with a crossfade.)
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
-- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav.
+- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation
@@ -112,19 +111,19 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Questions Page
 
 - **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
-- **UpvoteButton**: Same idea, eliminate the wait. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
-- We eliminated all the busy states on this page, it feels super responsive and smooth now.
+- **UpvoteButton**: Same idea, eliminate the wait by designing the busy state. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
 
 ### List Animation
 
-- But there's no animation when items change in the list. Would be nice to see the change on upvote. The **done** state is undesigned. And because we're using transitions on all our mutations and updates, this means we can easily add animations with the same ViewTransition primitive. All we have to do is wrap each item in ViewTransition. Do this for QuestionCards (key={item.id}). Now upvotes reorder smoothly as the server update settles.
+- While we're at it, would be nice to see the change on upvote. The **done** state is undesigned. And because we're using transitions on all our mutations and updates, this means we can easily add animations with the same ViewTransition primitive. All we have to do is wrap each item in ViewTransition. Do this for QuestionCards (key={item.id}).
 
 ### Background Update — Questions Page
 
-- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a Poller compoment, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
-- Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh. Live, coordinated, smooth.
-- That's async mutations designed. And now our app handles data in both directions.
+- Let's also handle the other direction — data coming in from the server without any user action. Background updates. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
+- Final fun feature, let's add a Poller component, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
+- Let's see all our new stuff in action. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. It appears in the right window within a few seconds via polling, animated.
+- Upvote a question in the left window, it updates the vote count and reorders in the right window as the server update settles.
+- That's async mutations designed. We eliminated all the busy states on this page, and now our app handles data in both directions, user and server, with a responsive and alive-feeling experience.
 
 ## (Offline Support)
 
@@ -134,13 +133,13 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ## Review & Wrap-Up
 
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
-- Let's see all this in action on the deployed app in a moment. I added a few more enhancements there too.
-- Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our improvements. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything feels responsive and smooth.
+- Let's see all this in action on the deployed app in a moment.
+- Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our improvements. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything feels responsive and smooth. Completely different experience.
 - (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
 - (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)
-- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, which we did using Async react to make it easy and stable, and sometimes eliminating them entirely. And simultaneously this will improve  Web vitals scores like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
-- This is a small demo app, but these patterns scale. Server components stream data without client round trips, caching and PPR guarantee fast loads, and Async React coordinates everything in between. Your app is performant by default. Your users will thank you.
-- (Go back to code) Now — you're not going to hand-code every ViewTransition from scratch. I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions. (Show the .agents/skills/ folder.)
+- The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely. And simultaneously this will improve  Web vitals scores like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
+- This is a small demo app, but these patterns scale. Server components stream data without client round trips and enable caching and PPR to guarantee fast loads, and Async React coordinates everything. Your apps can be performant, resilient and interactive by default, and your users will thank you.
+- (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
   - I'm also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.

@@ -10,16 +10,6 @@ import type { Question, SortValue } from '@/types';
 import { OptimisticQuestions } from './_components/OptimisticQuestions';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
-import type { Metadata } from 'next';
-
-export async function generateMetadata({ params }: PageProps<'/[slug]/questions'>): Promise<Metadata> {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
-  return {
-    description: `Ask and vote on questions for ${event.name}`,
-    title: `Questions · ${event.name} | Event Hub`,
-  };
-}
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
@@ -30,17 +20,20 @@ export default async function QuestionsPage({ params, searchParams }: PageProps<
     >
       <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
-          <Suspense
-            fallback={
-              <ViewTransition exit="slide-down">
-                <QuestionFeedSkeleton />
+          <div className="space-y-3 pb-14">
+            <EventHeader params={params} />
+            <Suspense
+              fallback={
+                <ViewTransition exit="slide-down">
+                  <QuestionFeedSkeleton />
+                </ViewTransition>
+              }
+            >
+              <ViewTransition enter="slide-up" default="none">
+                <QuestionFeed params={params} searchParams={searchParams} />
               </ViewTransition>
-            }
-          >
-            <ViewTransition enter="slide-up" default="none">
-              <QuestionFeed params={params} searchParams={searchParams} />
-            </ViewTransition>
-          </Suspense>
+            </Suspense>
+          </div>
         </div>
       </div>
     </ViewTransition>
@@ -56,8 +49,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   const sorted = sortQuestions(questions, sort);
 
   return (
-    <div className="space-y-3 pb-14">
-      <EventHeader params={params} />
+    <>
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <span className="inline-block size-1.5 animate-pulse rounded-full bg-emerald-500" />
@@ -77,7 +69,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>
-    </div>
+    </>
   );
 }
 

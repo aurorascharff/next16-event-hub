@@ -118,15 +118,15 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 
 ### Background Update — Questions Page
 
-- Now that we have mutations on@ this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server.
+- Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
+- Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
 - Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh.
 
 ## Eliminating In-Between States — Session Page
 
 We eliminated the **busy** state with useOptimistic. Now let's eliminate the **loading** state too, with Next.js caching.
 
-- Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. But the event info doesn't change per user, right? So let's pass in the dynamic content as props.
+- Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. User deo cannot be know ahead of time. But the event info doesn't change per user, right? So let's pass in the dynamic content as props.
 - Add 'use cache' and now the whole component — title, speaker, labels, description — is cached per slug. Same Partial Prerendering we saw on the home page — the cached output joins the static shell, prefetched and instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
 
 ## (Offline Support)
@@ -136,8 +136,8 @@ We eliminated the **busy** state with useOptimistic. Now let's eliminate the **l
 
 ## Review & Wrap-Up
 
-- Let's see all this in action on the deployed app in a moment. I added a few more enhancements there too.
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
+- Let's see all this in action on the deployed app in a moment. I added a few more enhancements there too.
 - Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our improvements. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab.
 - (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
 - (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)

@@ -69,8 +69,10 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense — Session Detail Page
 
 - Now let's apply the same pattern to the rest of our async data loading.
-- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predicable with this in-between state. No CLS.
-- Also animate them. Let's just do a crossfade on the comment section. I'm not going to need it on the details, we'll see why later.
+- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predictable. No CLS.
+- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to EventDetails. That's a Next.js directive that caches the component output on the server.
+- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. No skeleton needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
+- Let's animate the remaining commentsection with a crossfade.
 - (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
 - **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav.
 - That's async data loading designed. Let's move on.
@@ -100,7 +102,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For mutations like these that are unlikely to fail, we can actually eliminate the **busy** state entirely with useOptimistic. And if something does go wrong, useOptimistic can roll back automatically.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. We already eliminated the **loading** state for the event details with caching. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely too with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
 
 ### Session Page
 
@@ -120,14 +122,8 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
 - Let's add a usePolling hook to OptimisticQuestions that calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
-- Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh.
-
-## Eliminating In-Between States — Session Page
-
-We eliminated the **busy** state with useOptimistic. Now let's eliminate the **loading** state too, with Next.js caching.
-
-- Look at EventDetails — right now it fetches the event and the user's favorite status together. The cookie dependency makes the whole thing dynamic. User deo cannot be know ahead of time. But the event info doesn't change per user, right? So let's pass in the dynamic content as props.
-- Add 'use cache' and now the whole component — title, speaker, labels, description — is cached per slug. Same Partial Prerendering we saw on the home page — the cached output joins the static shell, prefetched and instant. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status.
+- Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh. Live, coordinated, smooth.
+- That's async mutations designed. And now our app handles data in both directions.
 
 ## (Offline Support)
 

@@ -133,8 +133,8 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ## Review & Wrap-Up
 
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
-- Let's see all this in action on the deployed app in a moment.
-- Open [next16-event-hub.vercel.app](https://next16-event-hub.vercel.app). Now the deployed version with all our improvements. Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything feels responsive and smooth. Completely different experience.
+- Let's see again our improved version in this deployed website.
+- Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything feels responsive and smooth. Completely different experience.
 - (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
 - (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely. And simultaneously this will improve  Web vitals scores like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.

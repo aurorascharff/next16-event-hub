@@ -3,7 +3,11 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export function usePolling(intervalMs = 5000) {
+type Props = {
+  intervalMs?: number;
+};
+
+export function Poller({ intervalMs = 5000 }: Props) {
   const router = useRouter();
 
   useEffect(() => {
@@ -21,4 +25,6 @@ export function usePolling(intervalMs = 5000) {
       window.removeEventListener('focus', onFocus);
     };
   }, [router, intervalMs]);
+
+  return null;
 }

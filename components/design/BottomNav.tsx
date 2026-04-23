@@ -34,6 +34,18 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
   const [optimisticActive, setOptimisticActive] = useOptimistic(resolvedActive);
   const [isPending, startTransition] = useTransition();
 
+  function handleClick(e: React.MouseEvent, href: Route<T>, index: number) {
+    e.preventDefault();
+    if (action) {
+      startTransition(async () => {
+        setOptimisticActive(index);
+        await action(href);
+      });
+    } else {
+      onChange?.(href);
+    }
+  }
+
   return (
     <nav
       className={cn(
@@ -52,15 +64,7 @@ export function BottomNav<T extends string>({ tabs, activeIndex, action, onChang
               key={tab.href}
               href={tab.href}
               onClick={e => {
-                e.preventDefault();
-                if (action) {
-                  startTransition(async () => {
-                    setOptimisticActive(i);
-                    await action(tab.href);
-                  });
-                } else {
-                  onChange?.(tab.href);
-                }
+                handleClick(e, tab.href, i);
               }}
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 rounded-full py-2 text-xs font-medium transition-[color,opacity,background-color]',

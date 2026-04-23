@@ -58,9 +58,7 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
   );
 }
 
-type EventWithFavorite = Awaited<ReturnType<typeof getEvents>>[number] & { hasFavorited: boolean };
-
-function EventCard({ event }: { event: EventWithFavorite }) {
+function EventCard({ event }: { event: Awaited<ReturnType<typeof getEvents>>[number] & { hasFavorited: boolean } }) {
   const labels = parseLabels(event.labels);
 
   return (

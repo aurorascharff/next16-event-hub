@@ -1,11 +1,10 @@
 'use client';
 
 import { SendHorizontal } from 'lucide-react';
-import { useOptimistic, useRef } from 'react';
+import { startTransition, useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/data/actions/question';
-import { usePolling } from '@/lib/usePolling';
 import type { Question } from '@/types';
 import { QuestionCard } from './QuestionCard';
 
@@ -15,12 +14,10 @@ type Props = {
 };
 
 export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
-  usePolling(5000);
-
   const formRef = useRef<HTMLFormElement>(null);
   const [optimisticQuestions, setOptimisticQuestions] = useOptimistic<Question[]>([]);
 
-  async function handleSubmit(e: React.ChangeEvent) {
+  function handleSubmit(e: React.ChangeEvent) {
     e.preventDefault();
     const formData = new FormData(formRef.current!);
     const content = (formData.get('content') as string)?.trim();
@@ -38,16 +35,18 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
       votes: 0,
     };
 
-    setOptimisticQuestions(c => {
-      return [newQuestion, ...c];
+    startTransition(async () => {
+      setOptimisticQuestions(c => {
+        return [newQuestion, ...c];
+      });
+      const serverData = new FormData();
+      serverData.set('content', content);
+      serverData.set('id', id);
+      const result = await addQuestion(eventSlug, serverData);
+      if (!result.success) {
+        toast.error(result.error);
+      }
     });
-    const serverData = new FormData();
-    serverData.set('content', content);
-    serverData.set('id', id);
-    const result = await addQuestion(eventSlug, serverData);
-    if (!result.success) {
-      toast.error(result.error);
-    }
   }
 
   return (

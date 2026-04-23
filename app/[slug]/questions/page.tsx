@@ -1,11 +1,12 @@
 import { Suspense, ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
+import { Poller } from '@/components/common/Poller';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
-import type { SortValue } from '@/types';
+import type { Question, SortValue } from '@/types';
 import { OptimisticQuestions } from './_components/OptimisticQuestions';
 import { QuestionCard } from './_components/QuestionCard';
 import { QuestionSort } from './_components/QuestionSort';
@@ -52,13 +53,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
   const sort = (sortParam as SortValue) || 'top';
   const currentUser = await getCurrentUser();
   const questions = await getQuestionsByEvent(slug, currentUser);
-
-  const sorted = [...questions].sort((a, b) => {
-    if (sort === 'top') {
-      return b.votes - a.votes;
-    }
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
+  const sorted = sortQuestions(questions, sort);
 
   return (
     <div className="space-y-3 pb-14">
@@ -71,6 +66,7 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         <QuestionSort />
       </div>
       <div className="space-y-2">
+        <Poller />
         <OptimisticQuestions eventSlug={slug} currentUser={currentUser} />
         {sorted.map(question => {
           return (
@@ -121,4 +117,13 @@ function QuestionFeedSkeleton() {
       </div>
     </div>
   );
+}
+
+function sortQuestions(questions: Question[], sort: SortValue) {
+  return [...questions].sort((a, b) => {
+    if (sort === 'top') {
+      return b.votes - a.votes;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 }

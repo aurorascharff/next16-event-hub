@@ -122,7 +122,7 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Background Update — Questions Page
 
 - Now that we have mutations on this page, let's handle the other direction — data coming in from the server without any user action. Right now you have to refresh the browser to see new questions or upvotes from other attendees.
-- Let's add a Poller compoment, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
+- Fun feature, let's add a Poller component, calls startTransition(() => router.refresh()) every few seconds. This re-renders the server components on the server. Integrated with Async react because next.js router uses transitions.
 - Let me show you. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. Submit a question in the left window, it appears in the right window within a few seconds via polling. Upvote a question in the left window, it smoothly updates the vote count and reorders in the right window. All without any manual refresh. Live, coordinated, smooth.
 - That's async mutations designed. And now our app handles data in both directions.
 

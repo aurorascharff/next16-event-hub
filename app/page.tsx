@@ -1,8 +1,8 @@
 import { Suspense, ViewTransition } from 'react';
 import { EventGrid, EventGridSkeleton } from '@/components/EventGrid';
 import HomeTabs from '@/components/HomeTabs';
-import { NavBack } from '@/components/animations';
 import { SiteHeader } from '@/components/common/SiteHeader';
+import { NavBack } from '@/components/common/animations';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

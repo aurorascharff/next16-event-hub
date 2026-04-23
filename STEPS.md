@@ -43,7 +43,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- The Async react primitives really shine when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
 - (Exit slides, back to the app. Switch to editor).
 

@@ -5,8 +5,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug, getUserFavorites } from '@/data/queries/event';
 import { getDayLabel, parseLabels } from '@/lib/utils';
+import type { ReactNode } from 'react';
 
-export async function EventDetails({ slug }: { slug: string }) {
+export async function EventDetails({ slug, children }: { slug: string; children?: ReactNode }) {
   const event = await getEventBySlug(slug);
   return (
     <article className="space-y-4 sm:space-y-5">
@@ -19,7 +20,7 @@ export async function EventDetails({ slug }: { slug: string }) {
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-xl font-bold tracking-tight sm:text-3xl">
             {event.name}
           </h1>
-          <FavoriteStatus slug={slug} />
+          {children}
         </div>
         {event.speaker && (
           <div className="flex items-center gap-2.5 sm:gap-3">

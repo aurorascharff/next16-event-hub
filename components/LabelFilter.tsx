@@ -22,7 +22,7 @@ export function LabelFilter() {
     return null;
   }
 
-  function handleChange(value: string) {
+  function changeAction(value: string) {
     const params = new URLSearchParams();
     if (activeDay) params.set('day', activeDay);
     if (value !== 'all') params.set('label', value);
@@ -32,7 +32,7 @@ export function LabelFilter() {
 
   return (
     <div>
-      <ToggleGroup items={labelItems} value={activeLabel} onChange={handleChange} />
+      <ToggleGroup items={labelItems} value={activeLabel} action={changeAction} />
     </div>
   );
 }

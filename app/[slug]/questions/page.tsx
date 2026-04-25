@@ -1,26 +1,44 @@
+import { Suspense, ViewTransition } from 'react';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
+import { Poller } from '@/components/common/Poller';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getEventBySlug } from '@/data/queries/event';
 import { getQuestionsByEvent } from '@/data/queries/question';
 import type { Question, SortValue } from '@/types';
+import { OptimisticQuestions } from './_components/OptimisticQuestions';
 import { QuestionCard } from './_components/QuestionCard';
-import { QuestionForm } from './_components/QuestionForm';
 import { QuestionSort } from './_components/QuestionSort';
 // eslint-disable-next-line import/order, autofix/no-unused-vars
 import { ViewTransition } from 'react';
 
 export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
   return (
-    <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
-      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
-        <div className="space-y-3 pb-14">
-          <EventHeader params={params} />
-          <QuestionFeed params={params} searchParams={searchParams} />
+    <ViewTransition
+      enter={{ default: 'none', 'tab-switch': 'auto' }}
+      exit={{ default: 'none', 'tab-switch': 'auto' }}
+      default="none"
+    >
+      <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+          <div className="space-y-3 pb-14">
+            <EventHeader params={params} />
+            <Suspense
+              fallback={
+                <ViewTransition exit="slide-down">
+                  <QuestionFeedSkeleton />
+                </ViewTransition>
+              }
+            >
+              <ViewTransition enter="slide-up" default="none">
+                <QuestionFeed params={params} searchParams={searchParams} />
+              </ViewTransition>
+            </Suspense>
+          </div>
         </div>
       </div>
-    </div>
+    </ViewTransition>
   );
 }
 
@@ -42,9 +60,14 @@ async function QuestionFeed({ params, searchParams }: Pick<PageProps<'/[slug]/qu
         <QuestionSort />
       </div>
       <div className="space-y-2">
-        <QuestionForm eventSlug={slug} currentUser={currentUser} />
+        <Poller />
+        <OptimisticQuestions eventSlug={slug} currentUser={currentUser} />
         {sorted.map(question => {
-          return <QuestionCard key={question.id} question={question} />;
+          return (
+            <ViewTransition key={question.id}>
+              <QuestionCard question={question} />
+            </ViewTransition>
+          );
         })}
         {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
       </div>

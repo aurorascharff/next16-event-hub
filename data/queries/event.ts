@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { cache } from 'react';
@@ -51,7 +52,8 @@ export const getUserFavorites = cache(async (userName: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  await slow();
+  'use cache';
+  cacheTag('event-' + slug);
   const event = await prisma.event.findUnique({
     where: { slug },
   });

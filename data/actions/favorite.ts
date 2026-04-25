@@ -1,6 +1,6 @@
 'use server';
 
-import { refresh } from 'next/cache';
+import { refresh } from 'next/dist/server/web/spec-extension/revalidate';
 import { getCurrentUser } from '@/data/queries/auth';
 import { prisma } from '@/db';
 

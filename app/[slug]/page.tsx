@@ -1,55 +1,73 @@
-import { Suspense } from 'react';
+import { connection } from 'next/dist/server/web/exports';
+import { Suspense, ViewTransition } from 'react';
 import { EmptyState } from '@/components/common/EmptyState';
+import { NavForward } from '@/components/common/animations';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CenteredSpinner } from '@/components/ui/spinner';
 import { getCurrentUser } from '@/data/queries/auth';
 import { getCommentsByEvent } from '@/data/queries/comment';
 import { CommentCard } from './_components/CommentCard';
 import { CommentForm } from './_components/CommentForm';
-import { EventDetails } from './_components/EventDetails';
-// eslint-disable-next-line import/order, autofix/no-unused-vars
-import { ViewTransition } from 'react';
+import { EventDetails, EventDetailsSkeleton, FavoriteStatus } from './_components/EventDetails';
 
 export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
   const { slug } = await params;
 
   return (
-    <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
-      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
-        <div className="flex flex-col gap-8">
-          <Suspense>
+    <NavForward>
+      <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
+          <div className="flex flex-col gap-8">
             <div className="min-h-72 sm:min-h-96">
-              <EventDetails slug={slug} />
+              <Suspense fallback={<EventDetailsSkeleton />}>
+                <EventDetails slug={slug}>
+                  <Suspense fallback={<Skeleton className="size-8 shrink-0 rounded-md" />}>
+                    <FavoriteStatus slug={slug} />
+                  </Suspense>
+                </EventDetails>
+              </Suspense>
             </div>
-          </Suspense>
-          <div className="border-border/60 border-t pt-8">
-            <div className="mb-6 min-h-9">
-              <CommentForm />
+            <div className="border-border/60 border-t pt-8">
+              <div className="mb-6 min-h-9">
+                <CommentForm />
+              </div>
+              <Suspense
+                fallback={
+                  <ViewTransition exit="slide-down">
+                    <CommentListSkeleton />
+                  </ViewTransition>
+                }
+              >
+                <ViewTransition enter="slide-up" default="none">
+                  <CommentList slug={slug} />
+                </ViewTransition>
+              </Suspense>
             </div>
-            <Suspense fallback={<CenteredSpinner />}>
-              <CommentList slug={slug} />
-            </Suspense>
           </div>
         </div>
       </div>
-    </div>
+    </NavForward>
   );
 }
 
 async function CommentList({ slug }: { slug: string }) {
+  await connection();
   const currentUser = await getCurrentUser();
   const comments = await getCommentsByEvent(slug, currentUser);
 
   return (
     <div className="space-y-2">
       {comments.map(comment => {
-        return <CommentCard key={comment.id} comment={comment} currentUser={currentUser} />;
+        return (
+          <ViewTransition key={comment.id}>
+            <CommentCard comment={comment} currentUser={currentUser} />
+          </ViewTransition>
+        );
       })}
       {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
     </div>
   );
 }
-// eslint-disable-next-line autofix/no-unused-vars
+
 function CommentListSkeleton() {
   return (
     <div className="space-y-2">

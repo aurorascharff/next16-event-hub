@@ -1,5 +1,6 @@
 import { Clock, Heart, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { Avatar } from '@/components/common/Avatar';
 import { EmptyState } from '@/components/common/EmptyState';
@@ -7,6 +8,26 @@ import { getCurrentUser } from '@/data/queries/auth';
 import { getEvents, getUserFavorites } from '@/data/queries/event';
 import { cn, getDayLabel, parseLabels } from '@/lib/utils';
 import { Skeleton } from './ui/skeleton';
+
+async function getFilteredEvents(searchParams: PageProps<'/'>['searchParams']) {
+  const sp = await searchParams;
+  const label = typeof sp.label === 'string' ? sp.label : undefined;
+  const isFavorites = label === 'favorites';
+  const day = isFavorites ? undefined : (typeof sp.day === 'string' ? sp.day : 'day-1');
+  const currentUser = await getCurrentUser();
+  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
+
+  let events = (await getEvents(day, isFavorites ? undefined : label)).map(event => {
+    return { ...event, hasFavorited: favorites.has(event.slug) };
+  });
+  if (isFavorites) {
+    events = events.filter(e => {
+      return e.hasFavorited;
+    });
+  }
+
+  return { events, isFavorites };
+}
 
 export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
   const { events, isFavorites } = await getFilteredEvents(searchParams);
@@ -27,7 +48,11 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {events.map(event => {
-        return <EventCard key={event.slug} event={event} />;
+        return (
+          <ViewTransition key={event.slug} update={{ default: 'none', filter: 'auto' }} default="none">
+            <EventCard event={event} />
+          </ViewTransition>
+        );
       })}
     </div>
   );
@@ -39,6 +64,7 @@ function EventCard({ event }: { event: Awaited<ReturnType<typeof getEvents>>[num
   return (
     <Link
       href={`/${event.slug}`}
+      transitionTypes={['nav-forward']}
       className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
     >
       <div className="mb-3 flex items-center justify-between">
@@ -49,7 +75,7 @@ function EventCard({ event }: { event: Awaited<ReturnType<typeof getEvents>>[num
             {event.time}
           </span>
         </div>
-        <FavoriteButton favorited={event.hasFavorited} eventSlug={event.slug} />
+        <FavoriteButton eventSlug={event.slug} favorited={event.hasFavorited} />
       </div>
       <LabelList labels={labels} />
       <h3 className="text-primary font-sans text-base leading-snug font-semibold sm:text-lg">{event.name}</h3>
@@ -99,8 +125,8 @@ function EventCardSkeleton() {
     <div className="rounded-lg border p-4">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <Skeleton className="h-4 w-10" />
-          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-4 w-18" />
         </div>
         <Skeleton className="size-5 rounded" />
       </div>
@@ -110,7 +136,7 @@ function EventCardSkeleton() {
       </div>
       <div>
         <Skeleton className="h-5 w-4/5" />
-        <Skeleton className="mt-1 h-5 w-3/5" />
+        <Skeleton className="mt-1.5 h-5 w-3/5" />
       </div>
       <div className="mt-2 flex items-center gap-2">
         <Skeleton className="size-5 rounded-full" />
@@ -124,24 +150,4 @@ function EventCardSkeleton() {
       </div>
     </div>
   );
-}
-
-async function getFilteredEvents(searchParams: PageProps<'/'>['searchParams']) {
-  const sp = await searchParams;
-  const label = typeof sp.label === 'string' ? sp.label : undefined;
-  const isFavorites = label === 'favorites';
-  const day = isFavorites ? undefined : typeof sp.day === 'string' ? sp.day : 'day-1';
-  const currentUser = await getCurrentUser();
-  const favorites = currentUser ? await getUserFavorites(currentUser) : new Set<string>();
-
-  let events = (await getEvents(day, isFavorites ? undefined : label)).map(event => {
-    return { ...event, hasFavorited: favorites.has(event.slug) };
-  });
-  if (isFavorites) {
-    events = events.filter(e => {
-      return e.hasFavorited;
-    });
-  }
-
-  return { events, isFavorites };
 }

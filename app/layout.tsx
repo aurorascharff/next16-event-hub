@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/data/queries/auth';
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
+import { OfflineIndicator } from '@/components/common/OfflineIndicator';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -62,6 +63,7 @@ export default function RootLayout({
           />
           <main className="pt-[env(safe-area-inset-top)]">{children}</main>
           <Toaster />
+          <OfflineIndicator />
         </ThemeProvider>
       </body>
     </html>

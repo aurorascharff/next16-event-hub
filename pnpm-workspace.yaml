@@ -3,6 +3,10 @@ minimumReleaseAgeExclude:
   - '@next/*'
   - eslint-config-next
   - next
+overrides:
+  '@hono/node-server': 1.19.13
+  brace-expansion: 5.0.6
+  postcss: 8.5.14
 onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'

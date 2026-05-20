@@ -68,6 +68,7 @@
     "typescript": "^6",
     "zod-validation-error": "^5.0.0"
   },
+  "packageManager": "pnpm@10.29.2",
   "overrides": {
     "zod-validation-error": "^5.0.0"
   }

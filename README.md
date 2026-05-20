@@ -8,8 +8,8 @@ Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prism
 
 ```bash
 pnpm install
-pnpm run prisma.push
-pnpm run prisma.seed
+pnpm prisma.push
+pnpm prisma.seed
 pnpm run dev
 ```
 
@@ -57,9 +57,9 @@ Every route folder should contain everything it needs. Components and functions 
 Uses Prisma with PostgreSQL.
 
 ```bash
-pnpm run prisma.push     # Push schema to DB
-pnpm run prisma.seed     # Seed with session data
-pnpm run prisma.studio   # Open Prisma Studio
+pnpm prisma.push     # Push schema to DB
+pnpm prisma.seed     # Seed with session data
+pnpm prisma.studio   # Open Prisma Studio
 ```
 
 ## Development Tools

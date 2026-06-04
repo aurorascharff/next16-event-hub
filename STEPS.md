@@ -141,6 +141,5 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - This is a small demo app, but these patterns scale. Server components stream data without client round trips and enable caching and PPR to guarantee fast loads, and Async React coordinates everything. Your apps can be performant, resilient and interactive by default, and your users will thank you.
 - (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
-  - I'm also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
 - Thank you guys for having me here at React Miami!

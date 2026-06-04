@@ -17,9 +17,7 @@ export async function EventDetails({ slug, children }: { slug: string; children?
       </div>
       <div className="space-y-3 sm:space-y-4">
         <div className="flex items-start justify-between gap-3">
-          <h1 className="line-clamp-2 min-h-[2lh] font-sans text-xl font-bold tracking-tight sm:text-3xl">
-            {event.name}
-          </h1>
+          <h1 className="line-clamp-2 font-sans text-xl font-bold tracking-tight sm:text-3xl">{event.name}</h1>
           <FavoriteStatus slug={slug} />
         </div>
         {event.speaker && (
@@ -28,9 +26,7 @@ export async function EventDetails({ slug, children }: { slug: string; children?
             <span className="text-foreground/80 text-sm font-medium sm:text-base">{event.speaker}</span>
           </div>
         )}
-        <div className="h-40 overflow-y-auto sm:h-44">
-          <p className="text-muted-foreground text-sm leading-relaxed sm:text-[15px]">{event.description}</p>
-        </div>
+        <p className="text-muted-foreground text-sm leading-relaxed sm:text-[15px]">{event.description}</p>
       </div>
     </article>
   );

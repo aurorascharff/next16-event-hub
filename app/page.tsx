@@ -28,7 +28,9 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
             </ViewTransition>
           </Suspense>
         </div>
-        <HomeTabs />
+        <Suspense>
+          <HomeTabs />
+        </Suspense>
       </div>
     </NavBack>
   );

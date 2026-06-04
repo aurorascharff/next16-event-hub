@@ -23,9 +23,7 @@ export default function SessionLayout({ children }: LayoutProps<'/[slug]'>) {
   return (
     <>
       {children}
-      <Suspense>
-        <SessionTabs />
-      </Suspense>
+      <SessionTabs />
     </>
   );
 }

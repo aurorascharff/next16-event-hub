@@ -135,4 +135,4 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
-- Thank you guys for having me here at React Miami!
+- Thank you guys for having me here at React Norway!

@@ -47,7 +47,7 @@ function NetworkNote({ children, name }: { children: React.ReactNode; name: stri
 export const slides = [
   // 1. Title
   <Slide key="title">
-    <SlideBadge>React Miami 2026</SlideBadge>
+    <SlideBadge>React Norway 2026</SlideBadge>
     <SlideTitle>Designing the In-Between States with Async React</SlideTitle>
     <SlideSpeaker name="Aurora Scharff" title="DX Engineer at Vercel" avatar="/aurora.png" />
   </Slide>,

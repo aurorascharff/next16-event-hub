@@ -1,10 +1,10 @@
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import { Suspense } from 'react';
-import { AuthGate } from '@/components/common/AuthGate';
+import { AuthGate } from '@/components/auth-gate';
 
-import { ThemeProvider } from '@/components/common/ThemeProvider';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
-import { getCurrentUser } from '@/data/queries/auth';
+import { getCurrentUser } from '@/features/user/user-queries';
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';

@@ -45,7 +45,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
 - The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
-- (Exit slides, back to the app. Switch to editor).
+- Exit slides, back to the app. Switch to editor.
 
 ## Async Data Loading
 
@@ -53,9 +53,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here.
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
-- Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
+- EventGrid is a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
-- ow the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. With RSCs the server fetches and streams directly. The shell can also be served from the CDN and prefetched by the router. We can the best performance yet still get to build our app using components that do local data fetching.
+- Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. With RSCs the server fetches and streams directly.
 
 ### Suspense Reveal Animation — Home Page
 
@@ -68,9 +68,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense — Session Detail Page
 
 - Now let's apply the same pattern to the rest of our async data loading.
-- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this, suspense will let us design our loading states like thus. Add skeletons. App feels better and predictable. No CLS.
-- Let's animate the remaining comment section with a crossfade.
-- Use React Devtools Suspense panel to pin skeletons and check for CLS.
+- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift.
+- Swipe back: Use React Devtools Suspense panel to pin skeletons and check for CLS.
+Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this, suspense will let us design our loading states like thus. Add skeletons. App feels better and predictable. No CLS.
+- Swipe back: Use React Devtools Suspense panel to pin skeletons and check for CLS.
+- Let's animate the remaining whole content section with a crossfade.
 - **Questions page**: Another blocking navigation with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 

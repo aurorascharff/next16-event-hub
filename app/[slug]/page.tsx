@@ -18,9 +18,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
         <div className="flex flex-col gap-8">
           <Suspense>
-            <div className="min-h-72 sm:min-h-96">
-              <EventDetails slug={slug} />
-            </div>
+            <EventDetails slug={slug} />
           </Suspense>
           <div className="border-border/60 border-t pt-8">
             <div className="mb-6 min-h-9">

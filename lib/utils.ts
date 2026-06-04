@@ -69,8 +69,6 @@ export function parseTime(time: string): number {
   return hours * 60 + minutes;
 }
 
-export async function slow(delay: number = 700) {
-  await new Promise(resolve => {
-    return setTimeout(resolve, delay);
-  });
+export function slow(delay: number = 700): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, delay));
 }

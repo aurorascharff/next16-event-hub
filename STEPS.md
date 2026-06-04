@@ -82,7 +82,7 @@ Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the
 
 - Now let's handle async navigation. I click between tabs and nothing updates. That's the **busy** state, we need to design it so you know something is happening.
 - Open HomeTabs. The tabs navigate via search params, so every click triggers a server round trip for new data. Technically it's a navigation, but conceptually you're on the same page. We want the tabs to switch instantly while fresh data loads behind the scenes.
-- Look BottomNav. BottomNav is part of my design layer for this React Miami pink themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
+- Look BottomNav. BottomNav is part of my design layer for this pink themed app. Right now it takes an onChange callback. What if the component could handle the async coordination for us?
 - So let's try changing onChange to action.
 - Try it now... Now, the active tab updates immediately, and the content follows when it arrives.
 - And watch this, if I click Day 2 and then Day 1 before it finishes, it just picks up the latest one. These transitions are interruptible.
@@ -124,11 +124,6 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - Let's see all our new stuff in action. Open two browser windows side by side on the same questions page. I'll submit a question in this window... and watch the other one. It appears in the right window within a few seconds via polling, animated.
 - Upvote a question in the left window, it updates the vote count and reorders in the right window as the server update settles.
 - That's async mutations designed. We eliminated all the busy states on this page, and now our app handles data in both directions, user and server, with a responsive and alive-feeling experience.
-
-## (Offline Support)
-
-- One more thing before we wrap up the code. All the Suspense boundaries and static shells we just built? They make offline support possible. There's an experimental Next.js feature that detects when the connection drops and automatically recovers when it comes back, streaming in fresh data to replace the skeletons.
-- Let's add an offline indicator so you actually see what's happening. It's using our upcoming useOffline hook.
 
 ## Review & Wrap-Up
 

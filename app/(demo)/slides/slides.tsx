@@ -1,6 +1,6 @@
 import { ChevronRight, Download, MousePointerClick, Route } from 'lucide-react';
 import { Slide, SlideTitle, SlideBadge, SlideSpeaker } from 'nextjs-slides';
-import { QRCode } from './QRCode';
+import { QRCode } from './_components/qr-code';
 
 function CycleBox({ children, name }: { children: React.ReactNode; name: string }) {
   return (

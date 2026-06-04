@@ -1,6 +1,5 @@
-import { Suspense } from 'react';
-import { getEventBySlug, getEvents } from '@/data/queries/event';
-import SessionTabs from './_components/SessionTabs';
+import { getEventBySlug, getEvents } from '@/features/event/event-queries';
+import SessionTabs from '@/features/event/components/session-tabs';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: PageProps<'/[slug]'>): Promise<Metadata> {

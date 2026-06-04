@@ -1,83 +1,45 @@
-import { connection } from 'next/dist/server/web/exports';
 import { Suspense, ViewTransition } from 'react';
-import { EmptyState } from '@/components/common/EmptyState';
-import { NavForward } from '@/components/common/animations';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getCurrentUser } from '@/data/queries/auth';
-import { getCommentsByEvent } from '@/data/queries/comment';
-import { CommentCard } from './_components/CommentCard';
-import { CommentForm } from './_components/CommentForm';
-import { EventDetails, EventDetailsSkeleton } from './_components/EventDetails';
+import { NavForward } from '@/components/animations';
+import { CommentForm } from '@/features/comment/components/comment-form';
+import { CommentList, CommentListSkeleton } from '@/features/comment/components/comment-list';
+import { EventDetails, EventDetailsSkeleton } from '@/features/event/components/event-details';
 
-export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
-  const { slug } = await params;
-
+export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (
     <NavForward>
       <div className="min-h-[calc(100dvh-env(safe-area-inset-top))] pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8">
           <div className="flex flex-col gap-8">
             <Suspense fallback={<EventDetailsSkeleton />}>
-              <ViewTransition>
-                <EventDetails slug={slug} />
-              </ViewTransition>
-              <div className="border-border/60 border-t pt-8">
-                <div className="mb-6 min-h-9">
-                  <CommentForm />
-                </div>
-                <Suspense
-                  fallback={
-                    <ViewTransition exit="slide-down">
-                      <CommentListSkeleton />
+              {params.then(({ slug }) => {
+                return (
+                  <>
+                    <ViewTransition>
+                      <EventDetails slug={slug} />
                     </ViewTransition>
-                  }
-                >
-                  <ViewTransition enter="slide-up" default="none">
-                    <CommentList slug={slug} />
-                  </ViewTransition>
-                </Suspense>
-              </div>
+                    <div className="border-border/60 border-t pt-8">
+                      <div className="mb-6 min-h-9">
+                        <CommentForm />
+                      </div>
+                      <Suspense
+                        fallback={
+                          <ViewTransition exit="slide-down">
+                            <CommentListSkeleton />
+                          </ViewTransition>
+                        }
+                      >
+                        <ViewTransition enter="slide-up" default="none">
+                          <CommentList slug={slug} />
+                        </ViewTransition>
+                      </Suspense>
+                    </div>
+                  </>
+                );
+              })}
             </Suspense>
           </div>
         </div>
       </div>
     </NavForward>
-  );
-}
-
-async function CommentList({ slug }: { slug: string }) {
-  await connection();
-  const currentUser = await getCurrentUser();
-  const comments = await getCommentsByEvent(slug, currentUser);
-
-  return (
-    <div className="space-y-2">
-      {comments.map(comment => {
-        return (
-          <ViewTransition key={comment.id}>
-            <CommentCard comment={comment} currentUser={currentUser} />
-          </ViewTransition>
-        );
-      })}
-      {comments.length === 0 && <EmptyState message="No comments yet. Start the conversation!" />}
-    </div>
-  );
-}
-
-function CommentListSkeleton() {
-  return (
-    <div className="space-y-2">
-      {Array.from({ length: 3 }).map((_, i) => {
-        return (
-          <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
-            <Skeleton className="size-7 rounded-full" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-3.5 w-24" />
-              <Skeleton className="h-3.5 w-full" />
-            </div>
-          </div>
-        );
-      })}
-    </div>
   );
 }

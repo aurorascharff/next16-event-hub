@@ -18,26 +18,17 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Project Structure
 
 ```
-app/                      # Pages and layouts
-components/
-  common/                 # Shared utility components
-  design/                 # Action prop components
-  ui/                     # shadcn/ui primitives
-data/
-  actions/                # Server Actions
-  queries/                # Data fetching with cache()
-types/                    # Shared types derived from query return types
-lib/                      # Utility functions and hooks
-prisma/                   # Schema and seed data
+app/          # Pages and layouts
+features/     # Domain folders (event, comment, question, user) — queries, actions, components
+components/   # UI primitives, theme, and app-shell singletons
+types/        # Domain types
+lib/          # Utility functions
+prisma/       # Schema and seed data
 ```
 
-- **components/ui** — shadcn/ui components. Add with `npx shadcn@latest add <component-name>`
-- **components/design** — Components that expose action props and handle async coordination internally (BottomNav, ToggleGroup, SubmitButton)
-- **components/common** — Shared utility components without complex async logic
+Each feature folder owns its queries (`<domain>-queries.ts`), actions (`<domain>-actions.ts`), and components (`components/`). Pages in `app/` only compose feature components — they never contain domain logic.
 
-Every route folder should contain everything it needs. Components and functions live at the nearest shared space in the hierarchy.
-
-**Naming:** PascalCase for components, kebab-case for folders, camelCase for functions/hooks. Suffix transition-based functions with "Action".
+**Naming:** kebab-case filenames, PascalCase component exports, camelCase functions. Suffix transition-based functions with "Action".
 
 ## Key Patterns
 
@@ -45,8 +36,8 @@ Every route folder should contain everything it needs. Components and functions 
 
 ## Development Flow
 
-- **Fetching data** — Queries in `data/queries/`, wrapped with `cache()`. Await in Server Components directly.
-- **Mutating data** — Server Actions in `data/actions/` with `"use server"`. Invalidate with `refresh()`. Use `useOptimistic` for instant feedback.
+- **Fetching data** — Queries in `features/<domain>/<domain>-queries.ts`, wrapped with `cache()`. Await in Server Components directly.
+- **Mutating data** — Server Actions in `features/<domain>/<domain>-actions.ts` with `"use server"`. Invalidate with `refresh()`. Use `useOptimistic` for instant feedback.
 - **Errors** — `error.tsx` for boundaries, `not-found.tsx` + `notFound()` for 404s.
 
 ## Database

@@ -35,7 +35,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 6: Async React Render Cycle — Clean
 
-- But here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done states just disappear. It all feels instant. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast.
+- But here's the cool part — when things are fast enough, the user never sees any of this. The busy, loading, done states just disappear. It all feels sync. That's really the goal — design these in-between states so they're there when you need them, but invisible when things are fast.
 
 ## Slide 7: Where the Gaps Are
 
@@ -51,7 +51,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Boundaries — Home Page
 
-- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here. We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast by surfacing these issues. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.
+- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here. (We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast by surfacing these issues. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.)
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
@@ -68,11 +68,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense — Session Detail Page
 
 - Now let's apply the same pattern to the rest of our async data loading.
-- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Add skeletons. App feels better and predictable. No CLS.
-- But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The cookie dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to getEventBySlug. That's a Next.js directive that caches the component output on the server.
-- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.
-- (Let's animate the remaining comment section with a crossfade.)
-- (Use React Devtools Suspense panel to pin skeletons and check for CLS.)
+- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this. Add skeletons. App feels better and predictable. No CLS.
+- (But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The user dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to getEventBySlug. That's a Next.js directive that caches the component output on the server.
+- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.)
+- Let's animate the remaining comment section with a crossfade.
+- Use React Devtools Suspense panel to pin skeletons and check for CLS.
 - **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
@@ -141,6 +141,5 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - This is a small demo app, but these patterns scale. Server components stream data without client round trips and enable caching and PPR to guarantee fast loads, and Async React coordinates everything. Your apps can be performant, resilient and interactive by default, and your users will thank you.
 - (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
-  - I'm also working on an **async-react** skill for the rest — Suspense boundaries, optimistic updates, action props, pending states.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
 - Thank you guys for having me here at React Miami!

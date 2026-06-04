@@ -20,7 +20,7 @@ export async function EventDetails({ slug, children }: { slug: string; children?
           <h1 className="line-clamp-2 min-h-[2lh] font-sans text-xl font-bold tracking-tight sm:text-3xl">
             {event.name}
           </h1>
-          {children}
+          <FavoriteStatus slug={slug} />
         </div>
         {event.speaker && (
           <div className="flex items-center gap-2.5 sm:gap-3">

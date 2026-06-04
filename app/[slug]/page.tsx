@@ -19,27 +19,25 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
           <div className="flex flex-col gap-8">
             <div className="min-h-72 sm:min-h-96">
               <Suspense fallback={<EventDetailsSkeleton />}>
-                <EventDetails slug={slug}>
-                  <Suspense fallback={<Skeleton className="size-8 shrink-0 rounded-md" />}>
-                    <FavoriteStatus slug={slug} />
-                  </Suspense>
-                </EventDetails>
-              </Suspense>
-            </div>
-            <div className="border-border/60 border-t pt-8">
-              <div className="mb-6 min-h-9">
-                <CommentForm />
-              </div>
-              <Suspense
-                fallback={
-                  <ViewTransition exit="slide-down">
-                    <CommentListSkeleton />
-                  </ViewTransition>
-                }
-              >
-                <ViewTransition enter="slide-up" default="none">
-                  <CommentList slug={slug} />
+                <ViewTransition>
+                  <EventDetails slug={slug} />
                 </ViewTransition>
+                <div className="border-border/60 border-t pt-8">
+                  <div className="mb-6 min-h-9">
+                    <CommentForm />
+                  </div>
+                  <Suspense
+                    fallback={
+                      <ViewTransition exit="slide-down">
+                        <CommentListSkeleton />
+                      </ViewTransition>
+                    }
+                  >
+                    <ViewTransition enter="slide-up" default="none">
+                      <CommentList slug={slug} />
+                    </ViewTransition>
+                  </Suspense>
+                </div>
               </Suspense>
             </div>
           </div>

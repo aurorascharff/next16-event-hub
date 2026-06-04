@@ -1,6 +1,6 @@
 # Next 16 Event Hub
 
-An event companion app exploring Async React, Cache Components, and streaming with Next.js 16, React 19, Tailwind CSS, Prisma, and shadcn/ui.
+An event companion app exploring Async React and streaming with Next.js 16, React 19, Tailwind CSS, Prisma, and shadcn/ui.
 
 Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
 
@@ -41,15 +41,12 @@ Every route folder should contain everything it needs. Components and functions 
 
 ## Key Patterns
 
-**Cache Components:** Uses `cacheComponents: true` to statically render server components that don't access dynamic data. Keep pages non-async and push dynamic data access into `<Suspense>` boundaries to maximize the static shell.
-
 **Async React:** Replace manual `isLoading`/`isError` state with React 19's coordination primitives — `useTransition` for tracking async work, `useOptimistic` for instant feedback, `Suspense` for loading boundaries, and `use()` for reading promises during render.
 
 ## Development Flow
 
 - **Fetching data** — Queries in `data/queries/`, wrapped with `cache()`. Await in Server Components directly.
 - **Mutating data** — Server Actions in `data/actions/` with `"use server"`. Invalidate with `refresh()`. Use `useOptimistic` for instant feedback.
-- **Caching** — Add `"use cache"` with `cacheTag()` to pages, components, or functions to include them in the static shell.
 - **Errors** — `error.tsx` for boundaries, `not-found.tsx` + `notFound()` for 404s.
 
 ## Database

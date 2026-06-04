@@ -6,14 +6,10 @@ const nextConfig: NextConfig = {
   // cacheMaxMemorySize: 0,
   experimental: {
     cachedNavigations: true,
-    instantNavigationDevToolsToggle: true,
-    optimisticRouting: true,
-    prefetchInlining: true,
     staleTimes: {
       dynamic: 30,
     },
     useOffline: true,
-    varyParams: true,
     viewTransition: true,
   },
   reactCompiler: true,

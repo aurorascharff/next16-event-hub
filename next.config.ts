@@ -4,8 +4,6 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
     cachedNavigations: true,
-    prefetchInlining: true,
-    varyParams: true,
     viewTransition: true,
   },
   reactCompiler: true,

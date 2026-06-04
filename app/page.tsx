@@ -18,9 +18,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       <div className="mx-auto max-w-4xl px-4 py-6 transition-opacity group-has-data-pending:opacity-50 sm:px-6">
         <EventGrid searchParams={searchParams} />
       </div>
-      <Suspense>
-        <HomeTabs />
-      </Suspense>
+      <HomeTabs />
     </div>
   );
 }

@@ -106,11 +106,11 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Session Page
 
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
-- Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.
+-(Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.)
 
 ### Questions Page
 
-- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions. Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
+- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace BasicQuestionForm and the count/sort row with OptimisticQuestions, using the same QuestionCards! Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
 - **UpvoteButton**: Same idea, eliminate the wait by designing the busy state. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
 
 ### List Animation

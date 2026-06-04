@@ -51,7 +51,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Boundaries — Home Page
 
-- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here. (We actually get an error overlay: "Next.js encountered uncached data during the initial render." Next.js is letting us know we have a potential performance problem. I'm using cacheComponents, so with this Next.js ensures our app stays fast by surfacing these issues. It shows us three ways to fix it: cache the data with 'use cache', move it inside Suspense, or opt out with export const instant = false. We're going to with Suspense for this one.)
+- Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here.
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
 - Looking at our error, it's caused by my queries to events on the home page. EventGrid is the blocking component. It's a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
@@ -69,11 +69,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift. Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this. Add skeletons. App feels better and predictable. No CLS.
-- (But wait — for the event details at the top, we could go one step further and just eliminate the loading state entirely. The event info doesn't change per user, right? The user dependency is only the favorite status. So let's separate those — pass the dynamic parts as props and add 'use cache' to getEventBySlug. That's a Next.js directive that caches the component output on the server.
-- Now the whole component — title, speaker, labels, description — is cached per slug. It joins the static shell, prefetched and instant. Don't even see skeleton, not needed for that part. Skeletons only show for truly dynamic stuff like comments, questions, and favorite status, add this back as a child.)
 - Let's animate the remaining comment section with a crossfade.
 - Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- **Questions page**: Another blocking navigation with no feedback. Reloading the page will give me the guidance error we saw before from cacheComponents. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
+- **Questions page**: Another blocking navigation with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation
@@ -101,7 +99,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. We already eliminated the **loading** state for the event details with caching. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely too with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
 
 ### Session Page
 
@@ -135,10 +133,8 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - Remember how the app looked at the start? Revert all changes. Blank screens, jumping layouts, frozen tabs, no feedback on clicks, harsh transitions.
 - Let's see again our improved version in this deployed website.
 - Walk through the app — navigate to a session, show comments, questions, favorites. Submit a question, it shows up optimistically. Upvote another one, the list reorders with animation. Favorite a session, switch to the Favorites tab. Everything feels responsive and smooth. Completely different experience.
-- (Let's try it to slow down the network too. (DevTools → Slow 3G, reload.) The static shell shows up instantly, header, tabs, skeletons, all from the CDN. Content streams in as it arrives. Optimistic updates still feel instant because they're client-side.
-- (Now let's take it further, switch to Offline. (Navigate to a session.) The static shell still loads from cache. The offline indicator tells you what's happening. Now switch back to No Throttling, content streams in and fills the skeletons. And the app just picks right back up.)
 - The interactions aren't any faster. The server is the same speed. It's all about designing the in-between states, and sometimes eliminating them entirely. And simultaneously this will improve  Web vitals scores like First Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift which is great for performance and SEO.
-- This is a small demo app, but these patterns scale. Server components stream data without client round trips and enable caching and PPR to guarantee fast loads, and Async React coordinates everything. Your apps can be performant, resilient and interactive by default, and your users will thank you.
+- This is a small demo app, but these patterns scale. Server components stream data without client round trips, and Async React coordinates everything. Your apps can be performant, resilient and interactive by default, and your users will thank you.
 - (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.

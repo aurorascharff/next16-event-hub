@@ -59,7 +59,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
+- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI. Next.js App Router wraps navigations in transitions automatically, so this just works. Other routers vary — React Router has opt-in via Link viewTransition, others you'd wrap navigations in startTransition yourself.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
 - Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
@@ -101,7 +101,7 @@ Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically. Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback.
 
 ### Session Page
 

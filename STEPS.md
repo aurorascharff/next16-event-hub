@@ -4,7 +4,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! How are you guys doing? I'm so excited to kick this conference off. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date.
+- (Open /slides) Hey everyone! How are you guys doing?. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date.
 - Today I'll be showing you how to design the in-between states with Async React. I know we're all using agents to code these days but actually, lets do some good old fashioned coding today. I will however have something for your agents at the end, so stay tuned for that.
 
 ## Opening
@@ -59,7 +59,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
+- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI. Next.js App Router wraps navigations in transitions automatically, so this just works. Other routers vary — React Router has opt-in via Link viewTransition, others you'd wrap navigations in startTransition yourself.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
 - Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
@@ -69,9 +69,9 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift.
-- Swipe back: Use React Devtools Suspense panel to pin skeletons and check for CLS.
+- Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
 Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this, suspense will let us design our loading states like thus. Add skeletons. App feels better and predictable. No CLS.
-- Swipe back: Use React Devtools Suspense panel to pin skeletons and check for CLS.
+- Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
 - Let's animate the remaining whole content section with a crossfade.
 - **Questions page**: Another blocking navigation with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
@@ -101,7 +101,7 @@ Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically. Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback.
 
 ### Session Page
 
@@ -135,4 +135,4 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - (Go back to code) Now — I did say I had something for your agents. Agent skills are knowledge files that teach your coding agent patterns like these. I have created one for view transitions so you can easily add them to your apps. (Show the .agents/skills/ folder.)
   - **vercel-react-view-transitions** — covers all the animations we just saw: Suspense reveals, directional navigation, list reorder, shared elements. Ready-to-use CSS recipes. Works in Cursor, Codex, Claude Code.
 - (Swipe back to first localhost page with the slide 7) Here are the links — scan the QR codes. Source code on GitHub, View Transitions skill on skills.sh.
-- Thank you guys for having me here at React Miami!
+- Thank you guys for having me here at React Norway!

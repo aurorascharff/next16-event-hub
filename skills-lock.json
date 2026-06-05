@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "nextjs-app-architecture": {
+      "source": "aurorascharff/nextjs-app-architecture-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "5d24cdabc2b06348e6d35a38459ead1cd963acb734cc0e5345b1a9d66b20832c"
+    },
     "vercel-react-view-transitions": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",

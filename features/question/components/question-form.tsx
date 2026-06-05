@@ -5,7 +5,7 @@ import { startTransition, useOptimistic, useRef } from 'react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { addQuestion } from '@/features/question/question-actions';
-import { QuestionCard } from '@/features/question/components/question-card';
+import { QuestionCard } from '@/features/question/components/question-list';
 import type { Question } from '@/types/question';
 
 type Props = {

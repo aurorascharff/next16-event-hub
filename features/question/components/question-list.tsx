@@ -6,6 +6,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { UpvoteButton } from '@/features/question/components/upvote-button';
 import { cn, timeAgo } from '@/lib/utils';
 import type { Question, SortValue } from '@/types/question';
+// eslint-disable-next-line import/order, autofix/no-unused-vars
+import { ViewTransition } from 'react';
 
 export function QuestionList({ questions }: { questions: Question[] }) {
   const searchParams = useSearchParams();

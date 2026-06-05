@@ -10,21 +10,21 @@ export default function SessionPage({ params }: PageProps<'/[slug]'>) {
     <PageShell>
       <PageContainer>
         <div className="flex flex-col gap-8">
-          <Suspense>
-            {params.then(({ slug }) => (
-              <EventDetails slug={slug} />
-            ))}
-          </Suspense>
-          <div className="border-border/60 border-t pt-8">
-            <div className="mb-6 min-h-9">
-              <CommentForm />
-            </div>
-            <Suspense fallback={<CenteredSpinner />}>
-              {params.then(({ slug }) => (
-                <CommentList slug={slug} />
-              ))}
-            </Suspense>
-          </div>
+          {params.then(({ slug }) => (
+            <>
+              <Suspense>
+                <EventDetails slug={slug} />
+              </Suspense>
+              <div className="border-border/60 border-t pt-8">
+                <div className="mb-6 min-h-9">
+                  <CommentForm />
+                </div>
+                <Suspense fallback={<CenteredSpinner />}>
+                  <CommentList slug={slug} />
+                </Suspense>
+              </div>
+            </>
+          ))}
         </div>
       </PageContainer>
     </PageShell>

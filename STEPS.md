@@ -59,7 +59,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI. Next.js App Router wraps navigations in transitions automatically, so this just works. Other routers vary — React Router has opt-in via Link viewTransition, others you'd wrap navigations in startTransition yourself.
+- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
 - Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
@@ -98,6 +98,7 @@ Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the
 
 - Navigation feels responsive now, but when we actually navigate to a session, there's no sense of place — you don't know where you came from or how to get back. Directional animations can fix this. We want going forward to slide in from the right, going back from the left.
 - Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link. See the animation. Then add addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
+- (This works here because Next.js App Router wraps navigations in transitions automatically. Other routers vary — React Router has opt-in via Link viewTransition, others you'd wrap navigations in startTransition yourself.)
 
 ## Async Mutations
 

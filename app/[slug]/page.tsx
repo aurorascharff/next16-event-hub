@@ -15,14 +15,10 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
           <Suspense>
             <EventDetails slug={slug} />
           </Suspense>
-          <div className="border-border/60 border-t pt-8">
-            <div className="mb-6 min-h-9">
-              <CommentForm />
-            </div>
-            <Suspense fallback={<CenteredSpinner />}>
-              <CommentList slug={slug} />
-            </Suspense>
-          </div>
+          <CommentForm />
+          <Suspense fallback={<CenteredSpinner />}>
+            <CommentList slug={slug} />
+          </Suspense>
         </div>
       </PageContainer>
     </PageShell>

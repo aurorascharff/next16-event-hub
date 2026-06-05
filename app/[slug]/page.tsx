@@ -4,6 +4,7 @@ import { CenteredSpinner } from '@/components/ui/spinner';
 import { CommentForm } from '@/features/comment/components/comment-form';
 import { CommentList } from '@/features/comment/components/comment-list';
 import { EventDetails } from '@/features/event/components/event-details';
+import { ViewTransition } from 'react';
 
 export default function SessionPage({ params }: PageProps<'/[slug]'>) {
   return (

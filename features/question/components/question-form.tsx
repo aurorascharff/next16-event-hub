@@ -34,9 +34,9 @@ export function QuestionForm({ eventSlug }: Props) {
   );
 }
 
-export function OptimisticQuestions({ eventSlug }: Props) {
+export function OptimisticQuestionForm({ eventSlug }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [optimisticQuestions, setOptimisticQuestions] = useOptimistic<Question[]>([]);
+  const [optimisticQuestions, setOptimisticQuestionForm] = useOptimistic<Question[]>([]);
 
   function handleSubmit(e: React.ChangeEvent) {
     e.preventDefault();
@@ -57,7 +57,7 @@ export function OptimisticQuestions({ eventSlug }: Props) {
     };
 
     startTransition(async () => {
-      setOptimisticQuestions(c => {
+      setOptimisticQuestionForm(c => {
         return [newQuestion, ...c];
       });
       const serverData = new FormData();

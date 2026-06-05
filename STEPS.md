@@ -68,12 +68,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense — Session Detail Page
 
 - Now let's apply the same pattern to the rest of our async data loading.
-- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift.
+- Session detail page: it already has two Suspense boundaries — one around EventDetails with no fallback, and one around CommentList with just a centered spinner. When content loads, the comment section jumps down — classic layout shift.
 - Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this, suspense will let us design our loading states like thus. Add skeletons. App feels better and predictable. No CLS.
-- Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- Let's animate the remaining whole content section with a crossfade.
-- **Questions page**: Another blocking navigation with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
+- Fix: proper skeleton fallbacks that reserve the right space. Add EventDetailsSkeleton to the top boundary, swap the spinner for CommentListSkeleton on the bottom. App feels predictable. No CLS.
+- Now wrap EventDetails in a bare ViewTransition for a crossfade reveal. Then use the suspenseReveal snippet on the CommentList Suspense for the slide-up/slide-down reveal — same Suspense, just with a ViewTransition wrapping the fallback and the content.
+- **Questions page**: Another blocking navigation with no feedback. EventHeader already has its own Suspense + skeleton. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation
@@ -101,16 +100,17 @@ Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically. Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
 
 ### Session Page
 
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
+- (Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback. We'll do the same for the other mutations.)
 -(Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.)
 
 ### Questions Page
 
-- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace QuestionForm with OptimisticQuestions, using the same QuestionCards! Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
+- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace QuestionForm with OptimisticQuestionForm, using the same QuestionCards! Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
 - **UpvoteButton**: Same idea, eliminate the wait by designing the busy state. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
 
 ### List Animation

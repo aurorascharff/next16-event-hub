@@ -18,9 +18,9 @@ export async function EventHeader({ slug }: { slug: string }) {
 export function EventHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
-      <Skeleton className="size-12 shrink-0 rounded-full" />
+      <Skeleton className="size-11 shrink-0 rounded-full" />
       <div className="min-w-0 flex-1 space-y-1.5">
-        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-3/4" />
         <Skeleton className="h-3 w-1/3" />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { getQuestionsByEvent } from '@/features/question/question-queries';
-import { QuestionList } from '@/features/question/components/question-card';
+import { QuestionList } from '@/features/question/components/question-list';
 import { QuestionSort } from '@/features/question/components/question-sort';
 import { getCurrentUser } from '@/features/user/user-queries';
 

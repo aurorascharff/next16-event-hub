@@ -9,6 +9,10 @@ import { getCurrentUser } from '@/features/user/user-queries';
 import { timeAgo } from '@/lib/utils';
 import type { Comment } from '@/types/comment';
 
+export function CommentsSection({ children }: { children: React.ReactNode }) {
+  return <div className="border-border/60 border-t pt-8">{children}</div>;
+}
+
 export async function CommentList({ slug }: { slug: string }) {
   await connection();
   const currentUser = await getCurrentUser();

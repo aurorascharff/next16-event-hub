@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { LabelFilter, LabelFilterSkeleton } from '@/features/event/components/label-filter';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { UserMenu } from '@/components/user-menu';
+import { UserMenu } from '@/features/user/components/user-menu';
 import { GithubIcon } from '@/components/ui/github-icon';
 
 export function SiteHeader() {

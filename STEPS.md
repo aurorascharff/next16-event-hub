@@ -68,12 +68,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense — Session Detail Page
 
 - Now let's apply the same pattern to the rest of our async data loading.
-- Session detail page: It already has Suspense, but the top boundary has no fallback and the bottom one just has a centered spinner. When content loads, the comment section jumps down — classic layout shift.
+- Session detail page: it already has two Suspense boundaries — one around EventDetails with no fallback, and one around CommentList with just a centered spinner. When content loads, the comment section jumps down — classic layout shift.
 - Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-Fix: proper skeleton fallbacks that reserve the right space. Unknown size of the content, should wrap them in a common controlled loading state to avoid this, suspense will let us design our loading states like thus. Add skeletons. App feels better and predictable. No CLS.
-- Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- Let's animate the remaining whole content section with a crossfade.
-- **Questions page**: Another blocking navigation with no feedback. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
+- Fix: proper skeleton fallbacks that reserve the right space. Add EventDetailsSkeleton to the top boundary, swap the spinner for CommentListSkeleton on the bottom. App feels predictable. No CLS.
+- Now wrap EventDetails in a bare ViewTransition for a crossfade reveal. Then use the suspenseReveal snippet on the CommentList Suspense for the slide-up/slide-down reveal — same Suspense, just with a ViewTransition wrapping the fallback and the content.
+- **Questions page**: Another blocking navigation with no feedback. EventHeader already has its own Suspense + skeleton. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation

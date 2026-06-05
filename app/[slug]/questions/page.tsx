@@ -5,21 +5,19 @@ import { QuestionForm } from '@/features/question/components/question-form';
 import { getCurrentUser } from '@/features/user/user-queries';
 import type { SortValue } from '@/types/question';
 
-export default function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
+export default async function QuestionsPage({ params, searchParams }: PageProps<'/[slug]/questions'>) {
+  const { slug } = await params;
+  const currentUser = await getCurrentUser();
+
   return (
     <PageShell>
       <PageContainer>
         <div className="space-y-3 pb-14">
-          {Promise.all([params, searchParams, getCurrentUser()]).then(([{ slug }, sp, currentUser]) => {
-            const sort = (sp.sort as SortValue) || 'top';
-            return (
-              <>
-                <EventHeader slug={slug} />
-                <QuestionFeed slug={slug} sort={sort} />
-                <QuestionForm eventSlug={slug} currentUser={currentUser} />
-              </>
-            );
-          })}
+          <EventHeader slug={slug} />
+          {searchParams.then(sp => (
+            <QuestionFeed slug={slug} sort={(sp.sort as SortValue) || 'top'} />
+          ))}
+          <QuestionForm eventSlug={slug} currentUser={currentUser} />
         </div>
       </PageContainer>
     </PageShell>

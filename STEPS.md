@@ -101,18 +101,18 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Async Mutations
 
-Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically. Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback.
+Finally, let's handle async mutations. Everything works, but nothing gives feedback. The favorite, the upvote, the question submit, they all just freeze until the server responds. For the **busy** state on mutations like these that are unlikely to fail, we can eliminate it entirely with useOptimistic. And if something does go wrong, useOptimistic rolls back automatically.
 
 ### Session Page
 
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
+- (Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback. We'll do the same for the other mutations.)
 -(Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.)
 
 ### Questions Page
 
-- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace QuestionForm with OptimisticQuestions, using the same QuestionCards! Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
+- **Optimistic Create**: Submitting a question also just waits for the server. Let's replace QuestionForm with OptimisticQuestionForm, using the same QuestionCards! Again, useOptimistic, this time with an empty array for pending items. They show above the list with "Sending..." and reduced opacity. When the server responds, refresh() updates the real list and the optimistic state settles.
 - **UpvoteButton**: Same idea, eliminate the wait by designing the busy state. Use the upvoteOptimistic snippet. useOptimistic with a reducer that increments the count. Upvoting is one-way, so the reducer only goes in one direction. After the server refresh, the question settles to the real vote count, and moves its position in the list if needed. If the server fails, it rolls back to the previous count.
-- (Wrap each action call in try/catch + toast.error so the rollback isn't silent. Same for FavoriteButton and OptimisticQuestions — three one-liners, the rollback now feels intentional instead of like a glitch.)
 
 ### List Animation
 

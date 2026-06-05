@@ -106,7 +106,7 @@ features/
     question-actions.ts       # addQuestion, upvoteQuestion
     components/
       question-feed.tsx       # QuestionFeed + QuestionFeedSkeleton + QuestionCard (sort helper inline)
-      question-form.tsx       # QuestionForm + OptimisticQuestions (both variants)
+      question-form.tsx       # QuestionForm + OptimisticQuestionForm (both variants)
       question-sort.tsx       # Sort toggle
       upvote-button.tsx       # Client mutation button
   user/                       # Auth/identity

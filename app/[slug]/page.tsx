@@ -1,4 +1,5 @@
-import { Suspense } from 'react';
+// eslint-disable-next-line autofix/no-unused-vars
+import { Suspense, ViewTransition } from 'react';
 import { PageContainer, PageShell } from '@/components/page-shell';
 import { CenteredSpinner } from '@/components/ui/spinner';
 import { CommentForm } from '@/features/comment/components/comment-form';

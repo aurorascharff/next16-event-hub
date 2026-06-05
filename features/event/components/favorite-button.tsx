@@ -2,6 +2,7 @@
 
 import { Heart } from 'lucide-react';
 import { useOptimistic } from 'react';
+import { toast } from 'sonner';
 import { toggleFavorite } from '@/features/event/event-actions';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +20,11 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
     <form
       action={async () => {
         setOptimisticFavorited(null);
-        await toggleFavorite(eventSlug);
+        try {
+          await toggleFavorite(eventSlug);
+        } catch {
+          toast.error('Could not update favorite. Try again.');
+        }
       }}
     >
       <button

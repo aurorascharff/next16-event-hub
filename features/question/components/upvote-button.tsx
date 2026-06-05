@@ -2,6 +2,7 @@
 
 import { ChevronUp } from 'lucide-react';
 import { useOptimistic } from 'react';
+import { toast } from 'sonner';
 import { upvoteQuestion } from '@/features/question/question-actions';
 import { cn } from '@/lib/utils';
 
@@ -31,7 +32,11 @@ export function UpvoteButton({ questionId, eventSlug, votes, hasVoted }: Props) 
     <form
       action={async () => {
         addUpvote(1);
-        await upvoteQuestion(questionId, eventSlug);
+        try {
+          await upvoteQuestion(questionId, eventSlug);
+        } catch {
+          toast.error('Could not upvote. Try again.');
+        }
       }}
     >
       <button

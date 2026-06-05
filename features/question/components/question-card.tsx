@@ -1,7 +1,26 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
 import { Avatar } from '@/components/ui/avatar';
+import { EmptyState } from '@/components/ui/empty-state';
 import { UpvoteButton } from '@/features/question/components/upvote-button';
 import { cn, timeAgo } from '@/lib/utils';
-import type { Question } from '@/types/question';
+import type { Question, SortValue } from '@/types/question';
+
+export function QuestionList({ questions }: { questions: Question[] }) {
+  const searchParams = useSearchParams();
+  const sort = (searchParams.get('sort') as SortValue) || 'top';
+  const sorted = sortQuestions(questions, sort);
+
+  return (
+    <div className="space-y-2">
+      {sorted.map(question => {
+        return <QuestionCard key={question.id} question={question} />;
+      })}
+      {sorted.length === 0 && <EmptyState message="No questions yet. Be the first to ask!" />}
+    </div>
+  );
+}
 
 export function QuestionCard({ question, pending }: { question: Question; pending?: boolean }) {
   return (
@@ -27,4 +46,13 @@ export function QuestionCard({ question, pending }: { question: Question; pendin
       </div>
     </div>
   );
+}
+
+function sortQuestions(questions: Question[], sort: SortValue) {
+  return [...questions].sort((a, b) => {
+    if (sort === 'top') {
+      return b.votes - a.votes;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 }

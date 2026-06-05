@@ -10,7 +10,6 @@ import type { Question } from '@/types/question';
 
 type Props = {
   eventSlug: string;
-  currentUser: string | null;
 };
 
 export function QuestionForm({ eventSlug }: Props) {
@@ -35,7 +34,7 @@ export function QuestionForm({ eventSlug }: Props) {
   );
 }
 
-export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
+export function OptimisticQuestions({ eventSlug }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [optimisticQuestions, setOptimisticQuestions] = useOptimistic<Question[]>([]);
 
@@ -53,7 +52,7 @@ export function OptimisticQuestions({ eventSlug, currentUser }: Props) {
       eventSlug,
       hasVoted: false,
       id,
-      userName: currentUser ?? 'You',
+      userName: 'You',
       votes: 0,
     };
 

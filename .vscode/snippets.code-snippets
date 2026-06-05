@@ -47,7 +47,7 @@
       "  }",
       ">",
       "  <ViewTransition enter=\"slide-up\" default=\"none\">",
-      "    <QuestionFeed slug={slug} sort={sort} />",
+      "    <QuestionFeed slug={slug} />",
       "  </ViewTransition>",
       "</Suspense>"
     ],

@@ -2,7 +2,6 @@
 
 import { ArrowLeft, CalendarDays, HelpCircle } from 'lucide-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { addTransitionType } from 'react';
 import { BottomNav } from '@/components/ui/bottom-nav';
 import type { Route } from 'next';
 
@@ -24,11 +23,9 @@ export default function SessionTabs() {
       tabs={tabs}
       activeIndex={activeIndex}
       action={href => {
-        addTransitionType('tab-switch');
-        if (href === '/') {
-          addTransitionType('nav-back');
-        }
-        router.push(href);
+        router.push(href, {
+          transitionTypes: href === '/' ? ['tab-switch', 'nav-back'] : ['tab-switch'],
+        });
       }}
     />
   );

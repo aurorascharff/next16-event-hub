@@ -2,7 +2,6 @@
 
 import { Calendar, Heart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { addTransitionType } from 'react';
 import { BottomNav } from '@/components/ui/bottom-nav';
 
 const homeTabs = [
@@ -35,8 +34,7 @@ export default function HomeTabs() {
       tabs={homeTabs}
       activeIndex={activeIndex}
       action={href => {
-        addTransitionType('tab-switch');
-        router.push(href);
+        router.push(href, { transitionTypes: ['tab-switch'] });
       }}
     />
   );

@@ -37,7 +37,7 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
             <OptimisticQuestionForm eventSlug={slug} />
             <Suspense
               fallback={
-                <ViewTransition exit="slide-down">
+                <ViewTransition exit="slide-down" default="none">
                   <QuestionFeedSkeleton />
                 </ViewTransition>
               }

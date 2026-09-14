@@ -19,7 +19,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
         <PageContainer size="wide" className="transition-opacity group-has-data-pending:opacity-50">
           <Suspense
             fallback={
-              <ViewTransition exit="slide-down">
+              <ViewTransition exit="slide-down" default="none">
                 <EventGridSkeleton />
               </ViewTransition>
             }

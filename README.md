@@ -1,8 +1,8 @@
-# Next 16 Event Hub
+# Next 16.3 Event Hub
 
-An event companion app exploring Async React and streaming with Next.js 16, React 19, Tailwind CSS, Prisma, and shadcn/ui.
+An event companion app exploring Async React and streaming with Next.js 16.3, React 19, Tailwind CSS, Prisma, and shadcn/ui.
 
-Built with Next.js 16, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
+Built with Next.js 16.3, React 19, Tailwind CSS v4, shadcn/ui (Base UI), and Prisma.
 
 ## Getting Started
 

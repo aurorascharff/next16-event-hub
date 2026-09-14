@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
     staleTimes: {
       dynamic: 30,
     },
-    viewTransition: true,
   },
   reactCompiler: true,
   typedRoutes: true,

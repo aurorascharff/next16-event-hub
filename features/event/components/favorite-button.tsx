@@ -15,11 +15,14 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
   const [optimisticFavorited, setOptimisticFavorited] = useOptimistic(favorited, current => {
     return !current;
   });
+  const [removing, setRemoving] = useOptimistic(false);
 
   return (
     <form
       action={async () => {
+        const willRemove = optimisticFavorited;
         setOptimisticFavorited(null);
+        if (willRemove) setRemoving(true);
         try {
           await toggleFavorite(eventSlug);
         } catch {
@@ -32,6 +35,7 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
           e.stopPropagation();
         }}
         type="submit"
+        data-removing={removing || undefined}
         className={cn(
           'cursor-pointer rounded p-1.5 transition-colors',
           optimisticFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary',

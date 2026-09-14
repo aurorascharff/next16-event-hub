@@ -20,7 +20,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
               <CommentForm />
               <Suspense
                 fallback={
-                  <ViewTransition exit="slide-down">
+                  <ViewTransition exit="slide-down" default="none">
                     <CommentListSkeleton />
                   </ViewTransition>
                 }

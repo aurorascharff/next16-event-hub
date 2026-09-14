@@ -4,7 +4,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! How are you guys doing?. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date.
+- (Open /slides) Hey everyone! How are you guys doing?. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date with Next.js 16.3.
 - Today I'll be showing you how to design the in-between states with Async React. I know we're all using agents to code these days but actually, lets do some good old fashioned coding today. I will however have something for your agents at the end, so stay tuned for that.
 
 ## Opening
@@ -43,7 +43,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js 16.3 App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
 - Exit slides, back to the app. Switch to editor.
 
@@ -60,9 +60,10 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Suspense Reveal Animation — Home Page
 
 - OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
+- In Next.js 16.3, this works directly in the App Router. Import ViewTransition from React; there is no Next.js config flag or React canary install to add.
 - Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
 - ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
-- Wrap the skeleton fallback with exit="slide-down" and the content with enter="slide-up". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
+- Wrap the skeleton fallback with exit="slide-down" and default="none", and the content with enter="slide-up" and default="none". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
 - We designed our first inbetween state successfully! The app already feels way smoother.
 
 ### Suspense — Session Detail Page
@@ -96,8 +97,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 ### Directional Animation
 
 - Navigation feels responsive now, but when we actually navigate to a session, there's no sense of place — you don't know where you came from or how to get back. Directional animations can fix this. We want going forward to slide in from the right, going back from the left.
-- Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link. See the animation. Then add addTransitionType('nav-back') on the back SessionTabs back inside action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
-- (This works here because Next.js App Router wraps navigations in transitions automatically. Other routers vary — React Router has opt-in via Link viewTransition, others you'd wrap navigations in startTransition yourself.)
+- Wrap the session page in NavForward. We have two reusable wrappers: NavForward and NavBack — each is just a ViewTransition with type-keyed enter/exit maps. Wrap the home page in NavBack. To trigger the correct animation, we add transitionTypes={['nav-forward']} to the event card Link. See the animation. Then pass { transitionTypes: ['nav-back'] } to router.push on the back SessionTabs action. Same ViewTransition primitive, just with directional CSS. Our app now has a real sense of place and smooth directional motion.
+- (In Next.js 16.3, Link, router.push, and router.replace accept transitionTypes directly. App Router already wraps navigations in transitions; the design component's transition coordinates its optimistic and pending UI with that router update.)
 
 ## Async Mutations
 
@@ -106,8 +107,10 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Session Page
 
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
+- Let's also use the pending-removal pattern from Next Beats. Add a second useOptimistic(false) value for removing. Capture whether the heart is currently favorited before toggling, set removing only when this Action removes a favorite, and add data-removing={removing || undefined} to the button.
+- Cards in the Favorites view are already set up with has-data-removing:opacity-50. Remove one there: the heart empties optimistically, the outgoing card fades while the Action is pending, then the refreshed server result removes it. Adding a favorite elsewhere does not fade the card.
 - (Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback. We'll do the same for the other mutations.)
--(Now tap a few favorites, switch to the Favorites tab. It gives an instant and responsive UX. Mutations and navigation go through the same transition system, so it all coordinates and we don't get any intermediate states here while the real values resolve.)
+-(Now tap a few favorites, switch to the Favorites tab, and remove one. It gives instant optimistic feedback and communicates the pending server work. Mutations and navigation go through the same transition system, so it all coordinates while the real values resolve.)
 
 ### Questions Page
 

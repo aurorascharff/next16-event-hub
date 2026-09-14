@@ -27,19 +27,29 @@ export async function EventGrid({ searchParams }: Pick<PageProps<'/'>, 'searchPa
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {events.map(event => {
-        return <EventCard key={event.slug} event={event} />;
+        return <EventCard key={event.slug} event={event} fadeOnRemove={isFavorites} />;
       })}
     </div>
   );
 }
 
-function EventCard({ event }: { event: Awaited<ReturnType<typeof getEvents>>[number] & { hasFavorited: boolean } }) {
+function EventCard({
+  event,
+  fadeOnRemove,
+}: {
+  event: Awaited<ReturnType<typeof getEvents>>[number] & { hasFavorited: boolean };
+  fadeOnRemove: boolean;
+}) {
   const labels = parseLabels(event.labels);
 
   return (
     <Link
       href={`/${event.slug}`}
-      className={cn('group block rounded-lg border p-4 transition-all', 'bg-card hover:border-primary/40')}
+      className={cn(
+        'group block rounded-lg border p-4 transition-all',
+        'bg-card hover:border-primary/40',
+        fadeOnRemove && 'has-data-removing:opacity-50',
+      )}
     >
       <div className="mb-3 flex items-center justify-between">
         <div className="text-muted-foreground flex items-center gap-2.5 text-xs sm:text-sm">

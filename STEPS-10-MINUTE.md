@@ -4,7 +4,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 Branch flow: `start` → `main`
 
-Scope: one Async React example each for data loading, navigation, and mutation. Use the nested Suspense reveal on the session page, then the day tabs and favorite heart on the home page. Skip View Transitions, label-filter refactoring, questions, polling, and the extended app walkthrough.
+Scope: one Async React example each for data loading, navigation, and mutation. Use the nested AnimatedSuspense reveal on the session page, then the day tabs and favorite heart on the home page. Skip standalone View Transition work, label-filter refactoring, questions, polling, and the extended app walkthrough.
 
 ## 0:00–1:15 — Intro
 
@@ -17,17 +17,18 @@ Scope: one Async React example each for data loading, navigation, and mutation. 
 
 - (Move quickly through slides 2–7.) A synchronous interaction moves from event to update to render to commit.
 - Async work opens gaps in that cycle: **busy**, while an action is in flight; **loading**, while React waits for data; and **done**, when the result is ready to appear.
-- React gives us declarative coordination primitives for those gaps. Today we need only two: Suspense for loading and `useOptimistic()` inside a transition for immediate feedback.
+- React gives us declarative coordination primitives for those gaps. AnimatedSuspense composes Suspense with a ViewTransition for loading and reveal; `useOptimistic()` inside a transition gives immediate feedback.
 - Next.js App Router supplies the framework integration: async Server Components can suspend, and navigations already run in transitions.
 - Back to the editor. We will use the strongest example from each part of the full demo.
 
-## 2:30–4:45 — Async data loading: nested Suspense
+## 2:30–4:45 — Async data loading: nested AnimatedSuspense
 
 - Open a session. Its two async regions already have Suspense boundaries, but the details boundary has no fallback and the comments use a generic spinner. The page reveals in awkward jumps.
-- Open `app/[slug]/page.tsx`. Import `EventDetailsSkeleton` and `CommentListSkeleton` beside their matching Server Components.
-- Give the outer boundary `fallback={<EventDetailsSkeleton />}`. Extend that boundary around the event details, comment form, and the inner comments boundary.
-- Replace the inner boundary's spinner with `fallback={<CommentListSkeleton />}>`.
-- Reload the session. The outer boundary first reserves the whole details area. Once the event is ready, React reveals the details and form together while the nested boundary keeps a correctly shaped comments skeleton in place. The comments then stream in as the second reveal.
+- Open `app/[slug]/page.tsx`. Import AnimatedSuspense, EventDetailsSkeleton, and CommentListSkeleton.
+- Replace both Suspense boundaries with AnimatedSuspense. Give the outer boundary `fallback={<EventDetailsSkeleton />}` and extend it around the event details, comment form, and inner boundary.
+- Give the inner boundary `fallback={<CommentListSkeleton />}>`.
+- Show `components/ui/animated-suspense.tsx` briefly: it wraps the fallback with exit="auto" and the content with enter="auto", using default="none" on both. It is the same reusable fade pattern as Next Beats.
+- Reload the session. The outer boundary first reserves the whole details area. Once the event is ready, React fades in the details and form together while the nested boundary keeps a correctly shaped comments skeleton in place. The comments then fade in as the second reveal.
 - This is why nested boundaries are interesting: they express the reveal order in the component tree. We get two coordinated stages without loading flags, effects, or moving the queries to the client.
 
 ## 4:45–6:45 — Async navigation: the day tabs
@@ -55,7 +56,7 @@ Scope: one Async React example each for data loading, navigation, and mutation. 
 ## 8:45–10:00 — Outro
 
 - We fixed three different async gaps with three small, composable changes.
-- For **data loading**, nested Suspense boundaries gave two Server Component regions a deliberate reveal order.
+- For **data loading**, nested AnimatedSuspense boundaries gave two Server Component regions a deliberate reveal order and fade.
 - For **navigation**, the design component coordinated optimistic selection and pending UI in a transition.
 - For **mutation**, a form Action coordinated an optimistic heart, a pending-removal fade, and automatic rollback.
 - The server did not get faster. The interface got clearer because we designed what happens while we wait.

@@ -53,17 +53,15 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here.
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
-- EventGrid is a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
+- EventGrid is a server component that fetches data. Let's wrap it in AnimatedSuspense with a skeleton fallback that matches the card grid. AnimatedSuspense still uses Suspense; it also gives us the fade between the fallback and content in one reusable component.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
 - Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. With RSCs the server fetches and streams directly.
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
+- Our data is streaming in and AnimatedSuspense also designs the **done** state. It wraps the fallback in a ViewTransition with exit="auto" and the content in one with enter="auto", both with default="none", so the loading UI fades into the real UI without animating during unrelated transitions.
 - In Next.js 16.3, this works directly in the App Router. Import ViewTransition from React; there is no Next.js config flag or React canary install to add.
-- Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
-- ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
-- Wrap the skeleton fallback with exit="slide-down" and default="none", and the content with enter="slide-up" and default="none". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
+- Show components/ui/animated-suspense.tsx. This is the same shared pattern used in Next Beats, so every data boundary gets the same fade instead of repeating the Suspense and ViewTransition pair.
 - We designed our first inbetween state successfully! The app already feels way smoother.
 
 ### Suspense — Session Detail Page
@@ -71,9 +69,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: it already has two Suspense boundaries — one around EventDetails with no fallback, and one around CommentList with just a centered spinner. When content loads, the comment section jumps down — classic layout shift.
 - Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- Fix: proper skeleton fallbacks that reserve the right space. Add EventDetailsSkeleton to the top boundary, swap the spinner for CommentListSkeleton on the bottom. App feels predictable. No CLS.
-- Now wrap EventDetails in a bare ViewTransition for a crossfade reveal. Then use the suspenseReveal snippet on the CommentList Suspense for the slide-up/slide-down reveal — same Suspense, just with a ViewTransition wrapping the fallback and the content.
-- **Questions page**: Another blocking navigation with no feedback. EventHeader already has its own Suspense + skeleton. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
+- Fix: replace both with nested AnimatedSuspense boundaries. Give the outer EventDetails boundary EventDetailsSkeleton, extend it around the comment form and inner boundary, then give the inner CommentList boundary CommentListSkeleton. App feels predictable, reveals in two stages, and has no CLS.
+- **Questions page**: Another blocking navigation with no feedback. Replace both data boundaries with AnimatedSuspense and keep their existing shaped skeletons. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Use AnimatedSuspense for the remaining app-shell boundaries too, so every Suspense reveal uses the same fade.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation

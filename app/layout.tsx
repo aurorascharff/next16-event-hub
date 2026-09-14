@@ -1,8 +1,8 @@
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
-import { Suspense } from 'react';
 import { AuthGate } from '@/components/auth-gate';
 
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { Toaster } from '@/components/ui/sonner';
 import { getCurrentUser } from '@/features/user/user-queries';
 import type { Metadata, Viewport } from 'next';
@@ -54,9 +54,9 @@ export default function RootLayout({
       </head>
       <body className="font-mono antialiased">
         <ThemeProvider>
-          <Suspense>
+          <AnimatedSuspense>
             <AuthGate userPromise={getCurrentUser()} />
-          </Suspense>
+          </AnimatedSuspense>
           <div
             className="bg-background fixed inset-x-0 top-0 z-50 h-[env(safe-area-inset-top)]"
             style={{ viewTransitionName: 'safe-area-top' }}

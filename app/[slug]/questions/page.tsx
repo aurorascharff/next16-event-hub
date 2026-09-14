@@ -1,6 +1,7 @@
-import { Suspense, ViewTransition } from 'react';
+import { ViewTransition } from 'react';
 import { PageContainer, PageShell } from '@/components/page-shell';
 import { Poller } from '@/components/poller';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { EventHeader, EventHeaderSkeleton } from '@/features/event/components/event-header';
 import {
   QuestionFeed,
@@ -22,7 +23,7 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
       <PageShell>
         <PageContainer>
           <div className="space-y-3 pb-14">
-            <Suspense
+            <AnimatedSuspense
               fallback={
                 <>
                   <EventHeaderSkeleton />
@@ -32,20 +33,12 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
             >
               <EventHeader slug={slug} />
               <QuestionFeedHeader slug={slug} />
-            </Suspense>
+            </AnimatedSuspense>
             <Poller />
             <OptimisticQuestionForm eventSlug={slug} />
-            <Suspense
-              fallback={
-                <ViewTransition exit="slide-down" default="none">
-                  <QuestionFeedSkeleton />
-                </ViewTransition>
-              }
-            >
-              <ViewTransition enter="slide-up" default="none">
-                <QuestionFeed slug={slug} />
-              </ViewTransition>
-            </Suspense>
+            <AnimatedSuspense fallback={<QuestionFeedSkeleton />}>
+              <QuestionFeed slug={slug} />
+            </AnimatedSuspense>
           </div>
         </PageContainer>
       </PageShell>

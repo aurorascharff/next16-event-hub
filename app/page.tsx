@@ -1,7 +1,7 @@
-import { Suspense, ViewTransition } from 'react';
 import { NavBack } from '@/components/animations';
 import { PageContainer, PageShell } from '@/components/page-shell';
 import { SiteHeader } from '@/components/site-header';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { EventGrid, EventGridSkeleton } from '@/features/event/components/event-grid';
 import HomeTabs from '@/features/event/components/home-tabs';
 import type { Metadata } from 'next';
@@ -17,21 +17,13 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       <PageShell className="group">
         <SiteHeader />
         <PageContainer size="wide" className="transition-opacity group-has-data-pending:opacity-50">
-          <Suspense
-            fallback={
-              <ViewTransition exit="slide-down" default="none">
-                <EventGridSkeleton />
-              </ViewTransition>
-            }
-          >
-            <ViewTransition enter="slide-up" default="none">
-              <EventGrid searchParams={searchParams} />
-            </ViewTransition>
-          </Suspense>
+          <AnimatedSuspense fallback={<EventGridSkeleton />}>
+            <EventGrid searchParams={searchParams} />
+          </AnimatedSuspense>
         </PageContainer>
-        <Suspense>
+        <AnimatedSuspense>
           <HomeTabs />
-        </Suspense>
+        </AnimatedSuspense>
       </PageShell>
     </NavBack>
   );

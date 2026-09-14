@@ -1,6 +1,6 @@
-import { Suspense, ViewTransition } from 'react';
 import { NavForward } from '@/components/animations';
 import { PageContainer, PageShell } from '@/components/page-shell';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { CommentForm } from '@/features/comment/components/comment-form';
 import { CommentList, CommentListSkeleton } from '@/features/comment/components/comment-list';
 import { EventDetails, EventDetailsSkeleton } from '@/features/event/components/event-details';
@@ -13,23 +13,13 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
       <PageShell>
         <PageContainer>
           <div className="flex flex-col gap-8">
-            <Suspense fallback={<EventDetailsSkeleton />}>
-              <ViewTransition>
-                <EventDetails slug={slug} />
-              </ViewTransition>
+            <AnimatedSuspense fallback={<EventDetailsSkeleton />}>
+              <EventDetails slug={slug} />
               <CommentForm />
-              <Suspense
-                fallback={
-                  <ViewTransition exit="slide-down" default="none">
-                    <CommentListSkeleton />
-                  </ViewTransition>
-                }
-              >
-                <ViewTransition enter="slide-up" default="none">
-                  <CommentList slug={slug} />
-                </ViewTransition>
-              </Suspense>
-            </Suspense>
+              <AnimatedSuspense fallback={<CommentListSkeleton />}>
+                <CommentList slug={slug} />
+              </AnimatedSuspense>
+            </AnimatedSuspense>
           </div>
         </PageContainer>
       </PageShell>

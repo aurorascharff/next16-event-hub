@@ -1,6 +1,6 @@
 import { Presentation } from 'lucide-react';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { LabelFilter, LabelFilterSkeleton } from '@/features/event/components/label-filter';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { UserMenu } from '@/features/user/components/user-menu';
@@ -19,15 +19,15 @@ export function SiteHeader() {
             <HeaderLinks />
           </div>
           <div className="flex items-center gap-2">
-            <Suspense>
+            <AnimatedSuspense>
               <UserMenu />
-            </Suspense>
+            </AnimatedSuspense>
             <ThemeToggle />
           </div>
         </div>
-        <Suspense fallback={<LabelFilterSkeleton />}>
+        <AnimatedSuspense fallback={<LabelFilterSkeleton />}>
           <LabelFilter />
-        </Suspense>
+        </AnimatedSuspense>
       </div>
     </header>
   );

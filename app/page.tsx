@@ -17,7 +17,7 @@ export default function HomePage({ searchParams }: PageProps<'/'>) {
       <PageShell className="group">
         <SiteHeader />
         <PageContainer size="wide" className="transition-opacity group-has-data-pending:opacity-50">
-          <AnimatedSuspense fallback={<EventGridSkeleton />}>
+          <AnimatedSuspense animation="slide" fallback={<EventGridSkeleton />}>
             <EventGrid searchParams={searchParams} />
           </AnimatedSuspense>
         </PageContainer>

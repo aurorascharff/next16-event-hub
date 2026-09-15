@@ -1,4 +1,5 @@
 import { Clock, MapPin } from 'lucide-react';
+import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import { Avatar } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FavoriteButton } from '@/features/event/components/favorite-button';
@@ -41,7 +42,9 @@ export async function EventDetails({ slug }: { slug: string }) {
       <div className="space-y-3 sm:space-y-4">
         <div className="flex items-start justify-between gap-3">
           <h1 className="line-clamp-2 font-sans text-xl font-bold tracking-tight sm:text-3xl">{event.name}</h1>
-          <FavoriteStatus slug={slug} />
+          <AnimatedSuspense fallback={<Skeleton className="size-8 shrink-0 rounded-md" />}>
+            <FavoriteStatus slug={slug} />
+          </AnimatedSuspense>
         </div>
         {event.speaker && (
           <div className="flex items-center gap-2.5 sm:gap-3">

@@ -16,7 +16,7 @@ export default async function SessionPage({ params }: PageProps<'/[slug]'>) {
             <AnimatedSuspense fallback={<EventDetailsSkeleton />}>
               <EventDetails slug={slug} />
               <CommentForm />
-              <AnimatedSuspense fallback={<CommentListSkeleton />}>
+              <AnimatedSuspense animation="slide" fallback={<CommentListSkeleton />}>
                 <CommentList slug={slug} />
               </AnimatedSuspense>
             </AnimatedSuspense>

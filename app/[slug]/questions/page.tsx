@@ -36,7 +36,7 @@ export default async function QuestionsPage({ params }: PageProps<'/[slug]/quest
             </AnimatedSuspense>
             <Poller />
             <OptimisticQuestionForm eventSlug={slug} />
-            <AnimatedSuspense fallback={<QuestionFeedSkeleton />}>
+            <AnimatedSuspense animation="slide" fallback={<QuestionFeedSkeleton />}>
               <QuestionFeed slug={slug} />
             </AnimatedSuspense>
           </div>

@@ -26,8 +26,8 @@ export async function QuestionFeedHeader({ slug }: Props) {
 export function QuestionFeedHeaderSkeleton() {
   return (
     <div className="flex items-center justify-between">
-      <Skeleton className="h-3 w-24" />
-      <Skeleton className="h-6 w-28 rounded-full" />
+      <Skeleton className="h-4 w-28" />
+      <Skeleton className="h-10 w-32 rounded-lg" />
     </div>
   );
 }

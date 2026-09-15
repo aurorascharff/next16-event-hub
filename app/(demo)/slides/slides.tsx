@@ -47,9 +47,9 @@ function NetworkNote({ children, name }: { children: React.ReactNode; name: stri
 export const slides = [
   // 1. Title
   <Slide key="title">
-    <SlideBadge>React Norway 2026</SlideBadge>
+    <SlideBadge>NDC Oslo 2026</SlideBadge>
     <SlideTitle>Designing the In-Between States with Async React</SlideTitle>
-    <SlideSpeaker name="Aurora Scharff" title="DX Engineer at Vercel" avatar="/aurora.png" />
+    <SlideSpeaker name="Aurora Scharff" title="DX, Docs & Education at Vercel" avatar="/aurora.png" />
   </Slide>,
 
   // 2. Basic render cycle — Event → Update → Render → Commit

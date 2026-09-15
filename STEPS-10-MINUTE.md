@@ -26,10 +26,11 @@
     - Open a session. Its two async regions already have Suspense boundaries, but the details boundary has no fallback and the comments use a generic spinner. The page reveals in awkward jumps.
     - Open `app/[slug]/page.tsx`. Import AnimatedSuspense, EventDetailsSkeleton, and CommentListSkeleton.
     - Replace both Suspense boundaries with AnimatedSuspense. Give the outer boundary `fallback={<EventDetailsSkeleton />}` and extend it around the event details, comment form, and inner boundary.
-    - Give the inner boundary `fallback={<CommentListSkeleton />}>`.
-    - Show `components/ui/animated-suspense.tsx` briefly: it wraps the fallback with exit="auto" and the content with enter="auto", using default="none" on both. It is the same reusable fade pattern as Next Beats.
-    - Reload the session. The outer boundary first reserves the whole details area. Once the event is ready, React fades in the details and form together while the nested boundary keeps a correctly shaped comments skeleton in place. The comments then fade in as the second reveal.
-    - This is why nested boundaries are interesting: they express the reveal order in the component tree. We get two coordinated stages without loading flags, effects, or moving the queries to the client.
+    - Give the inner comments boundary `fallback={<CommentListSkeleton />}` and `animation="slide"`.
+    - In `EventDetails`, wrap `FavoriteStatus` in a default AnimatedSuspense boundary with a small heart skeleton. This lets the 350ms event details reveal without waiting for the favorite lookup; the comments keep their deliberate 3s delay.
+    - Show `components/ui/animated-suspense.tsx` briefly: it defaults to the reusable Next Beats crossfade with exit="auto" and enter="auto". The `slide` option switches to exit="slide-down" and enter="slide-up", with default="none" on both variants.
+    - Reload the session. The details and form crossfade in first, the heart crossfades in next, and the comments slide into their correctly shaped space last.
+    - This is why nested boundaries are interesting: they express the reveal order in the component tree. We get coordinated stages without loading flags, effects, or moving the queries to the client.
 
     ## 4:45–6:45 — Async navigation: the day tabs
 
@@ -56,7 +57,7 @@
     ## 8:45–10:00 — Outro
 
     - We fixed three different async gaps with three small, composable changes.
-    - For **data loading**, nested AnimatedSuspense boundaries gave two Server Component regions a deliberate reveal order and fade.
+    - For **data loading**, nested AnimatedSuspense boundaries gave the Server Component regions a deliberate reveal order, using crossfades for local details and a vertical slide for the comments list.
     - For **navigation**, the design component coordinated optimistic selection and pending UI in a transition.
     - For **mutation**, a form Action coordinated an optimistic heart, a pending-removal fade, and automatic rollback.
     - The server did not get faster. The interface got clearer because we designed what happens while we wait.

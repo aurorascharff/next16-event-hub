@@ -37,7 +37,7 @@ export const getEvents = cache(async (day?: string, label?: string) => {
 });
 
 export const getEventBySlug = cache(async (slug: string) => {
-  await slow();
+  await slow(350);
   const event = await prisma.event.findUnique({
     where: { slug },
   });

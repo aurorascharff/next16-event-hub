@@ -49,11 +49,7 @@ export const slides = [
   <Slide key="title">
     <SlideBadge>NDC Oslo 2026</SlideBadge>
     <SlideTitle>Designing the In-Between States with Async React</SlideTitle>
-    <SlideSpeaker
-      name="Aurora Scharff"
-      title="DX, Docs & Education at Vercel"
-      avatar="/aurora.png"
-    />
+    <SlideSpeaker name="Aurora Scharff" title="DX, Docs & Education at Vercel" avatar="/aurora.png" />
   </Slide>,
 
   // 2. Basic render cycle — Event → Update → Render → Commit

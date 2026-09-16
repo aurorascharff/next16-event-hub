@@ -49,7 +49,7 @@
 
     - Only after the boundary structure is right, replace the three Suspense boundaries with `AnimatedSuspense` while keeping the same fallbacks and nesting. Use the default crossfade for details and the heart, and `animation="slide"` for the comments list.
     - Show `components/ui/animated-suspense.tsx` briefly. It is Suspense plus ViewTransition around the fallback and resolved content; animation changes the reveal, not the data behavior or boundary ownership.
-    - React's `<ViewTransition>` became stable in React 19.3, released September 9, 2026—only a week ago. `AnimatedSuspense` is our small reusable wrapper around that stable primitive.
+    - React's `<ViewTransition>` became stable in React 19.3, released September 9, 2026, only a couple of weeks ago. `AnimatedSuspense` is our small reusable wrapper around that stable primitive.
     - Reload once more: same early, stable nested reveal, now with crossfades for local details and a vertical slide for the list.
 
     ## 5:30–7:00 — Async navigation: the day tabs
@@ -68,8 +68,8 @@
     - Open `features/event/components/favorite-button.tsx`. Add `useOptimistic(favorited, current => !current)` so the heart can show the expected result immediately.
     - Replace the click-only button with a `<form action={...}>` and move `toggleFavorite(eventSlug)` into the form Action. Call the optimistic setter before awaiting the mutation.
     - Keep `e.stopPropagation()` on the submit button so favoriting a card does not open the session.
-    - The Server Action returns an error string when the mutation fails and nothing on success. Await it as `const error = await toggleFavorite(eventSlug)`, then call `toast.error(error)` only when an error was returned. Do not add a client-side `try/catch`.
-    - React runs the form Action in a transition. The optimistic heart lasts while the Action is pending, settles to the refreshed server value on success, and rolls back automatically when the action returns without changing the server value. The toast explains that rollback instead of making it feel like a glitch.
+    - If the mutation fails, we usually want to give the user some feedback. In this demo the Server Action returns an error message, so await it as `const error = await toggleFavorite(eventSlug)` and call `toast.error(error)` when it returns one. We do not need a client-side `try/catch` for that returned result. Another valid choice is to let an unexpected thrown error reach a higher error boundary.
+    - React runs the form Action in a transition. The optimistic heart lasts while the Action is pending, settles to the refreshed server value on success, and rolls back automatically when the action returns without changing the server value. The toast makes that local rollback understandable.
 
     ## 9:00–10:00 — Outro
 

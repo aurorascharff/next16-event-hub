@@ -53,17 +53,16 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Let's start with the first gap — async data loading. Right now, the initial page load is actually blocked. There's a delay loading the page, which we will feel everytime we try to open this page or navigate here.
 - Suspense works with Suspense-enabled data sources like RSCs or libraries that provide hooks like useSuspenseQuery. You give it a fallback, and you decide where loading states go and what they look like declaratively.
-- EventGrid is a server component that fetches data. Let's wrap it in Suspense with a skeleton fallback that matches the card grid.
+- EventGrid is a server component that fetches data. Let's wrap it in AnimatedSuspense with `animation="slide"` and a skeleton fallback that matches the card grid. AnimatedSuspense still uses Suspense; it also designs the transition between the fallback and content in one reusable component.
 - When skeletons match the shape of the real content, loading actually feels faster and stays predictable.
 - Now the shell — header, day tabs, label pills — shows up immediately, and the session grid streams in when the data is ready. With RSCs the server fetches and streams directly.
 
 ### Suspense Reveal Animation — Home Page
 
-- OK so our data is streaming in now, but when content loads, it just pops in. That's the **done** state, we want to design it so the new UI transitions in smoothly. This is where ViewTransition comes in. ViewTransitions are triggered when elements update in a transition, a Suspense, or a deferred update. So when a Suspense boundary resolves, React can animate the fallback into the new UI.
+- Our data is streaming in and AnimatedSuspense also designs the **done** state. It defaults to a crossfade with exit="auto" and enter="auto". Passing `animation="slide"` uses exit="slide-down" and enter="slide-up" instead. Both use default="none", so they do not animate during unrelated transitions.
 - In Next.js 16.3, this works directly in the App Router. Import ViewTransition from React; there is no Next.js config flag or React canary install to add.
-- Let's add a ViewTransition around the EventGrid to make it crossfade, which is the default.
-- ViewTransitions also have activators based on how the component behaves, which we can add custom CSS to.
-- Wrap the skeleton fallback with exit="slide-down" and default="none", and the content with enter="slide-up" and default="none". Now as we stream in the content, the skeleton exits the DOM and the content enters and animates.
+- ViewTransition became stable in React 19.3, released September 9, 2026. AnimatedSuspense is just our reusable composition of that stable primitive with Suspense.
+- Show components/ui/animated-suspense.tsx. This is the same shared pattern used in Next Beats: most boundaries crossfade, while list-shaped reveals can opt into the vertical slide without repeating the Suspense and ViewTransition pair.
 - We designed our first inbetween state successfully! The app already feels way smoother.
 
 ### Suspense — Session Detail Page
@@ -71,9 +70,8 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: it already has two Suspense boundaries — one around EventDetails with no fallback, and one around CommentList with just a centered spinner. When content loads, the comment section jumps down — classic layout shift.
 - Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- Fix: proper skeleton fallbacks that reserve the right space. Add EventDetailsSkeleton to the top boundary, swap the spinner for CommentListSkeleton on the bottom. App feels predictable. No CLS.
-- Now wrap EventDetails in a bare ViewTransition for a crossfade reveal. Then use the suspenseReveal snippet on the CommentList Suspense for the slide-up/slide-down reveal — same Suspense, just with a ViewTransition wrapping the fallback and the content.
-- **Questions page**: Another blocking navigation with no feedback. EventHeader already has its own Suspense + skeleton. Use the questionsSuspense snippet to wrap QuestionFeed in Suspense with a skeleton fallback and ViewTransition reveal. Same pattern — Suspense for the **loading** state, ViewTransition for the **done** state. Now the feed streams in with smooth motion and unblocks the page load and nav and reveal UI.
+- Fix: replace both with nested AnimatedSuspense boundaries. Give the outer EventDetails boundary EventDetailsSkeleton and extend it around the comment form and inner boundary. In EventDetails, wrap FavoriteStatus in its own default crossfade boundary with a small heart skeleton. Give the inner CommentList boundary CommentListSkeleton and `animation="slide"`. The 350ms details, then favorite, then 3s comments make each reveal visible without introducing a large empty gap.
+- **Questions page**: Another blocking navigation with no feedback. Replace both data boundaries with AnimatedSuspense and keep their existing shaped skeletons. Keep the header boundary on the default crossfade and give the QuestionFeed boundary `animation="slide"`. Use the default crossfade for the remaining app-shell boundaries too.
 - That's async data loading designed. Let's move on.
 
 ## Async Navigation
@@ -109,7 +107,7 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
 - Let's also use the pending-removal pattern from Next Beats. Add a second useOptimistic(false) value for removing. Capture whether the heart is currently favorited before toggling, set removing only when this Action removes a favorite, and add data-removing={removing || undefined} to the button.
 - Cards in the Favorites view are already set up with has-data-removing:opacity-50. Remove one there: the heart empties optimistically, the outgoing card fades while the Action is pending, then the refreshed server result removes it. Adding a favorite elsewhere does not fade the card.
-- (Pair the rollback with a toast.error so the user knows what happened — silent rollback feels like a glitch, the toast turns it into clear feedback. We'll do the same for the other mutations.)
+- If the mutation fails, we usually want to give the user some feedback. Here the Server Action returns an error message, so the form Action uses `const error = await toggleFavorite(eventSlug)` and `if (error) toast.error(error)`. We do not need a client-side try/catch for that returned result. Another valid choice is to let an unexpected thrown error reach a higher error boundary. The optimistic state still rolls back, and the toast makes that local rollback understandable.
 -(Now tap a few favorites, switch to the Favorites tab, and remove one. It gives instant optimistic feedback and communicates the pending server work. Mutations and navigation go through the same transition system, so it all coordinates while the real values resolve.)
 
 ### Questions Page

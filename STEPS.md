@@ -4,7 +4,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 ## Slide 1: Title
 
-- (Open /slides) Hey everyone! How are you guys doing?. I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. Cant wait to hang out with you all, talk about React, and show off some cool new features and let's get up to date with Next.js 16.3.
+- (Open /slides) Hey everyone! I'm Aurora Scharff — I work on the Next.js developer experience at Vercel. React has been releasing a lot of new tools to help us build better UX around async work, so let's learn them and get up to date with Next.js 16.3.
 - Today I'll be showing you how to design the in-between states with Async React. I know we're all using agents to code these days but actually, lets do some good old fashioned coding today. I will however have something for your agents at the end, so stay tuned for that.
 
 ## Opening
@@ -43,7 +43,7 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 - When doing **Async Data loading**, like fetching data from the server. That's where you get blank screens, spinners, layout shifts.
 - Then, **Async Navigation**, like switching tabs, filtering, going to a different page. That's where the UI locks up and content flashes in.
 - Finally, **Async Mutations**, like submitting data, toggling state. That's where buttons freeze and nothing gives feedback.
-- The Async react really shines when the framework integrates them. You would want the router wrapping navigation in transitions, and the data layer supporting Suspense. We're going to be using Next.js 16.3 App Router with React Server Components, which gives us the router and data layer integration. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
+- We're using the Next.js 16.3 App Router. It uses React Server Components, so data streams through Suspense and navigation runs in transitions. Any framework that integrates with transitions and Suspense works. Mutations can be handled by component libraries, which we'll see later.
 - With this in mind, let's go fix our app!
 - Exit slides, back to the app. Switch to editor.
 
@@ -69,8 +69,11 @@ GitHub: https://github.com/aurorascharff/next16-event-hub
 
 - Now let's apply the same pattern to the rest of our async data loading.
 - Session detail page: it already has two Suspense boundaries — one around EventDetails with no fallback, and one around CommentList with just a centered spinner. When content loads, the comment section jumps down — classic layout shift.
-- Swipe front: Use React Devtools Suspense panel to pin skeletons and check for CLS.
-- Fix: replace both with nested AnimatedSuspense boundaries. Give the outer EventDetails boundary EventDetailsSkeleton and extend it around the comment form and inner boundary. In EventDetails, wrap FavoriteStatus in its own default crossfade boundary with a small heart skeleton. Give the inner CommentList boundary CommentListSkeleton and `animation="slide"`. The 350ms details, then favorite, then 3s comments make each reveal visible without introducing a large empty gap.
+- Keep the boundaries as siblings. Give CommentList its shaped skeleton, but leave EventDetails without a fallback. In Chrome's Performance tab, compare two sessions with different content lengths. Reload and point out the layout shift and LCP.
+- We could constrain the unknown-height region and make it scrollable, or add Show more / Show less. The right solution depends on the UI. Here, let's compare the Suspense boundary shapes.
+- Try one large boundary around EventDetails, the comment form, and CommentList. Record again in the Performance tab: the layout shift is gone, but useful content waits for the slowest child and LCP gets worse.
+- Now nest the boundaries. The outer EventDetails boundary owns the unknown-height details and everything beneath them; the inner CommentList boundary gets CommentListSkeleton. Give FavoriteStatus its own small heart boundary. The details reveal early, the comments skeleton is already in the correct place, and there is no layout shift.
+- Only after the loading sequence is right, replace those three boundaries with AnimatedSuspense. Use the default crossfade for details and the heart, and `animation="slide"` for CommentList. Animation changes the reveal, not the boundary ownership.
 - **Questions page**: Another blocking navigation with no feedback. Replace both data boundaries with AnimatedSuspense and keep their existing shaped skeletons. Keep the header boundary on the default crossfade and give the QuestionFeed boundary `animation="slide"`. Use the default crossfade for the remaining app-shell boundaries too.
 - That's async data loading designed. Let's move on.
 
@@ -105,10 +108,8 @@ Finally, let's handle async mutations. Everything works, but nothing gives feedb
 ### Session Page
 
 - **FavoriteButton**: No action props, custom async react. Add useOptimistic with the server value as the non-optimistic value to toggle the heart instantly. We need a transition to coordinate our optimistic update with, so let's add the built in form action, in which React wraps it in a transition automatically. Move the mutation in there. Same action props pattern as BottomNav and ToggleGroup.
-- Let's also use the pending-removal pattern from Next Beats. Add a second useOptimistic(false) value for removing. Capture whether the heart is currently favorited before toggling, set removing only when this Action removes a favorite, and add data-removing={removing || undefined} to the button.
-- Cards in the Favorites view are already set up with has-data-removing:opacity-50. Remove one there: the heart empties optimistically, the outgoing card fades while the Action is pending, then the refreshed server result removes it. Adding a favorite elsewhere does not fade the card.
-- If the mutation fails, we usually want to give the user some feedback. Here the Server Action returns an error message, so the form Action uses `const error = await toggleFavorite(eventSlug)` and `if (error) toast.error(error)`. We do not need a client-side try/catch for that returned result. Another valid choice is to let an unexpected thrown error reach a higher error boundary. The optimistic state still rolls back, and the toast makes that local rollback understandable.
--(Now tap a few favorites, switch to the Favorites tab, and remove one. It gives instant optimistic feedback and communicates the pending server work. Mutations and navigation go through the same transition system, so it all coordinates while the real values resolve.)
+- If the mutation fails, the Server Action returns an error message. The form Action uses `const error = await toggleFavorite(eventSlug)` and `if (error) toast.error(error)`. The optimistic state rolls back, and the toast makes that local rollback understandable.
+-(Now tap a few favorites. The heart updates instantly and settles to the server value. Mutations and navigation go through the same transition system, so it all coordinates while the real values resolve.)
 
 ### Questions Page
 

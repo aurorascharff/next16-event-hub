@@ -70,6 +70,10 @@
   },
   "packageManager": "pnpm@10.29.2",
   "overrides": {
+    "@hono/node-server": "^1.19.15",
+    "deepmerge-ts": "^8.0.0",
+    "mysql2": "^3.23.1",
+    "postcss": "^8.5.28",
     "zod-validation-error": "^5.0.0"
   }
 }

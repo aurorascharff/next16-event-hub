@@ -4,7 +4,7 @@ import { refresh } from 'next/cache';
 import { prisma } from '@/db';
 import { getCurrentUser } from '@/features/user/user-queries';
 
-export async function toggleFavorite(eventSlug: string): Promise<string | undefined> {
+export async function toggleFavorite(eventSlug: string) {
   const userName = await getCurrentUser();
   if (!userName) return 'Sign in to favorite sessions.';
 
@@ -19,7 +19,9 @@ export async function toggleFavorite(eventSlug: string): Promise<string | undefi
       await prisma.favorite.create({ data: { eventSlug, userName } });
     }
   } catch {
-    return 'Could not update favorite. Try again.';
+    return {
+      error: 'Failed to update favorite status. Please try again later.',
+    };
   }
 
   refresh();

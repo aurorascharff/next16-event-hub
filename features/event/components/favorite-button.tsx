@@ -23,8 +23,8 @@ export function FavoriteButton({ eventSlug, favorited }: Props) {
         const willRemove = optimisticFavorited;
         setOptimisticFavorited(null);
         if (willRemove) setRemoving(true);
-        const error = await toggleFavorite(eventSlug);
-        if (error) toast.error(error);
+        const result = await toggleFavorite(eventSlug);
+        if (result.error) toast.error(result.error);
       }}
     >
       <button
